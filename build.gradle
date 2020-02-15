@@ -22,6 +22,36 @@ javadoc {
     classpath = configurations.compile
 }
 
+afterEvaluate {
+    if(tasks.findByName("classes")) {
+        task sourcesJar(type: Jar, dependsOn: classes) {
+            classifier = 'sources'
+            from sourceSets.main.allSource
+        }
+        artifacts {
+            archives sourcesJar
+        }
+    }
+    tasks.withType(Javadoc) {
+        failOnError false
+        options.addStringOption('Xdoclint:none', '-quiet')
+        options.addStringOption('encoding', 'UTF-8')
+        options.addStringOption('charSet', 'UTF-8')
+    }
+    task javadocJar(type: Jar) {
+        dependsOn javadoc
+        classifier = 'javadoc'
+        from javadoc.destinationDir
+        if (tasks.findByName("groovydoc")) {
+            dependsOn groovydoc
+            from groovydoc.destinationDir
+        }
+        artifacts {
+            archives javadocJar
+        }
+    }
+}
+
 version = modVersion
 group = modGroup
 archivesBaseName = modBaseName
