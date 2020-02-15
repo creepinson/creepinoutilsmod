@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "minVersion": "0.5",
+  "package": "me.creepinson.mod.mixin",
+  "refmap": "mixins.creepinoutils.refmap.json",
+  "target": "@env(DEFAULT)",
+  "compatibilityLevel": "JAVA_8",
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

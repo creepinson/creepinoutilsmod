@@ -1,0 +1,35 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Setup Minecraft Forge",
+      "type": "shell",
+      "command": "${workspaceFolder}/creepinoutils/gradlew",
+      "windows": {
+        "command": "${workspaceFolder}/creepinoutils/gradlew.bat"
+      },
+      "args": [
+        "setupDecompWorkspace"
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "Build Minecraft Mod",
+      "type": "shell",
+      "command": "${workspaceFolder}/creepinoutils/gradlew",
+      "windows": {
+        "command": "${workspaceFolder}/creepinoutils/gradlew.bat"
+      },
+      "args": [
+        "build"
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    }
+  ]
+}
