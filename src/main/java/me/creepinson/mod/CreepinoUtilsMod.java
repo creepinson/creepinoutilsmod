@@ -2,6 +2,7 @@ package me.creepinson.mod;
 
 import com.draco18s.hardlib.EasyRegistry;
 import enhanced.base.mod.BaseMod;
+import me.creepinson.mod.api.util.CreepinoUtils;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Mod;
@@ -13,9 +14,10 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.oredict.OreDictionary;
 
-@Mod(modid = "creepinoutils", name = "Creepino Utils", version = "1.0.0"/*, dependencies = "required-after:"*/)
+@Mod(modid = CreepinoUtilsMod.MOD_ID, name = CreepinoUtilsMod.MOD_NAME, version = CreepinoUtilsMod.MOD_VERSION/*, dependencies = "required-after:"*/)
 public class CreepinoUtilsMod extends BaseMod {
     public static final String MOD_ID = "creepinoutils", MOD_ID_SHORT = "creepinoutils", MOD_NAME = "Creepino Utilities", MOD_URL = "", MOD_VERSION = "1.0.0", MOD_DEPENDENCIES = "";
+    public static final boolean DEBUG = true; // DEFAULT = false
 
     @Instance("creepinoutils")
     public static CreepinoUtilsMod instance;

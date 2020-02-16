@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
-import me.creepinson.mod.util.ReflectionUtil;
+import me.creepinson.mod.api.util.ReflectionUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.objectweb.asm.ClassReader;

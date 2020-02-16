@@ -8,7 +8,6 @@ package me.creepinson.mod.asm;
 import java.util.Arrays;
 import java.util.List;
 
-import me.creepinson.mod.util.client.IItemRendererHandler;
 import net.minecraft.launchwrapper.IClassTransformer;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -85,14 +84,14 @@ public class RenderTransformer implements IClassTransformer {
         assert renderItem != null;
         AbstractInsnNode spotRenderItem = ASMHelper.getFirstInstruction(renderItem, Opcodes.INVOKESPECIAL);
         InsnList toInsert3 = new InsnList();
-        toInsert3.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "me/creepinson/mod/util/client/IItemRendererHandler", "renderItemStack", new MCPSidedString("(Lnet/minecraft/item/ItemStack;Lnet/minecraft/client/renderer/block/model/IBakedModel;)V", "(LainLcfw;)V").toString(), false));
+        toInsert3.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "me/creepinson/mod/api/util/client/IItemRendererHandler", "renderItemStack", new MCPSidedString("(Lnet/minecraft/item/ItemStack;Lnet/minecraft/client/renderer/block/model/IBakedModel;)V", "(LainLcfw;)V").toString(), false));
         renderItem.instructions.insertBefore(spotRenderItem, toInsert3);
 
         MethodNode effects = ASMHelper.getMethodNode(classNode, new MCPSidedString("renderEffect", "func_191966_a").toString(), new MCPSidedString("(Lnet/minecraft/client/renderer/block/model/IBakedModel;)V", "(Lcfw;)V").toString());
         assert effects != null;
         AbstractInsnNode spotEffect = ASMHelper.getFirstInstruction(effects, 3);
         InsnList toInsert2 = new InsnList();
-        toInsert2.add(new FieldInsnNode(178, "me/creepinson/mod/util/client/IItemRendererHandler", "allowEnchants", "Z"));
+        toInsert2.add(new FieldInsnNode(178, "me/creepinson/mod/api/util/client/IItemRendererHandler", "allowEnchants", "Z"));
         LabelNode l1 = new LabelNode();
         toInsert2.add(new JumpInsnNode(154, l1));
         LabelNode l2 = new LabelNode();
@@ -109,8 +108,8 @@ public class RenderTransformer implements IClassTransformer {
         InsnList toInsert = new InsnList();
         toInsert.add(new VarInsnNode(25, 1));
         toInsert.add(new VarInsnNode(21, 2));
-        toInsert.add(new MethodInsnNode(184, "me/creepinson/mod/util/client/IItemRendererHandler", "handleCameraTransforms", "(Lnet/minecraft/client/renderer/block/model/ItemCameraTransforms$TransformType;Z)V", false));
-        toInsert.add(new FieldInsnNode(178, "me/creepinson/mod/util/client/IItemRendererHandler", "runTransforms", "Z"));
+        toInsert.add(new MethodInsnNode(184, "me/creepinson/mod/api/util/client/IItemRendererHandler", "handleCameraTransforms", "(Lnet/minecraft/client/renderer/block/model/ItemCameraTransforms$TransformType;Z)V", false));
+        toInsert.add(new FieldInsnNode(178, "me/creepinson/mod/api/util/client/IItemRendererHandler", "runTransforms", "Z"));
         LabelNode l1 = new LabelNode();
         toInsert.add(new JumpInsnNode(154, l1));
         LabelNode l2 = new LabelNode();
@@ -155,17 +154,17 @@ public class RenderTransformer implements IClassTransformer {
         }
 
         InsnList toInsert = new InsnList();
-        toInsert.add(new TypeInsnNode(187, "me/creepinson/mod/util/client/RenderItemObj"));
+        toInsert.add(new TypeInsnNode(187, "me/creepinson/mod/api/util/client/RenderItemObj"));
         toInsert.add(new InsnNode(89));
         method.instructions.insert(start, toInsert);
-        method.instructions.insert(end, new MethodInsnNode(183, "me/creepinson/mod/util/client/RenderItemObj", "<init>", "(Lnet/minecraft/client/renderer/RenderItem;)V", false));
+        method.instructions.insert(end, new MethodInsnNode(183, "me/creepinson/mod/api/util/client/RenderItemObj", "<init>", "(Lnet/minecraft/client/renderer/RenderItem;)V", false));
     }
 
     public static void patchRenderManager(ClassNode classNode) {
         MethodNode node = ASMHelper.getMethodNode(classNode, (new MCPSidedString("renderEntity", "func_188391_a")).toString(), "(Lnet/minecraft/entity/Entity;DDDFFZ)V");
         InsnList toInsert = new InsnList();
         toInsert.add(new VarInsnNode(25, 1));
-        toInsert.add(new MethodInsnNode(184, "me/creepinson/mod/util/client/IItemRendererHandler", "updateLastPossiblePos", "(Lnet/minecraft/entity/Entity;)V", false));
+        toInsert.add(new MethodInsnNode(184, "me/creepinson/mod/api/util/client/IItemRendererHandler", "updateLastPossiblePos", "(Lnet/minecraft/entity/Entity;)V", false));
         AbstractInsnNode point = ASMHelper.getFirstInstruction(node, 1);
         node.instructions.insertBefore(point, toInsert);
     }
@@ -175,7 +174,7 @@ public class RenderTransformer implements IClassTransformer {
         MethodNode node = ASMHelper.getMethodNode(classNode, (new MCPSidedString("bindTexture", "func_110577_a")).toString(), "(Lnet/minecraft/util/ResourceLocation;)V");
         AbstractInsnNode start = ASMHelper.getFirstInstruction(node, 25);
         InsnList toInsert = new InsnList();
-        toInsert.add(new FieldInsnNode(178, "me/creepinson/mod/util/client/IItemRendererHandler", "canBind", "Z"));
+        toInsert.add(new FieldInsnNode(178, "me/creepinson/mod/api/util/client/IItemRendererHandler", "canBind", "Z"));
         LabelNode l1 = new LabelNode();
         toInsert.add(new JumpInsnNode(154, l1));
         LabelNode l2 = new LabelNode();

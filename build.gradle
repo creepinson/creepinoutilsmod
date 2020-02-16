@@ -5,17 +5,24 @@ buildscript {
             name = "forge"
             url = "https://files.minecraftforge.net/maven"
         }
-        maven { url "http://repo.spongepowered.org/maven" }
+        maven {
+            url 'http://repo.spongepowered.org/maven'
+        }
+        maven {
+            url 'https://plugins.gradle.org/m2/'
+        }
     }
     dependencies {
         classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
         classpath "org.spongepowered:mixingradle:0.6-SNAPSHOT"
+        classpath "com.wynprice.cursemaven:CurseMaven:2.1.1"
     }
 }
 
 apply plugin: "net.minecraftforge.gradle.forge"
 apply plugin: "org.spongepowered.mixin"
 apply plugin: 'java'
+apply plugin: 'com.wynprice.cursemaven'
 
 javadoc {
     source = sourceSets.main.allJava
@@ -23,7 +30,7 @@ javadoc {
 }
 
 afterEvaluate {
-    if(tasks.findByName("classes")) {
+    if (tasks.findByName("classes")) {
         task sourcesJar(type: Jar, dependsOn: classes) {
             classifier = 'sources'
             from sourceSets.main.allSource
@@ -69,13 +76,20 @@ minecraft {
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 
-dependencies {
-
-}
-
-
 repositories {
     mavenCentral()
+    maven {
+        name = "CurseForge"
+        url = "https://minecraft.curseforge.com/api/maven/"
+    }
+}
+configurations {
+    extraLib
+}
+
+dependencies {
+    extraLib "curse.maven:creativecore:2860437"
+    configurations.compile.extendsFrom(configurations.extraLib)
 }
 
 processResources {
@@ -94,6 +108,12 @@ processResources {
     // copy everything else, thats not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude "mcmod.info"
+    }
+}
+
+jar {
+    from {
+        configurations.extraLib.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
 
