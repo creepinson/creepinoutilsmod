@@ -22,7 +22,7 @@ public class RotationUtils {
         if (horizontalFacingNames == null) {
             horizontalFacingNames = new String[4];
             for (int i = 0; i < horizontalFacingNames.length; i++) {
-                horizontalFacingNames[i] = EnumFacing.getHorizontal(i).getName();
+                horizontalFacingNames[i] = EnumFacing.byHorizontalIndex(i).getName();
             }
         }
         return horizontalFacingNames;
@@ -32,7 +32,7 @@ public class RotationUtils {
         if (facingNames == null) {
             facingNames = new String[6];
             for (int i = 0; i < facingNames.length; i++) {
-                facingNames[i] = EnumFacing.getFront(i).getName();
+                facingNames[i] = EnumFacing.byHorizontalIndex(i).getName();
             }
         }
         return facingNames;

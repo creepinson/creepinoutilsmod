@@ -1,7 +1,7 @@
 package me.creepinson.mod.api.util.math;
 
 import io.netty.buffer.ByteBuf;
-import me.creepinson.mod.api.network.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;

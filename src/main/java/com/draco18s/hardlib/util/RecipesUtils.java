@@ -89,7 +89,7 @@ public class RecipesUtils {
         modRegistry.register(DummyRecipe.from(p));
 
 
-        CreepinoUtilsMod.instance.getLogger().log(Level.INFO, modID + " Removed Recipe: " + recipe);
+        CreepinoUtilsMod.getInstance().getLogger().log(Level.INFO, modID + " Removed Recipe: " + recipe);
         //This was a nice try, but Advancements are loaded when the world loads.
 		/*if(recipe.getResourceDomain().equals("minecraft")) {
 			AdvancementUtils.removeAdvancement(new ResourceLocation(recipe.getResourceDomain(),"recipes/" + recipe.getResourcePath()), modID);			
@@ -129,7 +129,7 @@ public class RecipesUtils {
             ItemStack tmpRecipe = iterator.next();
             recipeResult = recipes.get(tmpRecipe);
             if (ItemStack.areItemStacksEqual(resultStack, recipeResult)) {
-                CreepinoUtilsMod.instance.getLogger().log(Level.INFO, modID + " Removed Recipe: " + tmpRecipe + " -> " + recipeResult);
+                CreepinoUtilsMod.getInstance().getLogger().log(Level.INFO, modID + " Removed Recipe: " + tmpRecipe + " -> " + recipeResult);
                 //System.out.println(modID + " Removed Recipe: " + tmpRecipe + " -> " + recipeResult);
                 iterator.remove();
             }

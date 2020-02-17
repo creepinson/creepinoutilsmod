@@ -1,5 +1,6 @@
-package enhanced.base.mod;
+package me.creepinson.mod.base;
 
+import net.minecraft.item.Item;
 import net.minecraftforge.common.config.Configuration;
 
 import java.io.File;
@@ -36,4 +37,5 @@ public abstract class BaseProxy {
     public void registerPotions() {
 
     }
+
 }

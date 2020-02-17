@@ -3,7 +3,7 @@ package com.draco18s.hardlib;
 import com.draco18s.hardlib.api.interfaces.IBlockWithMapper;
 import com.draco18s.hardlib.api.interfaces.IItemWithMeshDefinition;
 import com.draco18s.hardlib.api.internal.IMetaLookup;
-import enhanced.base.mod.BaseProxy;
+import me.creepinson.mod.base.BaseProxy;
 import me.creepinson.mod.CreepinoUtilsMod;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.ICriterionInstance;

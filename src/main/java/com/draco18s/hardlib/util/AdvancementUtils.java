@@ -43,13 +43,13 @@ public class AdvancementUtils {
             target = allAdv.get(targetRL);
             targParent = allAdv.get(newParentRL);
             if (targParent == null) {
-                CreepinoUtilsMod.instance.getLogger().log(Level.INFO, modID + ": failed to reparent achievements!");
+                CreepinoUtilsMod.getInstance().getLogger().log(Level.INFO, modID + ": failed to reparent achievements!");
                 return;
             }
             boolean didAnything = false;
             for (Advancement obj : nonRoots) {
                 if (obj != null && obj.getId().equals(targetRL)) {
-                    CreepinoUtilsMod.instance.getLogger().log(Level.INFO, modID + ": " + obj.getId() + " reparented to " + targParent.getId());
+                    CreepinoUtilsMod.getInstance().getLogger().log(Level.INFO, modID + ": " + obj.getId() + " reparented to " + targParent.getId());
                     if (obj.getParent() != targParent) {
                         if (obj.getParent() != null) {
                             Advancement p = obj.getParent();
@@ -90,15 +90,15 @@ public class AdvancementUtils {
             nonRoots = (Set<Advancement>) nonRootsField.get(theList);
             Advancement adv = allAdv.get(targetRL);
             if (adv == null) {
-                CreepinoUtilsMod.instance.getLogger().log(Level.WARN, "Attempted to remove an advancement " + targetRL + ", but it doesn't exist");
+                CreepinoUtilsMod.getInstance().getLogger().log(Level.WARN, "Attempted to remove an advancement " + targetRL + ", but it doesn't exist");
                 return;
             }
             if (!adv.getChildren().iterator().hasNext()) {
                 nonRoots.remove(adv);
                 allAdv.remove(targetRL);
-                CreepinoUtilsMod.instance.getLogger().log(Level.INFO, modID + ": removed " + targetRL);
+                CreepinoUtilsMod.getInstance().getLogger().log(Level.INFO, modID + ": removed " + targetRL);
             } else {
-                CreepinoUtilsMod.instance.getLogger().log(Level.WARN, "Attempted to remove an advancement " + targetRL + ", but it has children!");
+                CreepinoUtilsMod.getInstance().getLogger().log(Level.WARN, "Attempted to remove an advancement " + targetRL + ", but it has children!");
             }
         } catch (IllegalArgumentException | IllegalAccessException e) {
             e.printStackTrace();

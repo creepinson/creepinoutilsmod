@@ -10,9 +10,10 @@
     "authorList": [
       "Creepinson"
     ],
-    "credits": "Draco18s for EasyRegistry.",
+    "credits": "Draco18s for EasyRegistry. aidancbrady for the energy network.",
     "logoFile": "",
     "screenshots": [],
-    "dependencies": []
+    "requiredMods": ["creativecore"],
+    "dependencies": ["creativecore"]
   }
 ]

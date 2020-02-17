@@ -1,4 +1,4 @@
-package enhanced.base.mod;
+package me.creepinson.mod.base;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;

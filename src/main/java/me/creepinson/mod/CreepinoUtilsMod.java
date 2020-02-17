@@ -1,10 +1,11 @@
 package me.creepinson.mod;
 
 import com.draco18s.hardlib.EasyRegistry;
-import enhanced.base.mod.BaseMod;
-import me.creepinson.mod.api.util.CreepinoUtils;
+import me.creepinson.mod.base.BaseMod;
+import me.creepinson.mod.tile.TileEntityAnimationTest;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -12,6 +13,7 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 
 @Mod(modid = CreepinoUtilsMod.MOD_ID, name = CreepinoUtilsMod.MOD_NAME, version = CreepinoUtilsMod.MOD_VERSION/*, dependencies = "required-after:"*/)
@@ -19,8 +21,14 @@ public class CreepinoUtilsMod extends BaseMod {
     public static final String MOD_ID = "creepinoutils", MOD_ID_SHORT = "creepinoutils", MOD_NAME = "Creepino Utilities", MOD_URL = "", MOD_VERSION = "1.0.0", MOD_DEPENDENCIES = "";
     public static final boolean DEBUG = true; // DEFAULT = false
 
+    // TODO: make creativecore not a requirement
+
     @Instance("creepinoutils")
-    public static CreepinoUtilsMod instance;
+    private static CreepinoUtilsMod INSTANCE;
+
+    public static CreepinoUtilsMod getInstance() {
+        return INSTANCE;
+    }
 
     @SidedProxy(clientSide = "com.draco18s.hardlib.client.ClientEasyRegistry", serverSide = "com.draco18s.hardlib.EasyRegistry")
     public static EasyRegistry proxy;
@@ -40,6 +48,7 @@ public class CreepinoUtilsMod extends BaseMod {
         OreDictionary.registerOre("stoneAny", new ItemStack(Blocks.STONE, 1, 4));
         OreDictionary.registerOre("stoneAny", new ItemStack(Blocks.STONE, 1, 5));
         OreDictionary.registerOre("stoneAny", new ItemStack(Blocks.STONE, 1, 6));
+//        EasyRegistry.registerBlockWithItem(BlockHandler.ANIMATION_TEST_BLOCK, new ResourceLocation(MOD_ID, "animation_test_block"));
 
     }
 
@@ -47,6 +56,7 @@ public class CreepinoUtilsMod extends BaseMod {
     @Override
     public void init(FMLInitializationEvent event) {
         super.init(event);
+//        GameRegistry.registerTileEntity(TileEntityAnimationTest.class, new ResourceLocation(MOD_ID, "tile_animation_test"));
     }
 
     @EventHandler

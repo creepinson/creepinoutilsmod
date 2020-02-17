@@ -1,4 +1,4 @@
-package enhanced.base.mod;
+package me.creepinson.mod.base;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;

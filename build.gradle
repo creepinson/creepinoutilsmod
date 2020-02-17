@@ -78,9 +78,17 @@ minecraft {
 
 repositories {
     mavenCentral()
+
     maven {
         name = "CurseForge"
         url = "https://minecraft.curseforge.com/api/maven/"
+    }
+
+    maven { url 'http://maven.mcmoddev.com' }
+
+    maven {
+        name 'CoFH Maven'
+        url 'https://maven.covers1624.net'
     }
 }
 configurations {
@@ -88,7 +96,10 @@ configurations {
 }
 
 dependencies {
-    extraLib "curse.maven:creativecore:2860437"
+    compile "curse.maven:creativecore:2860437"
+    compileOnly "net.darkhax.tesla:Tesla-1.12.2:${tesla_version}"
+    compileOnly "curse.maven:mekanism:2835175"
+    compile "cofh:RedstoneFlux:1.12-${redstoneflux_version}:universal"
     configurations.compile.extendsFrom(configurations.extraLib)
 }
 

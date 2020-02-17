@@ -4,9 +4,9 @@
     {
       "label": "Setup Minecraft Forge",
       "type": "shell",
-      "command": "${workspaceFolder}/creepinoutils/gradlew",
+      "command": "${workspaceFolder}/gradlew",
       "windows": {
-        "command": "${workspaceFolder}/creepinoutils/gradlew.bat"
+        "command": "${workspaceFolder}/gradlew.bat"
       },
       "args": [
         "setupDecompWorkspace"
@@ -17,11 +17,27 @@
       }
     },
     {
+      "label": "Run Dev Client",
+      "type": "shell",
+      "command": "${workspaceFolder}/gradlew",
+      "windows": {
+        "command": "${workspaceFolder}/gradlew.bat"
+      },
+      "args": [
+        "runClient"
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    
+    {
       "label": "Build Minecraft Mod",
       "type": "shell",
-      "command": "${workspaceFolder}/creepinoutils/gradlew",
+      "command": "${workspaceFolder}/gradlew",
       "windows": {
-        "command": "${workspaceFolder}/creepinoutils/gradlew.bat"
+        "command": "${workspaceFolder}/gradlew.bat"
       },
       "args": [
         "build"
