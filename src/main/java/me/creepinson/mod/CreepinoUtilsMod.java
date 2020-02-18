@@ -23,7 +23,7 @@ public class CreepinoUtilsMod extends BaseMod {
 
     // TODO: make creativecore not a requirement
 
-    @Instance("creepinoutils")
+    @Instance(CreepinoUtilsMod.MOD_ID)
     private static CreepinoUtilsMod INSTANCE;
 
     public static CreepinoUtilsMod getInstance() {
