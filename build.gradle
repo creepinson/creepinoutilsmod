@@ -96,10 +96,10 @@ configurations {
 }
 
 dependencies {
-    compile "curse.maven:creativecore:2860437"
+    compileOnly "curse.maven:creativecore:2860437"
     compileOnly "net.darkhax.tesla:Tesla-1.12.2:${tesla_version}"
     compileOnly "curse.maven:mekanism:2835175"
-    compile "cofh:RedstoneFlux:1.12-${redstoneflux_version}:universal"
+    compileOnly "cofh:RedstoneFlux:1.12-${redstoneflux_version}:universal"
     configurations.compile.extendsFrom(configurations.extraLib)
 }
 
