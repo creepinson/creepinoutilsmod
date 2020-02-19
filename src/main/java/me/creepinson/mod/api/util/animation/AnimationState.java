@@ -1,16 +1,12 @@
 package me.creepinson.mod.api.util.animation;
 
-import java.util.Set;
-
-import javax.vecmath.Vector3d;
-
-
-import com.creativemd.creativecore.common.utils.type.Pair;
-import com.creativemd.creativecore.common.utils.type.PairList;
+import me.creepinson.mod.api.util.Pair;
+import me.creepinson.mod.api.util.PairList;
 import me.creepinson.mod.api.util.math.Rotation;
 import me.creepinson.mod.api.util.math.Vector3f;
-
 import net.minecraft.nbt.NBTTagCompound;
+
+import java.util.Set;
 
 public class AnimationState {
 

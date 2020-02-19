@@ -1,14 +1,19 @@
 package me.creepinson.mod.base;
 
+import com.google.gson.JsonObject;
+import me.creepinson.mod.api.util.GsonUtils;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.net.URL;
 
@@ -23,9 +28,19 @@ public abstract class BaseMod {
     protected BaseProxy _PROXY;
     protected String UPDATE_LATEST_VER = null;
 
-    public boolean hasCreativeTab = true;
+    /**
+     * Defaults to NULL
+     */
+    protected ModConfig config;
+    protected boolean hasCreativeTab = true;
     public boolean CHECK_FOR_UPDATES = true;
     public CreativeTab creativeTab;
+    protected boolean genConfig = true;
+    protected boolean debug;
+
+    public boolean isDebug() {
+        return debug;
+    }
 
     /**
      * @param id   The modid used by minecraft forge
@@ -39,6 +54,7 @@ public abstract class BaseMod {
         _MOD_NAME = name;
         _MOD_VER = ver;
         _LOGGER = LogManager.getLogger(_MOD_NAME);
+        Configurator.setLevel(_LOGGER.getName(), Level.DEBUG);
     }
 
     public Logger getLogger() {
@@ -64,10 +80,50 @@ public abstract class BaseMod {
     public void preInit(FMLPreInitializationEvent event, BaseProxy proxy) {
         _PROXY = proxy;
         _CONFIG_BASE = event.getSuggestedConfigurationFile().getParentFile();
+        if (genConfig) {
+            config = new ModConfig(this, "config") {
+                @Override
+                public void generate() {
+
+                }
+
+                @Override
+                protected JsonObject upgrade(JsonObject json, int version) {
+
+                    return json;
+                }
+
+                @Override
+                protected void load(JsonObject jsonObject) {
+                    if (jsonObject.has("debug")) {
+                        debug = jsonObject.get("debug").getAsBoolean();
+                    } else {
+                        debug = false;
+                    }
+
+                }
+
+                @Override
+                protected void save(FileWriter fileWriter) {
+                    JsonObject main = new JsonObject();
+                    main.addProperty("debug", false);
+                    main.addProperty("configVersion", CURRENT_VERSION);
+                    GsonUtils.getGson().toJson(main, fileWriter);
+                }
+            };
+        }
+
+        if (config != null) {
+            if (config.fileExists()) {
+                config.load();
+            }
+            config.save();
+        }
+
         if (hasCreativeTab) {
             creativeTab = new CreativeTab(_MOD_ID);
         }
-        _PROXY.preInit(new File(_CONFIG_BASE, _MOD_NAME + ".cfg"));
+        _PROXY.preInit();
         _PROXY.registerBlocks();
         _PROXY.registerTileEntities();
         _PROXY.registerItems();

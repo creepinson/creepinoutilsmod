@@ -1,9 +1,9 @@
 package me.creepinson.mod.block;
 
+import me.creepinson.mod.CreepinoUtilsMod;
 import me.creepinson.mod.api.util.world.WorldUtils;
 import me.creepinson.mod.base.BaseBlockWithTile;
 import me.creepinson.mod.tile.TileEntityAnimationTest;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -21,7 +21,7 @@ import javax.annotation.Nullable;
  * @author Creepinson http://gitlab.com/creepinson
  * Project creepinoutils
  **/
-public class BlockAnimationTest extends BaseBlockWithTile implements ITileEntityProvider {
+public class BlockAnimationTest extends BaseBlockWithTile {
 
     public BlockAnimationTest(Material mat, ResourceLocation name, CreativeTabs tab) {
         super(mat, name, tab);
@@ -30,16 +30,20 @@ public class BlockAnimationTest extends BaseBlockWithTile implements ITileEntity
 
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        if(!world.isRemote) {
+        if (!world.isRemote) {
             TileEntity te = WorldUtils.getTileEntity(world, pos);
-            if(te instanceof TileEntityAnimationTest) {
-                TileEntityAnimationTest tile = (TileEntityAnimationTest)te;
+            if (te instanceof TileEntityAnimationTest) {
+                TileEntityAnimationTest tile = (TileEntityAnimationTest) te;
+                if (player.isSneaking() && player.getHeldItem(hand).isEmpty()) {
+                    tile.setConnectable(!tile.isConnectable());
+                    tile.updateConnectedBlocks();
+                    CreepinoUtilsMod.getInstance().getLogger().info("connectable " + tile.isConnectable());
+                } else {
+                    tile.onClick();
+                }
             }
-            return true;
-        } else {
-            return false;
         }
-
+        return true;
     }
 
     @Nullable

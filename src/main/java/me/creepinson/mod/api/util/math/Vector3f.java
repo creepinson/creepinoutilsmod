@@ -11,6 +11,7 @@ public class Vector3f {
     public static final Vector3f Y_AXIS_NEG = new Vector3f(0, -1, 0);
     public static final Vector3f Z_AXIS_NEG = new Vector3f(0, 0, -1);
 
+
     /**
      * Calculates the scalar-product of the given vectors.
      */

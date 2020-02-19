@@ -1,12 +1,11 @@
 package me.creepinson.mod.api.util.animation;
 
+import me.creepinson.mod.api.util.Pair;
+import me.creepinson.mod.api.util.math.Rotation;
+import net.minecraft.util.EnumFacing.Axis;
+
 import java.util.Collection;
 import java.util.HashMap;
-
-import com.creativemd.creativecore.common.utils.type.Pair;
-import me.creepinson.mod.api.util.math.Rotation;
-
-import net.minecraft.util.EnumFacing.Axis;
 
 public abstract class AnimationKey {
 

@@ -11,7 +11,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -50,8 +49,4 @@ public abstract class BaseBlockWithTile extends BaseBlock implements ITileEntity
         super.harvestBlock(worldIn, player, pos, state, te, stack);
         worldIn.removeTileEntity(pos);
     }
-
-    @Nullable
-    @Override
-    public abstract TileEntity createNewTileEntity(World worldIn, int meta);
 }

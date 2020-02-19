@@ -369,6 +369,14 @@ public class Coord4D {
         return new AxisAlignedBB(x, y, z, x + 1, y + 1, z + 1);
     }
 
+    public Vector3 toVector() {
+        return new Vector3(x, y, z);
+    }
+
+    public Vector3f toVectorFloat() {
+        return new Vector3f(x, y, z);
+    }
+
     @Override
     public Coord4D clone() {
         return new Coord4D(x, y, z, dimensionId);

@@ -13,7 +13,9 @@
     "credits": "Draco18s for EasyRegistry. aidancbrady for the energy network.",
     "logoFile": "",
     "screenshots": [],
-    "requiredMods": ["creativecore"],
-    "dependencies": ["creativecore"]
+    "useDependencyInformation": "true",
+    "dependencies": [
+      "mekanism"
+    ]
   }
 ]

@@ -1,7 +1,8 @@
 package me.creepinson.mod.api.util.animation;
 
-import com.creativemd.creativecore.common.utils.type.Pair;
-import com.creativemd.creativecore.common.utils.type.PairList;
+
+import me.creepinson.mod.api.util.Pair;
+import me.creepinson.mod.api.util.PairList;
 import me.creepinson.mod.api.util.math.interpolation.HermiteInterpolation;
 
 import java.lang.reflect.InvocationTargetException;

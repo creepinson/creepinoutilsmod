@@ -1,14 +1,13 @@
 package me.creepinson.mod.api.util.animation;
 
-import java.util.Collection;
-import java.util.HashMap;
-
-import com.creativemd.creativecore.common.utils.type.Pair;
-import com.creativemd.creativecore.common.utils.type.PairList;
+import me.creepinson.mod.api.util.Pair;
+import me.creepinson.mod.api.util.PairList;
 import me.creepinson.mod.api.util.math.Rotation;
 import me.creepinson.mod.api.util.math.Transformation;
-
 import net.minecraft.util.EnumFacing.Axis;
+
+import java.util.Collection;
+import java.util.HashMap;
 
 public class AnimationController {
     protected HashMap<String, AnimationGroup> groups;

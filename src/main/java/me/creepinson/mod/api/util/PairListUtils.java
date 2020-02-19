@@ -1,8 +1,5 @@
 package me.creepinson.mod.api.util;
 
-import com.creativemd.creativecore.common.utils.type.Pair;
-import com.creativemd.creativecore.common.utils.type.PairList;
-
 /**
  * @author Creepinson http://gitlab.com/creepinson
  * Project creepinoutils

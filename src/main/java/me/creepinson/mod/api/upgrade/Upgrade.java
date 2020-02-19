@@ -1,9 +1,5 @@
 package me.creepinson.mod.api.upgrade;
 
-import java.util.*;
-import java.util.Map.Entry;
-import javax.annotation.Nullable;
-
 import me.creepinson.mod.api.util.LangUtils;
 import mekanism.api.EnumColor;
 import mekanism.common.base.IUpgradeTile;
@@ -12,13 +8,20 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants.NBT;
 
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 public class Upgrade {
     public static final HashMap<String, Upgrade> UPGRADES = new HashMap<>();
 
-    public static final Upgrade SPEED = new Upgrade( "speed", 8, EnumColor.RED);
+    public static final Upgrade SPEED = new Upgrade("speed", 25, EnumColor.RED);
 
-    public static final Upgrade ENERGY = new Upgrade("energy", 8, EnumColor.BRIGHT_GREEN);
-    public static final Upgrade FILTER = new Upgrade("filter", 1, EnumColor.DARK_AQUA);
+    public static final Upgrade ENERGY = new Upgrade("energy", 25, EnumColor.BRIGHT_GREEN);
+    public static final Upgrade FILTER = new Upgrade("filter", Integer.MAX_VALUE, EnumColor.DARK_AQUA);
     public static final Upgrade ANCHOR = new Upgrade("anchor", 1, EnumColor.DARK_GREEN);
 
     static {

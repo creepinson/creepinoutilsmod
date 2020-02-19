@@ -19,7 +19,6 @@ import net.minecraftforge.oredict.OreDictionary;
 @Mod(modid = CreepinoUtilsMod.MOD_ID, name = CreepinoUtilsMod.MOD_NAME, version = CreepinoUtilsMod.MOD_VERSION/*, dependencies = "required-after:"*/)
 public class CreepinoUtilsMod extends BaseMod {
     public static final String MOD_ID = "creepinoutils", MOD_ID_SHORT = "creepinoutils", MOD_NAME = "Creepino Utilities", MOD_URL = "", MOD_VERSION = "1.0.0", MOD_DEPENDENCIES = "";
-    public static final boolean DEBUG = true; // DEFAULT = false
 
     // TODO: make creativecore not a requirement
 
@@ -41,6 +40,7 @@ public class CreepinoUtilsMod extends BaseMod {
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         super.preInit(event, proxy);
+
         OreDictionary.registerOre("stoneAny", new ItemStack(Blocks.STONE, 1, 0));
         OreDictionary.registerOre("stoneAny", new ItemStack(Blocks.STONE, 1, 1));
         OreDictionary.registerOre("stoneAny", new ItemStack(Blocks.STONE, 1, 2));
@@ -48,15 +48,17 @@ public class CreepinoUtilsMod extends BaseMod {
         OreDictionary.registerOre("stoneAny", new ItemStack(Blocks.STONE, 1, 4));
         OreDictionary.registerOre("stoneAny", new ItemStack(Blocks.STONE, 1, 5));
         OreDictionary.registerOre("stoneAny", new ItemStack(Blocks.STONE, 1, 6));
-//        EasyRegistry.registerBlockWithItem(BlockHandler.ANIMATION_TEST_BLOCK, new ResourceLocation(MOD_ID, "animation_test_block"));
-
+        EasyRegistry.registerBlockWithItem(BlockHandler.ANIMATION_TEST_BLOCK, new ResourceLocation(MOD_ID, "animation_test_block"));
+        if (CreepinoUtilsMod.getInstance().isDebug()) {
+            CreepinoUtilsMod.getInstance().getLogger().info("Mod loading...");
+        }
     }
 
     @EventHandler
     @Override
     public void init(FMLInitializationEvent event) {
         super.init(event);
-//        GameRegistry.registerTileEntity(TileEntityAnimationTest.class, new ResourceLocation(MOD_ID, "tile_animation_test"));
+        GameRegistry.registerTileEntity(TileEntityAnimationTest.class, new ResourceLocation(MOD_ID, "tile_animation_test"));
     }
 
     @EventHandler
