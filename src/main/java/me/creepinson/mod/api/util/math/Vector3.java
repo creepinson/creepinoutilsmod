@@ -39,6 +39,10 @@ public class Vector3 {
         return new Vector3(this.x, this.y, this.z);
     }
 
+    public Vector3(BlockPos pos) {
+        this(pos.getX(), pos.getY(), pos.getZ());
+    }
+
     /**
      * Creates a new Vector3 with x, y, z.
      */
@@ -86,6 +90,13 @@ public class Vector3 {
         this.x += other.x;
         this.y += other.y;
         this.z += other.z;
+        return this;
+    }
+
+    public Vector3 add(int x, int y, int z) {
+        this.x += x;
+        this.y += y;
+        this.z += z;
         return this;
     }
 

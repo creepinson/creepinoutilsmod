@@ -1,5 +1,6 @@
 package me.creepinson.mod.api.util;
 
+import me.creepinson.mod.api.util.math.Vector3;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -86,9 +87,23 @@ public class CreepinoUtils {
         return null;
     }
 
+    public static AxisAlignedBB getCollisionBoxPart(Vector3 pos, EnumFacing direction) {
+        return getCollisionBoxPart(pos.x, pos.y, pos.z, direction);
+    }
+
+    public static AxisAlignedBB getCollisionBoxPartFloor(Vector3 pos) {
+        return getCollisionBoxPartFloor(pos.x, pos.y, pos.z);
+    }
+
+
     public static AxisAlignedBB getCollisionBoxPartFloor(int x, int y, int z) {
         return new AxisAlignedBB(x, y + AXIS_FLOOR_MIN, z, x + 1, y + AXIS_FLOOR_MAX, z + 1);
     }
+
+    public static BlockPos getCoordinatesFromSide(Vector3 pos, EnumFacing s) {
+        return getCoordinatesFromSide(pos.x, pos.y, pos.z, s.ordinal());
+    }
+
 
     public static BlockPos getCoordinatesFromSide(int x, int y, int z, int s) {
         if (s == 0)
@@ -107,6 +122,9 @@ public class CreepinoUtils {
         return new BlockPos(x, y, z);
     }
 
+    public static EnumFacing getDirectionFromSide(Vector3 pos, int s) {
+        return getDirectionFromSide(pos.x, pos.y, pos.z, s);
+    }
     public static EnumFacing getDirectionFromSide(int x, int y, int z, int s) {
         if (s == 0)
             return EnumFacing.DOWN;
@@ -122,6 +140,10 @@ public class CreepinoUtils {
             return EnumFacing.EAST;
 
         return EnumFacing.NORTH;
+    }
+
+    public static int getBlockMetadata(IBlockAccess blockAccess, Vector3 vector) {
+        return getBlockMetadata(blockAccess, vector.toBlockPos());
     }
 
     public static int getBlockMetadata(IBlockAccess blockAccess, int x, int y, int z) {

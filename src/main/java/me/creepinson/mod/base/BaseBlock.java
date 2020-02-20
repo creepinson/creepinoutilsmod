@@ -9,8 +9,6 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
 
 public class BaseBlock extends Block {
-	protected ResourceLocation name;
-
 	public BaseBlock(Material mat, ResourceLocation name, CreativeTabs tab, float hardness, float resistance, int harvest,
 					 String tool) {
 		this(mat, name, tab);
@@ -37,7 +35,7 @@ public class BaseBlock extends Block {
 
 	public Item createItemBlock() {
 		Item item = new ItemBlock(this);
-		item.setRegistryName(this.name);
+		item.setRegistryName(this.getRegistryName());
 		return item;
 	}
 	

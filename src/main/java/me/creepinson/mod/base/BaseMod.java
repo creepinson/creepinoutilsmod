@@ -67,7 +67,7 @@ public abstract class BaseMod {
         if (hasCreativeTab) {
             creativeTab = new CreativeTab(_MOD_ID);
         }
-        _PROXY.preInit(new File(_CONFIG_BASE, _MOD_NAME + ".cfg"));
+        _PROXY.preInit();
         _PROXY.registerBlocks();
         _PROXY.registerTileEntities();
         _PROXY.registerItems();

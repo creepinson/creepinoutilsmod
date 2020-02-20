@@ -1,6 +1,7 @@
 package me.creepinson.mod.tile;
 
 import me.creepinson.mod.api.util.item.InventoryUtils;
+import me.creepinson.mod.api.util.math.Vector3;
 import me.creepinson.mod.api.util.world.WorldUtils;
 import me.creepinson.mod.base.EnergyNetworkTileEntity;
 import mekanism.api.Coord4D;
@@ -28,6 +29,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.Optional;
@@ -160,5 +162,10 @@ public class TileEntityAnimationTest extends EnergyNetworkTileEntity implements 
     @Override
     public int getSlotLimit(int slot) {
         return 0;
+    }
+
+    @Override
+    public boolean canConnectTo(IBlockAccess blockAccess, Vector3 pos, EnumFacing side) {
+        return isConnectable();
     }
 }

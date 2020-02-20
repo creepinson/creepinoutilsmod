@@ -66,6 +66,9 @@ public class Vector3f {
         return new BlockPos(this.x, this.y, this.z);
     }
 
+    public Vector3f(BlockPos pos) {
+        this(pos.getX(), pos.getY(), pos.getZ());
+    }
 
     /**
      * Equivalent to Vector3(0, 0, 0).
@@ -90,6 +93,14 @@ public class Vector3f {
         this.z += other.z;
         return this;
     }
+
+    public Vector3f add(float x, float y, float z) {
+        this.x += x;
+        this.y += y;
+        this.z += z;
+        return this;
+    }
+
 
     /**
      * Returns itself not a new Vector.

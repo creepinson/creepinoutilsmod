@@ -14,15 +14,14 @@ import java.io.IOException;
 import java.util.function.Consumer;
 
 public abstract class ModConfig {
-    public static final int CURRENT_VERSION = 2;
-    public static final File CONFIG_PATH = new File("config/");
+    public static final int CURRENT_VERSION = 0;
 
     private final File configFile;
     private final BaseMod mod;
 
     public ModConfig(BaseMod mod, String fileName) {
         this.mod = mod;
-        configFile = new File(CONFIG_PATH + mod._MOD_ID, fileName + ".json");
+        configFile = new File(mod._CONFIG_BASE + "/" + mod._MOD_ID, fileName + ".json");
     }
 
     protected void iterateArrayObjects(JsonArray jsonArray, Consumer<JsonObject> runnable) {

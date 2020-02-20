@@ -232,11 +232,6 @@ public class EasyRegistry extends BaseProxy {
     }
 
     @Override
-    protected void registerConfiguration() {
-
-    }
-
-    @Override
     public void registerPackets() {
 
     }
