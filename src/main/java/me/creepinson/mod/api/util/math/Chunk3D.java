@@ -47,8 +47,8 @@ public class Chunk3D {
      * @param coord - the Coord4D object to get this Chunk3D from
      */
     public Chunk3D(Coord4D coord) {
-        x = coord.x >> 4;
-        z = coord.z >> 4;
+        x = coord.vector.intX() >> 4;
+        z = coord.vector.intZ() >> 4;
         dimensionId = coord.dimensionId;
     }
 

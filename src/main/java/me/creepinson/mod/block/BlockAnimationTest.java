@@ -8,6 +8,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -32,7 +33,6 @@ public class BlockAnimationTest extends BaseBlockWithTile {
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         if (!world.isRemote) {
             TileEntity te = WorldUtils.getTileEntity(world, pos);
-<<<<<<< HEAD
             if (te instanceof TileEntityAnimationTest) {
                 TileEntityAnimationTest tile = (TileEntityAnimationTest) te;
                 if (player.isSneaking() && player.getHeldItem(hand).isEmpty()) {
@@ -42,19 +42,15 @@ public class BlockAnimationTest extends BaseBlockWithTile {
                 } else {
                     tile.onClick();
                 }
-=======
-            if(te instanceof TileEntityAnimationTest) {
-                TileEntityAnimationTest tile = (TileEntityAnimationTest)te;
-                tile.onClick();
->>>>>>> 44a05fc3b9b01f06372ec81546e5ed570c8f1687
             }
         }
         return true;
     }
 
     @Override
-    public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player) {
-        super.onBlockHarvested(worldIn, pos, state, player);
+    public void harvestBlock(World worldIn, EntityPlayer player, BlockPos pos, IBlockState state, @Nullable TileEntity te, ItemStack stack) {
+        super.harvestBlock(worldIn, player, pos, state, te, stack);
+        ((TileEntityAnimationTest)te).getNetwork().refresh();
     }
 
     @Nullable

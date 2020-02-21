@@ -1,6 +1,5 @@
 package me.creepinson.mod.api.util;
 
-import me.creepinson.mod.api.network.INetworkedTile;
 import me.creepinson.mod.api.util.math.Vector3;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.state.IBlockState;
@@ -15,7 +14,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.energy.IEnergyStorage;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -233,7 +231,7 @@ public class CreepinoUtils {
         Map<Vector3, EnumFacing> map = new HashMap<>();
         for (EnumFacing f : EnumFacing.values()) {
             BlockPos p = tile.getPos().offset(f);
-            for(Class o : searchFor) {
+            for (Class o : searchFor) {
                 if (o.isInstance(tile.getWorld().getTileEntity(p))) {
                     map.put(new Vector3(p), f);
                 }
@@ -243,17 +241,52 @@ public class CreepinoUtils {
         return map;
     }
 
-    public static Map<Vector3, EnumFacing> searchForBlockOnSidesRecursive(TileEntity tile, EnumFacing[] values, Class... searchFor) {
-        Map<Vector3, EnumFacing> map = new HashMap<>();
-        for (EnumFacing f : EnumFacing.values()) {
-            BlockPos p = tile.getPos().offset(f);
-            for(Class o : searchFor) {
-                if (o.isInstance(tile.getWorld().getTileEntity(p))) {
-                    map.put(new Vector3(p), f);
-                    searchForBlockOnSidesRecursive(tile.getWorld().getTileEntity(p), values, searchFor);
+    /**
+     * @param world A Minecraft World
+     * @param start The starting position to offset from
+     * @return A set of block positions that have been found
+     */
+    public static Set<BlockPos> searchForTileClass(World world, BlockPos start, Class... searchFor) {
+        Set<BlockPos> set = new HashSet();
+        getBlocksRecursive(world, start, set, null, searchFor);
+        return set;
+    }
+
+    public static void getBlocksRecursive(World world, BlockPos position, Set<BlockPos> done, EnumFacing from, Class... searchFor) {
+        TileEntity tile = world.getTileEntity(position);
+        if (tile != null && !tile.isInvalid()) {
+            if (!done.contains(position)) {
+                for(Class c : searchFor) {
+                    if(c.isInstance(tile)) {
+                        done.add(position);
+                    }
                 }
+            } else {
+                return;
             }
 
+            for (EnumFacing side : EnumFacing.values()) {
+                if (side == from) continue;
+                getBlocksRecursive(world, position.offset(side), done, side.getOpposite(), searchFor);
+            }
+        }
+    }
+
+    public static Map<Vector3, EnumFacing> searchForBlockOnSidesRecursive(TileEntity tile, EnumFacing[] values, List<BlockPos> done, Class... searchFor) {
+        Map<Vector3, EnumFacing> map = new HashMap<>();
+        boolean stop = false;
+        for (EnumFacing f : values) {
+            BlockPos p = tile.getPos().offset(f);
+            for (Class o : searchFor) {
+                if (o.isInstance(tile.getWorld().getTileEntity(p))) {
+                    map.put(new Vector3(p), f);
+                } else {
+                    if (!done.contains(p)) {
+                        done.add(p);
+                    }
+                    continue;
+                }
+            }
         }
         return map;
     }

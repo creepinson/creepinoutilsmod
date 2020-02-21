@@ -1,23 +1,22 @@
 package me.creepinson.mod.api.network;
 
-import java.lang.reflect.ParameterizedType;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import me.creepinson.mod.api.network.path.Pathfinder;
-import me.creepinson.mod.api.network.path.PathfinderChecker;
+import me.creepinson.mod.CreepinoUtilsMod;
 import me.creepinson.mod.api.util.CreepinoUtils;
 import me.creepinson.mod.api.util.math.Vector3;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fml.common.FMLLog;
 
-public class ElectricityNetwork implements INetwork<Float> {
+import java.lang.reflect.ParameterizedType;
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class ElectricityNetwork implements INetwork<Integer> {
     private final Vector3 startingPos;
-    public Map<Vector3, EnumFacing> connections = new HashMap<Vector3, EnumFacing>();
+    public Set<BlockPos> connections = new HashSet<>();
     public final World world;
 
     public ElectricityNetwork(Vector3 start, World w) {
@@ -26,29 +25,29 @@ public class ElectricityNetwork implements INetwork<Float> {
     }
 
     @Override
-    public Float produce(INetworkProducer producer, Vector3... ignore) {
-        float stored = (float) producer.getStored();
+    public Integer produce(INetworkProducer producer, Vector3... ignore) {
+        int stored = (int) producer.getStored();
 
-        Set<Vector3> avaliableEnergyTiles = this.getAcceptors();
+        Set<BlockPos> avaliableEnergyTiles = this.getAcceptors();
 
         if (!avaliableEnergyTiles.isEmpty()) {
-            final float totalEnergyRequest = this.getRequest(ignore);
-
+            final int totalEnergyRequest = this.getRequest(ignore);
+            CreepinoUtilsMod.getInstance().getLogger().info(totalEnergyRequest);
             if (totalEnergyRequest > 0) {
-                for (Vector3 vec : avaliableEnergyTiles) {
-                    TileEntity tileEntity = getWorld().getTileEntity(vec.toBlockPos());
-                    Class<INetworkAcceptor<Float>> type = (Class<INetworkAcceptor<Float>>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+                for (BlockPos vec : avaliableEnergyTiles) {
+                    TileEntity tileEntity = getWorld().getTileEntity(vec);
+                    Class<INetworkAcceptor<Integer>> type = (Class<INetworkAcceptor<Integer>>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
                     if (type.isInstance(tileEntity) && !Arrays.asList(ignore).contains(vec)) {
                         INetworkAcceptor electricalTile = (INetworkAcceptor) tileEntity;
                         // TODO: Fix Direction
-                        float energyToSend = stored * (float) electricalTile.getRequest(EnumFacing.NORTH) / totalEnergyRequest;
+                        int energyToSend = stored / totalEnergyRequest;
 
                         if (energyToSend > 0) {
 
                             // Calculate energy loss caused by resistance
 
                             // TODO: Fix unknown direction!
-                            stored -= ((INetworkAcceptor<Float>) tileEntity).receive(EnumFacing.NORTH, energyToSend, true);
+                            stored -= ((INetworkAcceptor<Integer>) tileEntity).receive(EnumFacing.NORTH, energyToSend, true);
                         }
                     }
                 }
@@ -61,14 +60,14 @@ public class ElectricityNetwork implements INetwork<Float> {
      * @return How much electricity this network needs.
      */
     @Override
-    public Float getRequest(Vector3... ignoreTiles) {
+    public Integer getRequest(Vector3... ignoreTiles) {
         List<Float> requests = new ArrayList<Float>();
 
-        Iterator<Vector3> it = this.getAcceptors().iterator();
+        Iterator<BlockPos> it = this.getAcceptors().iterator();
 
         while (it.hasNext()) {
-            Vector3 vec = it.next();
-            TileEntity tileEntity = getWorld().getTileEntity(vec.toBlockPos());
+            BlockPos vec = it.next();
+            TileEntity tileEntity = getWorld().getTileEntity(vec);
             if (Arrays.asList(ignoreTiles).contains(vec)) {
                 continue;
             }
@@ -88,7 +87,7 @@ public class ElectricityNetwork implements INetwork<Float> {
             }
             it.remove();
         }
-        float r = 0;
+        int r = 0;
         for (float f : requests) {
             r += f;
         }
@@ -100,16 +99,16 @@ public class ElectricityNetwork implements INetwork<Float> {
      * @return Returns all acceptors in this electricity network.
      */
 
-    public Set<Vector3> getAcceptors() {
-        return this.connections.keySet().stream().filter(a -> a instanceof INetworkAcceptor).collect(Collectors.toSet());
+    public Set<BlockPos> getAcceptors() {
+        return this.connections.stream().filter(a -> a instanceof INetworkAcceptor || (a instanceof IEnergyStorage && ((IEnergyStorage) a).canReceive())).collect(Collectors.toSet());
     }
 
     /**
      * @return Returns all producers in this electricity network.
      */
 
-    public Set<Vector3> getProducers() {
-        return this.connections.keySet().stream().filter(a -> a instanceof INetworkProducer).collect(Collectors.toSet());
+    public Set<BlockPos> getProducers() {
+        return this.connections.stream().filter(a -> a instanceof INetworkProducer || (a instanceof IEnergyStorage && ((IEnergyStorage) a).canExtract())).collect(Collectors.toSet());
     }
 
     /**
@@ -119,11 +118,11 @@ public class ElectricityNetwork implements INetwork<Float> {
     public void refresh() {
         refreshConnections();
         try {
-            Iterator<Vector3> it = this.connections.keySet().iterator();
+            Iterator<BlockPos> it = this.connections.iterator();
 
             while (it.hasNext()) {
-                Vector3 vec = it.next();
-                TileEntity conductor = world.getTileEntity(vec.toBlockPos());
+                BlockPos vec = it.next();
+                TileEntity conductor = world.getTileEntity(vec);
                 if (conductor instanceof INetworkedTile) {
                     if (conductor == null) {
                         it.remove();
@@ -135,7 +134,7 @@ public class ElectricityNetwork implements INetwork<Float> {
                 }
             }
         } catch (Exception e) {
-            FMLLog.severe("Universal Electricity: Failed to refresh conductor.");
+            CreepinoUtilsMod.getInstance().getLogger().error(getClass().getSimpleName() + ": Failed to refresh connections.");
             e.printStackTrace();
         }
     }
@@ -145,20 +144,16 @@ public class ElectricityNetwork implements INetwork<Float> {
         this.connections.clear();
         TileEntity tile = world.getTileEntity(startingPos.toBlockPos());
         if (tile != null && !(tile.isInvalid())) {
-            if (tile instanceof INetworkedTile) {
-                this.connections = ((INetworkedTile) tile).getAdjacentConnections();
-            } else if (tile instanceof IEnergyStorage) {
-                this.connections = CreepinoUtils.searchForBlockOnSidesRecursive(tile, EnumFacing.values(), INetworkedTile.class, IEnergyStorage.class);
-            }
+            this.connections = CreepinoUtils.searchForTileClass(world, tile.getPos(), IEnergyStorage.class, INetworkedTile.class);
 
         }
     }
 
     @Override
-    public void merge(INetwork<Float> network) {
+    public void merge(INetwork<Integer> network) {
         if (network != null && network != this) {
             ElectricityNetwork newNetwork = new ElectricityNetwork(startingPos, this.getWorld());
-            newNetwork.connections.putAll(this.connections);
+            newNetwork.connections.addAll(this.connections);
             newNetwork.refresh();
         }
     }
@@ -172,10 +167,10 @@ public class ElectricityNetwork implements INetwork<Float> {
              * Loop through the connected blocks and attempt to see if there are connections between
              * the two points elsewhere.
              */
-            Set<Vector3> connectedBlocks = splitPoint.getAdjacentConnections().keySet();
+            Set<BlockPos> connectedBlocks = CreepinoUtils.searchForTileClass(world, ((TileEntity)splitPoint).getPos(), IEnergyStorage.class, INetworkedTile.class);
 
-            for (Vector3 v : connectedBlocks) {
-                TileEntity connectedBlockA = world.getTileEntity(v.toBlockPos());
+            for (BlockPos v : connectedBlocks) {
+                TileEntity connectedBlockA = world.getTileEntity(v);
 
                 if (connectedBlockA instanceof INetworkedTile) {
                     /**
@@ -183,11 +178,11 @@ public class ElectricityNetwork implements INetwork<Float> {
                      * them a new network.
                      */
                     INetwork newNetwork = new ElectricityNetwork(startingPos, world);
-                    TileEntity nodeTile = v.getTileEntity(((TileEntity) splitPoint).getWorld());
+                    TileEntity nodeTile = world.getTileEntity(v);
 
                     if (nodeTile instanceof INetworkedTile) {
                         if (nodeTile != splitPoint) {
-                            newNetwork.getConnections().put(connectedBlockA, EnumFacing.NORTH);
+                            newNetwork.getConnections().add(connectedBlockA);
                         }
                     }
 
@@ -203,13 +198,24 @@ public class ElectricityNetwork implements INetwork<Float> {
     }
 
     @Override
-    public Map<Vector3, EnumFacing> getConnections() {
+    public Set<BlockPos> getConnections() {
         return this.connections;
     }
 
     @Override
     public World getWorld() {
         return world;
+    }
+
+    @Override
+    public NBTTagCompound serialize() {
+        NBTTagCompound tag = new NBTTagCompound();
+        return tag;
+    }
+
+    @Override
+    public void deserialize(NBTTagCompound compound) {
+
     }
 
 }

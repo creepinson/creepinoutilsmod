@@ -1,6 +1,5 @@
 package me.creepinson.mod.api.util.math;
 
-import io.netty.buffer.ByteBuf;
 import mekanism.api.TileNetworkList;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -11,14 +10,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
-
-import java.util.ArrayList;
 
 /**
  * Coord4D - an integer-based way to keep track of and perform operations on blocks in a Minecraft-based environment. This also takes in account the dimension the
@@ -253,14 +249,6 @@ public class Coord4D {
      */
     public AxisAlignedBB getBoundingBox() {
         return new AxisAlignedBB(vector.x, vector.y, vector.z, vector.x + 1, vector.y + 1, vector.z + 1);
-    }
-
-    public Vector3 toVector() {
-        return new Vector3(x, y, z);
-    }
-
-    public Vector3f toVectorFloat() {
-        return new Vector3f(x, y, z);
     }
 
     @Override

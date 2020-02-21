@@ -1,20 +1,9 @@
 package me.creepinson.mod.api.util.animation;
 
-<<<<<<< HEAD
 import me.creepinson.mod.api.util.Pair;
 import me.creepinson.mod.api.util.PairList;
 import me.creepinson.mod.api.util.math.Rotation;
-import me.creepinson.mod.api.util.math.Vector3f;
-=======
-import java.util.Set;
-
-
-import com.creativemd.creativecore.common.utils.type.Pair;
-import com.creativemd.creativecore.common.utils.type.PairList;
-import me.creepinson.mod.api.util.math.Rotation;
 import me.creepinson.mod.api.util.math.Vector3;
-
->>>>>>> 44a05fc3b9b01f06372ec81546e5ed570c8f1687
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.Set;

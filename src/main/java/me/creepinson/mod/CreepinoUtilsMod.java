@@ -17,7 +17,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 
 @Mod(modid = CreepinoUtilsMod.MOD_ID, name = CreepinoUtilsMod.MOD_NAME, version = CreepinoUtilsMod.MOD_VERSION/*, dependencies = "required-after:"*/)
-public class CreepinoUtilsMod extends BaseMod {
+public class  CreepinoUtilsMod extends BaseMod {
     public static final String MOD_ID = "creepinoutils", MOD_ID_SHORT = "creepinoutils", MOD_NAME = "Creepino Utilities", MOD_URL = "", MOD_VERSION = "1.0.0", MOD_DEPENDENCIES = "";
 
     // TODO: make creativecore not a requirement

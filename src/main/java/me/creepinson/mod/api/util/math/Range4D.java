@@ -38,7 +38,7 @@ public class Range4D {
     }
 
     public Range4D(Coord4D coord) {
-        this(coord.x, coord.y, coord.z, coord.x + 1, coord.y + 1, coord.z + 1, coord.dimensionId);
+        this(coord.vector.intX(), coord.vector.intY(), coord.vector.intZ(), coord.vector.intX() + 1, coord.vector.intY() + 1, coord.vector.intZ() + 1, coord.dimensionId);
     }
 
     public static Range4D getChunkRange(EntityPlayer player) {

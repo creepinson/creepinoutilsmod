@@ -115,7 +115,7 @@ public class Transformation {
     }*/
 
     public int[] array() {
-        return new int[]{center.getX(), center.getY(), center.getZ(), rotX, rotY, rotZ, doubledRotationCenter.x, doubledRotationCenter.y, doubledRotationCenter.z, offset.x, offset.y, offset.z};
+        return new int[]{center.getX(), center.getY(), center.getZ(), rotX, rotY, rotZ, doubledRotationCenter.intX(), doubledRotationCenter.intY(), doubledRotationCenter.intZ(), offset.intX(), offset.intY(), offset.intZ()};
     }
 
     @Override

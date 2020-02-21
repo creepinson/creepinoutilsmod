@@ -14,11 +14,6 @@ import java.util.function.Consumer;
 
 public abstract class ModConfig {
     public static final int CURRENT_VERSION = 0;
-<<<<<<< HEAD
-    public static final File CONFIG_PATH = new File("config/");
-=======
->>>>>>> 44a05fc3b9b01f06372ec81546e5ed570c8f1687
-
     private final File configFile;
     private final BaseMod mod;
 

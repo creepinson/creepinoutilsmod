@@ -9,11 +9,12 @@ import java.util.List;
  * Project creepinoutils
  **/
 public interface IUpgradeable {
-    public boolean upgrade(UpgradeInfo info);
+    boolean upgrade(UpgradeInfo info);
 
-    public ItemStack downgrade(Upgrade upgrade);
+    ItemStack removeUpgrade(Upgrade upgrade);
 
-    public boolean canUpgrade();
+    boolean canUpgrade();
 
-    public List<UpgradeInfo> getUpgrades();
+    List<UpgradeInfo> getStoredUpgrades();
+
 }
