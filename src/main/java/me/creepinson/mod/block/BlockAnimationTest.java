@@ -32,6 +32,7 @@ public class BlockAnimationTest extends BaseBlockWithTile {
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         if (!world.isRemote) {
             TileEntity te = WorldUtils.getTileEntity(world, pos);
+<<<<<<< HEAD
             if (te instanceof TileEntityAnimationTest) {
                 TileEntityAnimationTest tile = (TileEntityAnimationTest) te;
                 if (player.isSneaking() && player.getHeldItem(hand).isEmpty()) {
@@ -41,9 +42,19 @@ public class BlockAnimationTest extends BaseBlockWithTile {
                 } else {
                     tile.onClick();
                 }
+=======
+            if(te instanceof TileEntityAnimationTest) {
+                TileEntityAnimationTest tile = (TileEntityAnimationTest)te;
+                tile.onClick();
+>>>>>>> 44a05fc3b9b01f06372ec81546e5ed570c8f1687
             }
         }
         return true;
+    }
+
+    @Override
+    public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player) {
+        super.onBlockHarvested(worldIn, pos, state, player);
     }
 
     @Nullable

@@ -1,11 +1,17 @@
 package me.creepinson.mod.base;
 
 
+<<<<<<< HEAD
 import me.creepinson.mod.api.INetworkedTile;
 import me.creepinson.mod.api.upgrade.Upgrade;
 import me.creepinson.mod.api.upgrade.UpgradeInfo;
 import me.creepinson.mod.api.util.math.Vector3;
 import net.minecraft.item.ItemStack;
+=======
+import me.creepinson.mod.api.network.INetworkedTile;
+import mekanism.api.IConfigurable;
+import mekanism.common.capabilities.Capabilities;
+>>>>>>> 44a05fc3b9b01f06372ec81546e5ed570c8f1687
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
@@ -14,10 +20,13 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
+<<<<<<< HEAD
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
+=======
+>>>>>>> 44a05fc3b9b01f06372ec81546e5ed570c8f1687
 /**
  * @author Creepinson http://gitlab.com/creepinson
  * Project creepinoutils

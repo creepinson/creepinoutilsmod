@@ -11,6 +11,10 @@ import net.minecraft.world.IBlockAccess;
 public interface IConnectable {
     boolean isConnectable();
     void setConnectable(boolean value);
+<<<<<<< HEAD
 
     boolean canConnectTo(IBlockAccess blockAccess, Vector3 vector3, EnumFacing f);
+=======
+    boolean canConnectTo(IBlockAccess blockAccess, Vector3 pos, EnumFacing side);
+>>>>>>> 44a05fc3b9b01f06372ec81546e5ed570c8f1687
 }

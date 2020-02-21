@@ -3,8 +3,6 @@ package me.creepinson.mod.base;
 import net.minecraftforge.common.config.Configuration;
 
 public abstract class BaseProxy {
-    protected Configuration config;
-
     public void init() {
 
     }

@@ -1,23 +1,39 @@
 package me.creepinson.mod.base;
 
 
+<<<<<<< HEAD
 import me.creepinson.mod.Hooks;
 import me.creepinson.mod.api.INetworkedTile;
 import me.creepinson.mod.api.upgrade.Upgrade;
 import me.creepinson.mod.api.upgrade.UpgradeInfo;
 import me.creepinson.mod.api.util.math.Vector3;
 import net.minecraft.item.ItemStack;
+=======
+import cofh.redstoneflux.api.IEnergyProvider;
+import cofh.redstoneflux.api.IEnergyStorage;
+import me.creepinson.mod.api.network.ElectricityNetwork;
+import me.creepinson.mod.api.network.INetwork;
+import me.creepinson.mod.api.network.INetworkedTile;
+import me.creepinson.mod.api.util.math.Vector3;
+import mekanism.api.IConfigurable;
+import mekanism.api.energy.IStrictEnergyAcceptor;
+import mekanism.api.energy.IStrictEnergyOutputter;
+import mekanism.common.capabilities.Capabilities;
+>>>>>>> 44a05fc3b9b01f06372ec81546e5ed570c8f1687
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.capabilities.Capability;
+<<<<<<< HEAD
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fml.common.Optional;
 
 import java.util.ArrayList;
 import java.util.List;
+=======
+>>>>>>> 44a05fc3b9b01f06372ec81546e5ed570c8f1687
 
 /**
  * @author Creepinson http://gitlab.com/creepinson
@@ -25,6 +41,7 @@ import java.util.List;
  * <br/>
  * A basic
  **/
+<<<<<<< HEAD
 @Optional.InterfaceList(value = {@Optional.Interface(iface = "mekanism.api.energy.IStrictEnergyOutputter", modid = Hooks.MEKANISM, striprefs = true), @Optional.Interface(iface = "mekanism.api.energy.IStrictEnergyAcceptor", modid = Hooks.MEKANISM, striprefs = true)})
 public abstract class EnergyNetworkTileEntity extends TileEntity implements INetworkedTile, IEnergyStorage, ITickable {
 
@@ -74,8 +91,31 @@ public abstract class EnergyNetworkTileEntity extends TileEntity implements INet
     public List<UpgradeInfo> getUpgrades() {
         return upgrades;
     }
+=======
+public abstract class EnergyNetworkTileEntity extends TileEntity implements INetworkedTile<Float>, ITickable {
+>>>>>>> 44a05fc3b9b01f06372ec81546e5ed570c8f1687
 
     protected boolean connectable = true;
+    protected INetwork network;
+
+
+    @Override
+    public INetwork getNetwork() {
+        return this.network;
+    }
+
+    @Override
+    public void onLoad() {
+        if(this.network == null) {
+            this.setNetwork(new ElectricityNetwork(new Vector3(pos), world));
+            this.getNetwork().refresh();
+        }
+    }
+
+    @Override
+    public void setNetwork(INetwork newNetwork) {
+        this.network = newNetwork;
+    }
 
     public boolean isActive() {
         return active;

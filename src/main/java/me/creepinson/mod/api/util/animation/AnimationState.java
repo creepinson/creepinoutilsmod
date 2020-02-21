@@ -1,9 +1,20 @@
 package me.creepinson.mod.api.util.animation;
 
+<<<<<<< HEAD
 import me.creepinson.mod.api.util.Pair;
 import me.creepinson.mod.api.util.PairList;
 import me.creepinson.mod.api.util.math.Rotation;
 import me.creepinson.mod.api.util.math.Vector3f;
+=======
+import java.util.Set;
+
+
+import com.creativemd.creativecore.common.utils.type.Pair;
+import com.creativemd.creativecore.common.utils.type.PairList;
+import me.creepinson.mod.api.util.math.Rotation;
+import me.creepinson.mod.api.util.math.Vector3;
+
+>>>>>>> 44a05fc3b9b01f06372ec81546e5ed570c8f1687
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.Set;
@@ -45,12 +56,12 @@ public class AnimationState {
 
     }
 
-    public Vector3f getRotation() {
-        return new Vector3f(get(AnimationKey.rotX), get(AnimationKey.rotY), get(AnimationKey.rotZ));
+    public Vector3 getRotation() {
+        return new Vector3(get(AnimationKey.rotX), get(AnimationKey.rotY), get(AnimationKey.rotZ));
     }
 
-    public Vector3f getOffset() {
-        return new Vector3f(get(AnimationKey.offX), get(AnimationKey.offY), get(AnimationKey.offZ));
+    public Vector3 getOffset() {
+        return new Vector3(get(AnimationKey.offX), get(AnimationKey.offY), get(AnimationKey.offZ));
     }
 
     public void clear() {
