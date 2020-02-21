@@ -1,5 +1,6 @@
 package me.creepinson.mod.api.util;
 
+import me.creepinson.mod.api.network.INetworkedTile;
 import me.creepinson.mod.api.util.math.Vector3;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.state.IBlockState;
@@ -7,20 +8,20 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.init.Blocks;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.energy.IEnergyStorage;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author creepinson
@@ -88,11 +89,11 @@ public class CreepinoUtils {
     }
 
     public static AxisAlignedBB getCollisionBoxPart(Vector3 pos, EnumFacing direction) {
-        return getCollisionBoxPart(pos.x, pos.y, pos.z, direction);
+        return getCollisionBoxPart(pos, direction);
     }
 
     public static AxisAlignedBB getCollisionBoxPartFloor(Vector3 pos) {
-        return getCollisionBoxPartFloor(pos.x, pos.y, pos.z);
+        return getCollisionBoxPartFloor(pos);
     }
 
 
@@ -101,7 +102,7 @@ public class CreepinoUtils {
     }
 
     public static BlockPos getCoordinatesFromSide(Vector3 pos, EnumFacing s) {
-        return getCoordinatesFromSide(pos.x, pos.y, pos.z, s.ordinal());
+        return getCoordinatesFromSide(pos, s);
     }
 
 
@@ -123,8 +124,9 @@ public class CreepinoUtils {
     }
 
     public static EnumFacing getDirectionFromSide(Vector3 pos, int s) {
-        return getDirectionFromSide(pos.x, pos.y, pos.z, s);
+        return getDirectionFromSide(pos, s);
     }
+
     public static EnumFacing getDirectionFromSide(int x, int y, int z, int s) {
         if (s == 0)
             return EnumFacing.DOWN;
@@ -225,6 +227,35 @@ public class CreepinoUtils {
             ;
         }
         return blockpos;
+    }
+
+    public static Map<Vector3, EnumFacing> searchForBlockOnSides(TileEntity tile, EnumFacing[] values, Class... searchFor) {
+        Map<Vector3, EnumFacing> map = new HashMap<>();
+        for (EnumFacing f : EnumFacing.values()) {
+            BlockPos p = tile.getPos().offset(f);
+            for(Class o : searchFor) {
+                if (o.isInstance(tile.getWorld().getTileEntity(p))) {
+                    map.put(new Vector3(p), f);
+                }
+            }
+
+        }
+        return map;
+    }
+
+    public static Map<Vector3, EnumFacing> searchForBlockOnSidesRecursive(TileEntity tile, EnumFacing[] values, Class... searchFor) {
+        Map<Vector3, EnumFacing> map = new HashMap<>();
+        for (EnumFacing f : EnumFacing.values()) {
+            BlockPos p = tile.getPos().offset(f);
+            for(Class o : searchFor) {
+                if (o.isInstance(tile.getWorld().getTileEntity(p))) {
+                    map.put(new Vector3(p), f);
+                    searchForBlockOnSidesRecursive(tile.getWorld().getTileEntity(p), values, searchFor);
+                }
+            }
+
+        }
+        return map;
     }
 
 }

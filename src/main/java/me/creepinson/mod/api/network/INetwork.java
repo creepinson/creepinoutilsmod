@@ -1,19 +1,24 @@
 package me.creepinson.mod.api.network;
 
-import me.creepinson.mod.api.INetworkedTile;
 import me.creepinson.mod.api.util.math.Vector3;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.energy.IEnergyStorage;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Map;
 
 public interface INetwork<T> {
-    HashMap<Vector3, EnumFacing> getConnections();
+    Map<Vector3, EnumFacing> getConnections();
+
     World getWorld();
-    <T> T produce(INetworkedTile producer, Vector3... ignore);
+
+    <T> T produce(INetworkProducer producer, Vector3... ignore);
+
     T getRequest(Vector3... ignore);
+
+    void refresh();
+
+    void refreshConnections();
+
+    void merge(INetwork<T> net);
+    void split(INetworkedTile splitPoint);
 }

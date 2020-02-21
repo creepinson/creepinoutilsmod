@@ -1,6 +1,15 @@
 package me.creepinson.mod.api.util.math;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+
+import java.util.List;
 
 public class Vector3 {
 
@@ -31,39 +40,51 @@ public class Vector3 {
         return new Vector3(vec1.y * vec2.z - vec1.z * vec2.y, vec1.z * vec2.x - vec1.x * vec2.z, vec1.x * vec2.y - vec1.y * vec2.x);
     }
 
-    public int x;
-    public int y;
-    public int z;
-
-    public Vector3 clone() {
-        return new Vector3(this.x, this.y, this.z);
-    }
-
-    public Vector3(BlockPos pos) {
-        this(pos.getX(), pos.getY(), pos.getZ());
-    }
+    public float x;
+    public float y;
+    public float z;
 
     /**
      * Creates a new Vector3 with x, y, z.
      */
     public Vector3(int x, int y, int z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        this((float) x, (float) y, (float) z);
     }
 
     /**
      * Creates a new Vector3 with x, y, z.
      */
     public Vector3(double x, double y, double z) {
-        this((int) x, (int) y, (int) z);
+        this((float) x, (float) y, (float) z);
     }
 
     /**
      * Creates a new Vector3 with x, y, z.
      */
     public Vector3(float x, float y, float z) {
-        this((int) x, (int) y, (int) z);
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+
+    public int intX() {
+        return (int) this.x;
+    }
+
+    public int intY() {
+        return (int) this.y;
+    }
+
+    public int intZ() {
+        return (int) this.z;
+    }
+
+    public BlockPos toBlockPos() {
+        return new BlockPos(this.x, this.y, this.z);
+    }
+
+    public Vector3(BlockPos pos) {
+        this(pos.getX(), pos.getY(), pos.getZ());
     }
 
     /**
@@ -73,13 +94,10 @@ public class Vector3 {
         this(0, 0, 0);
     }
 
-    public Vector3f toFloat() {
-        return new Vector3f(this.x, this.y, this.z);
+    public Vector3 clone() {
+        return new Vector3(this.x, this.y, this.z);
     }
 
-    public BlockPos toBlockPos() {
-        return new BlockPos(this.x, this.y, this.z);
-    }
 
     /**
      * Returns itself not a new Vector.
@@ -93,12 +111,13 @@ public class Vector3 {
         return this;
     }
 
-    public Vector3 add(int x, int y, int z) {
+    public Vector3 add(float x, float y, float z) {
         this.x += x;
         this.y += y;
         this.z += z;
         return this;
     }
+
 
     /**
      * Returns itself not a new Vector.
@@ -211,9 +230,9 @@ public class Vector3 {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + x;
-        result = prime * result + y;
-        result = prime * result + z;
+        result = prime * result + (int) x;
+        result = prime * result + (int) y;
+        result = prime * result + (int) z;
         return result;
     }
 
@@ -235,11 +254,93 @@ public class Vector3 {
         return true;
     }
 
+    public String toString() {
+        return "Vector(" + x + ", " + y + ", " + z + ")";
+    }
+
     public javax.vecmath.Vector3f toJava() {
         return new javax.vecmath.Vector3f(this.x, this.y, this.z);
     }
 
-    public String toString() {
-        return "Vector(" + x + ", " + y + ", " + z + ")";
+    public float distanceTo(Vector3 vector3) {
+        float var2 = vector3.x - this.x;
+        float var4 = vector3.y - this.y;
+        float var6 = vector3.z - this.z;
+        return (float) Math.sqrt(var2 * var2 + var4 * var4 + var6 * var6);
+    }
+
+    /**
+     * Gets all entities inside of this position in block space.
+     */
+    public List<Entity> getEntitiesWithin(World worldObj, Class<? extends Entity> par1Class) {
+        return worldObj.getEntitiesWithinAABB(par1Class, new AxisAlignedBB(this.intX(), this.intY(), this.intZ(), this.intX() + 1, this.intY() + 1, this.intZ() + 1));
+    }
+
+    /**
+     * Gets a position relative to a position's side
+     *
+     * @param side - The side. 0-5
+     * @return The position relative to the original position's side
+     */
+    public Vector3 modifyPositionFromSide(EnumFacing side, double amount) {
+        switch (side.ordinal()) {
+            case 0:
+                this.y -= amount;
+                break;
+            case 1:
+                this.y += amount;
+                break;
+            case 2:
+                this.z -= amount;
+                break;
+            case 3:
+                this.z += amount;
+                break;
+            case 4:
+                this.x -= amount;
+                break;
+            case 5:
+                this.x += amount;
+                break;
+        }
+        return this;
+    }
+
+    public Vector3 modifyPositionFromSide(EnumFacing side) {
+        this.modifyPositionFromSide(side, 1);
+        return this;
+    }
+
+    /**
+     * Loads a Vector3 from an NBT compound.
+     */
+    public static Vector3 readFromNBT(NBTTagCompound nbtCompound) {
+        Vector3 tempVector = new Vector3();
+        tempVector.x = nbtCompound.getFloat("x");
+        tempVector.y = nbtCompound.getFloat("y");
+        tempVector.z = nbtCompound.getFloat("z");
+        return tempVector;
+    }
+
+    /**
+     * Saves this Vector3 to disk
+     *
+     * @param par1NBTTagCompound - The NBT compound object to save the data in
+     */
+    public NBTTagCompound writeToNBT(NBTTagCompound par1NBTTagCompound) {
+        par1NBTTagCompound.setFloat("x", this.x);
+        par1NBTTagCompound.setFloat("y", this.y);
+        par1NBTTagCompound.setFloat("z", this.z);
+        return par1NBTTagCompound;
+    }
+
+    /**
+     * Gets the TileEntity of the block representing this Vector.
+     *
+     * @param world - world this Vector is in
+     * @return the TileEntity of this Vector's block
+     */
+    public TileEntity getTileEntity(IBlockAccess world) {
+        return world.getTileEntity(toBlockPos());
     }
 }

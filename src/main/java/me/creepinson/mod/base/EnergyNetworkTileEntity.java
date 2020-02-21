@@ -2,36 +2,47 @@ package me.creepinson.mod.base;
 
 
 import cofh.redstoneflux.api.IEnergyProvider;
-import me.creepinson.mod.api.INetworkedTile;
-import me.creepinson.mod.api.util.world.WorldUtils;
+import cofh.redstoneflux.api.IEnergyStorage;
+import me.creepinson.mod.api.network.ElectricityNetwork;
+import me.creepinson.mod.api.network.INetwork;
+import me.creepinson.mod.api.network.INetworkedTile;
+import me.creepinson.mod.api.util.math.Vector3;
 import mekanism.api.IConfigurable;
-import mekanism.api.energy.EnergyStack;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyOutputter;
-import mekanism.api.transmitters.IBlockableConnection;
-import mekanism.api.transmitters.ITransmitter;
-import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.base.EnergyAcceptorWrapper;
-import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.tile.transmitter.TileEntityTransmitter;
-import mekanism.common.transmitters.grid.EnergyNetwork;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.items.CapabilityItemHandler;
-
-
-import java.util.Collection;
 
 /**
  * @author Creepinson http://gitlab.com/creepinson
  * Project creepinoutils
  **/
-public abstract class EnergyNetworkTileEntity extends TileEntity implements INetworkedTile, IConfigurable, IStrictEnergyAcceptor, IStrictEnergyOutputter, IEnergyProvider, ITickable {
+public abstract class EnergyNetworkTileEntity extends TileEntity implements INetworkedTile<Float>, ITickable {
 
     protected boolean connectable = true;
+    protected INetwork network;
+
+
+    @Override
+    public INetwork getNetwork() {
+        return this.network;
+    }
+
+    @Override
+    public void onLoad() {
+        if(this.network == null) {
+            this.setNetwork(new ElectricityNetwork(new Vector3(pos), world));
+            this.getNetwork().refresh();
+        }
+    }
+
+    @Override
+    public void setNetwork(INetwork newNetwork) {
+        this.network = newNetwork;
+    }
 
     public boolean isActive() {
         return active;

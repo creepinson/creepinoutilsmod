@@ -2,13 +2,11 @@ package me.creepinson.mod.api.util.animation;
 
 import java.util.Set;
 
-import javax.vecmath.Vector3d;
-
 
 import com.creativemd.creativecore.common.utils.type.Pair;
 import com.creativemd.creativecore.common.utils.type.PairList;
 import me.creepinson.mod.api.util.math.Rotation;
-import me.creepinson.mod.api.util.math.Vector3f;
+import me.creepinson.mod.api.util.math.Vector3;
 
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -49,12 +47,12 @@ public class AnimationState {
 
     }
 
-    public Vector3f getRotation() {
-        return new Vector3f(get(AnimationKey.rotX), get(AnimationKey.rotY), get(AnimationKey.rotZ));
+    public Vector3 getRotation() {
+        return new Vector3(get(AnimationKey.rotX), get(AnimationKey.rotY), get(AnimationKey.rotZ));
     }
 
-    public Vector3f getOffset() {
-        return new Vector3f(get(AnimationKey.offX), get(AnimationKey.offY), get(AnimationKey.offZ));
+    public Vector3 getOffset() {
+        return new Vector3(get(AnimationKey.offX), get(AnimationKey.offY), get(AnimationKey.offZ));
     }
 
     public void clear() {

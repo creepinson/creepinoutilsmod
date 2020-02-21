@@ -34,12 +34,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import me.creepinson.mod.api.util.animation.AnimationController;
 import me.creepinson.mod.api.util.animation.AnimationGroup;
 import me.creepinson.mod.api.util.animation.AnimationKey;
 import me.creepinson.mod.api.util.animation.AnimationState;
-import me.creepinson.mod.api.util.math.Rotation;
-import me.creepinson.mod.api.util.math.Vector3f;
+import me.creepinson.mod.api.util.math.Vector3;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
@@ -802,7 +800,7 @@ public class AnimatedOBJModel implements IModel {
                 vertices[i] = new Vertex(pos, v.getMaterial());
 
                 if (v.hasNormal()) {
-                    Vector3f normal = v.getNormal().getData().clone();
+                    Vector3 normal = v.getNormal().getData().clone();
                     transform.transformNormal(normal.toJava());
                     vertices[i].setNormal(new Normal(normal));
                 }
@@ -818,9 +816,9 @@ public class AnimatedOBJModel implements IModel {
         }
 
         public Normal getNormal() {
-            Vector3f a = this.verts[2].getPos3();
+            Vector3 a = this.verts[2].getPos3();
             a.sub(this.verts[0].getPos3());
-            Vector3f b = this.verts[3].getPos3();
+            Vector3 b = this.verts[3].getPos3();
             b.sub(this.verts[1].getPos3());
             a.cross(a, b);
             a.normalize();
@@ -847,8 +845,8 @@ public class AnimatedOBJModel implements IModel {
             return this.position;
         }
 
-        public Vector3f getPos3() {
-            return new Vector3f(this.position.x, this.position.y, this.position.z);
+        public Vector3 getPos3() {
+            return new Vector3(this.position.x, this.position.y, this.position.z);
         }
 
         public boolean hasNormal() {
@@ -909,7 +907,7 @@ public class AnimatedOBJModel implements IModel {
             this(data[0], data[1], data[2]);
         }
 
-        public Normal(Vector3f vector3f) {
+        public Normal(Vector3 vector3f) {
             this(vector3f.x, vector3f.y, vector3f.z);
         }
 
@@ -919,8 +917,8 @@ public class AnimatedOBJModel implements IModel {
             this.z = z;
         }
 
-        public Vector3f getData() {
-            return new Vector3f(this.x, this.y, this.z);
+        public Vector3 getData() {
+            return new Vector3(this.x, this.y, this.z);
         }
     }
 
@@ -935,7 +933,7 @@ public class AnimatedOBJModel implements IModel {
             this(data[0], data[1], data[2]);
         }
 
-        public TextureCoordinate(Vector3f data) {
+        public TextureCoordinate(Vector3 data) {
             this(data.x, data.y, data.z);
         }
 
@@ -945,8 +943,8 @@ public class AnimatedOBJModel implements IModel {
             this.w = w;
         }
 
-        public Vector3f getData() {
-            return new Vector3f(this.u, this.v, this.w);
+        public Vector3 getData() {
+            return new Vector3(this.u, this.v, this.w);
         }
 
         public static TextureCoordinate[] getDefaultUVs() {
@@ -968,8 +966,8 @@ public class AnimatedOBJModel implements IModel {
         private LinkedHashSet<Face> faces = new LinkedHashSet<Face>();
         public float[] minUVBounds = new float[]{0.0f, 0.0f};
         public float[] maxUVBounds = new float[]{1.0f, 1.0f};
-        public Vector3f rotation;
-        public Vector3f translation;
+        public Vector3 rotation;
+        public Vector3 translation;
 
 
 //        public float[] minUVBounds = new float[] {0.0f, 0.0f};

@@ -1,31 +1,15 @@
 package me.creepinson.mod.base;
 
 
-import cofh.redstoneflux.api.IEnergyProvider;
-import me.creepinson.mod.api.INetworkedTile;
-import me.creepinson.mod.api.util.world.WorldUtils;
+import me.creepinson.mod.api.network.INetworkedTile;
 import mekanism.api.IConfigurable;
-import mekanism.api.energy.EnergyStack;
-import mekanism.api.energy.IStrictEnergyAcceptor;
-import mekanism.api.energy.IStrictEnergyOutputter;
-import mekanism.api.transmitters.IBlockableConnection;
-import mekanism.api.transmitters.ITransmitter;
-import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.base.EnergyAcceptorWrapper;
-import mekanism.common.base.ILogisticalTransporter;
-import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.tile.transmitter.TileEntityTransmitter;
-import mekanism.common.transmitters.grid.EnergyNetwork;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-
-
-import java.util.Collection;
 
 /**
  * @author Creepinson http://gitlab.com/creepinson

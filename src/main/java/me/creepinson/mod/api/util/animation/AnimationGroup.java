@@ -1,9 +1,7 @@
 package me.creepinson.mod.api.util.animation;
 
 import me.creepinson.mod.api.util.math.Rotation;
-import me.creepinson.mod.api.util.math.Vector3f;
-
-import java.util.HashMap;
+import me.creepinson.mod.api.util.math.Vector3;
 
 /**
  * @author Creepinson http://gitlab.com/creepinson
@@ -14,7 +12,7 @@ public class AnimationGroup {
     public final boolean removeable;
     public AnimationController controller;
     public Rotation rotation;
-    public Vector3f translation;
+    public Vector3 translation;
 
     public AnimationGroup(String name, boolean removeable, AnimationController controller) {
         this.name = name;

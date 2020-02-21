@@ -34,12 +34,18 @@ public class BlockAnimationTest extends BaseBlockWithTile implements ITileEntity
             TileEntity te = WorldUtils.getTileEntity(world, pos);
             if(te instanceof TileEntityAnimationTest) {
                 TileEntityAnimationTest tile = (TileEntityAnimationTest)te;
+                tile.onClick();
             }
             return true;
         } else {
             return false;
         }
 
+    }
+
+    @Override
+    public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player) {
+        super.onBlockHarvested(worldIn, pos, state, player);
     }
 
     @Nullable
