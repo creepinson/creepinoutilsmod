@@ -35,7 +35,6 @@ public class BlockUtils {
     }
 
     public static void getTilesRecursive(Set<Vector3> done, World world, Vector3 start, EnumFacing from, Class... search) {
-
         for (EnumFacing side : EnumFacing.values()) {
             if (side == from) continue;
             if (world.getTileEntity(start.toBlockPos()) != null && !world.getTileEntity(start.toBlockPos()).isInvalid()) {
@@ -49,6 +48,29 @@ public class BlockUtils {
                 if (!done.contains(start.offset(side))) {
                     getTilesRecursive(done, world, start.offset(side), side.getOpposite(), search);
                 }
+            }
+        }
+    }
+
+    public static Set<Vector3> getBlocks(World world, Vector3 startingPosition, Class... search) {
+        // TODO: replace with Map<Vector3, EnumFacing> for getting sides.
+        Set<Vector3> set = new HashSet();
+        getBlocksRecursive(set, world, startingPosition, null, search);
+        return set;
+    }
+
+    public static void getBlocksRecursive(Set<Vector3> done, World world, Vector3 start, EnumFacing from, Class... search) {
+        for (EnumFacing side : EnumFacing.values()) {
+            if (side == from) continue;
+            IBlockState state = world.getBlockState(start.toBlockPos());
+            for (Class c : search) {
+                if (c.isInstance(state.getBlock())) {
+                    done.add(start);
+                }
+            }
+
+            if (!done.contains(start.offset(side))) {
+                getTilesRecursive(done, world, start.offset(side), side.getOpposite(), search);
             }
         }
     }
