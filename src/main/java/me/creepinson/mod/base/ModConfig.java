@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import me.creepinson.mod.CreepinoUtilsMod;
 import me.creepinson.mod.api.util.GsonUtils;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import java.io.File;
 import java.io.FileReader;
@@ -56,7 +57,7 @@ public abstract class ModConfig {
         } catch (Throwable e) {
             e.printStackTrace();
             mod.getLogger().info("Couldn't load config data file \"" + configFile.toString() + "\": " + e.getClass().getCanonicalName() + ". Initiating crash...");
-            System.exit(1);
+            FMLCommonHandler.instance().exitJava(1, false);
         }
     }
 

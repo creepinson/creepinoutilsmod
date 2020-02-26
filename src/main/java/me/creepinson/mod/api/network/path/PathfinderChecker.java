@@ -1,11 +1,9 @@
 package me.creepinson.mod.api.network.path;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import me.creepinson.mod.api.network.INetworkAcceptor;
-import me.creepinson.mod.api.network.INetworkedTile;
+import me.creepinson.mod.api.network.INetworkTile;
 import me.creepinson.mod.api.util.math.Vector3;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -20,7 +18,7 @@ import net.minecraft.world.World;
  */
 public class PathfinderChecker extends Pathfinder
 {
-	public PathfinderChecker(final World world, final INetworkedTile targetConnector, final INetworkedTile... ignoreConnector)
+	public PathfinderChecker(final World world, final Class[] targets, final INetworkTile... ignoreConnector)
 	{
 		super(new IPathCallBack()
 		{
@@ -35,13 +33,14 @@ public class PathfinderChecker extends Pathfinder
 					Vector3 position = currentNode.clone().modifyPositionFromSide(direction);
 					TileEntity connectedBlock = position.getTileEntity(world);
 
-					if (connectedBlock instanceof INetworkAcceptor && !Arrays.asList(ignoreConnector).contains(connectedBlock))
+/*					if (connectedBlock instanceof INetworkedTile && !Arrays.asList(ignoreConnector).contains(connectedBlock))
 					{
-						if (((INetworkAcceptor) connectedBlock).canConnectTo(world, position, direction.getOpposite()))
+						if (((INetworkedTile) connectedBlock).canConnectTo(world, position, direction.getOpposite()))
 						{
-							neighbors.add(position);
+
 						}
-					}
+					}*/
+					neighbors.add(position);
 				}
 
 				return neighbors;
@@ -50,11 +49,15 @@ public class PathfinderChecker extends Pathfinder
 			@Override
 			public boolean onSearch(Pathfinder finder, Vector3 node)
 			{
-				if (node.getTileEntity(world) == targetConnector)
-				{
-					finder.results.add(node);
-					return true;
+				for(Class c : targets) {
+					if (c.isInstance(node.getTileEntity(world)))
+					{
+						finder.results.add(node);
+
+						return true;
+					}
 				}
+				System.out.println(node.toString());
 
 				return false;
 			}

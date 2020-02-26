@@ -257,15 +257,15 @@ public class WorldUtils {
     }
 
     /**
-     * Gets a tile entity if the location is loaded
+     * Tile entity helper
      *
      * @param world - world
      * @param pos   - position
-     * @return tile entity if found, null if either not found or not loaded
+     * @return tile entity if found, null if either not found or not valid
      */
     @Nullable
-    public static TileEntity getTileEntity(World world, BlockPos pos) {
-        if (world != null && world.isBlockLoaded(pos)) {
+    public static TileEntity getTileEntity(IBlockAccess world, BlockPos pos) {
+        if (world != null && world.getTileEntity(pos) != null && !world.getTileEntity(pos).isInvalid()) {
             return world.getTileEntity(pos);
         }
         return null;

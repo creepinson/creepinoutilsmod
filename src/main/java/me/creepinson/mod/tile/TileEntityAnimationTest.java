@@ -1,6 +1,9 @@
 package me.creepinson.mod.tile;
 
 
+import me.creepinson.mod.CreepinoUtilsMod;
+import me.creepinson.mod.api.network.INetworkProducer;
+import me.creepinson.mod.api.network.INetworkTile;
 import me.creepinson.mod.api.upgrade.Upgrade;
 import me.creepinson.mod.api.upgrade.UpgradeInfo;
 import me.creepinson.mod.api.util.math.Vector3;
@@ -9,6 +12,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -19,22 +23,17 @@ import java.util.List;
  * Project creepinoutils
  **/
 
-public class TileEntityAnimationTest extends EnergyNetworkTileEntity {
+public class TileEntityAnimationTest extends EnergyNetworkTileEntity implements INetworkProducer<Integer> {
     public void onClick() {
         setActive(!isActive());
     }
 
     @Override
-    public void update() {
-        if(getNetwork() != null) {
-            getNetwork().produce(this);
+    public void setActive(boolean value) {
+        super.setActive(value);
+        if (CreepinoUtilsMod.getInstance().isDebug() && !world.isRemote) {
+            CreepinoUtilsMod.getInstance().getLogger().info("New Active Value: " + this.isActive());
         }
-    }
-
-    @Override
-    public void onLoad() {
-        super.onLoad();
-        resetNetwork();
     }
 
     public ItemStack getStackInSlot(int slot) {
@@ -53,29 +52,14 @@ public class TileEntityAnimationTest extends EnergyNetworkTileEntity {
         return isActive() ? new ItemStack(Items.APPLE, 2) : ItemStack.EMPTY;
     }
 
-
-    public int getSlotLimit(int slot) {
-        return 0;
-    }
-
     @Override
-    public int receiveEnergy(int maxReceive, boolean simulate) {
-        return 0;
-    }
-
-    @Override
-    public boolean canReceive() {
-        return false;
-    }
-
-    @Override
-    public boolean canConnectTo(IBlockAccess blockAccess, Vector3 pos, EnumFacing side) {
-        return isConnectable();
+    public boolean canConnectTo(IBlockAccess blockAccess, Vector3 v, EnumFacing f) {
+        return super.canConnectTo(blockAccess, v, f) && (blockAccess.getTileEntity(v.toBlockPos()) instanceof IEnergyStorage || blockAccess.getTileEntity(v.toBlockPos()) instanceof INetworkTile);
     }
 
     @Override
     public Integer getStored() {
-        return isActive() ? 10 : 0;
+        return 0;
     }
 
     @Override
@@ -99,12 +83,17 @@ public class TileEntityAnimationTest extends EnergyNetworkTileEntity {
     }
 
     @Override
-    public Integer getRequest(EnumFacing direction) {
-        return getStored();
+    public Integer produce(int maxExtract) {
+        return maxExtract;
     }
 
     @Override
-    public boolean canExtract() {
-        return false;
+    public boolean canProduce(EnumFacing direction) {
+        return isActive() && isConnectable();
+    }
+
+    @Override
+    public void update() {
+        getNetwork().produce();
     }
 }

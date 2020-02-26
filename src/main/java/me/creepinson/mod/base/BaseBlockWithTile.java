@@ -1,6 +1,9 @@
 package me.creepinson.mod.base;
 
+import me.creepinson.mod.api.network.INetworkTile;
 import me.creepinson.mod.api.util.math.Coord4D;
+import me.creepinson.mod.api.util.math.Vector3;
+import me.creepinson.mod.api.util.world.WorldUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -36,8 +39,9 @@ public abstract class BaseBlockWithTile extends BaseBlock implements ITileEntity
 
     @Override
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos fromPos) {
-        if (!world.isRemote) {
-            TileEntity tileEntity = new Coord4D(pos, world).vector.getTileEntity(world);
+        TileEntity te = WorldUtils.getTileEntity(world, pos);
+        if (te instanceof INetworkTile) {
+            ((INetworkTile) te).onNeighborChange(new Vector3(pos));
         }
     }
 

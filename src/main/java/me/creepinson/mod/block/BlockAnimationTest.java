@@ -1,9 +1,11 @@
 package me.creepinson.mod.block;
 
 import me.creepinson.mod.CreepinoUtilsMod;
+import me.creepinson.mod.api.network.INetworkTile;
 import me.creepinson.mod.api.util.world.WorldUtils;
 import me.creepinson.mod.base.BaseBlockWithTile;
 import me.creepinson.mod.tile.TileEntityAnimationTest;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -14,6 +16,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -37,7 +40,6 @@ public class BlockAnimationTest extends BaseBlockWithTile {
                 TileEntityAnimationTest tile = (TileEntityAnimationTest) te;
                 if (player.isSneaking() && player.getHeldItem(hand).isEmpty()) {
                     tile.setConnectable(!tile.isConnectable());
-                    tile.updateConnectedBlocks();
                     CreepinoUtilsMod.getInstance().getLogger().info("connectable " + tile.isConnectable());
                 } else {
                     tile.onClick();
@@ -50,7 +52,9 @@ public class BlockAnimationTest extends BaseBlockWithTile {
     @Override
     public void harvestBlock(World worldIn, EntityPlayer player, BlockPos pos, IBlockState state, @Nullable TileEntity te, ItemStack stack) {
         super.harvestBlock(worldIn, player, pos, state, te, stack);
-        ((TileEntityAnimationTest)te).getNetwork().refresh();
+        if (te != null && ((INetworkTile) te).getNetwork() != null) {
+            ((INetworkTile) te).getNetwork().updateConnectedBlocks();
+        }
     }
 
     @Nullable

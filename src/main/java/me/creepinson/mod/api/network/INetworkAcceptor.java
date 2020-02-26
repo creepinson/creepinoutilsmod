@@ -2,7 +2,7 @@ package me.creepinson.mod.api.network;
 
 import net.minecraft.util.EnumFacing;
 
-public interface INetworkAcceptor<T> extends INetworkedTile<T> {
+public interface INetworkAcceptor<T> extends INetworkTile<T> {
     /**
      * @return How much energy does this TileEntity want?
      */
@@ -17,4 +17,5 @@ public interface INetworkAcceptor<T> extends INetworkedTile<T> {
      * @return Amount of energy that was accepted by the block.
      */
     T receive(EnumFacing side, T receive, boolean doReceive);
+    boolean canAccept(EnumFacing direction);
 }

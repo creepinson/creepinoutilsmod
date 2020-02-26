@@ -1,7 +1,7 @@
 package me.creepinson.mod.base;
 
 
-import me.creepinson.mod.api.INetworkedTile;
+import me.creepinson.mod.api.network.INetworkTile;
 import me.creepinson.mod.api.upgrade.Upgrade;
 import me.creepinson.mod.api.upgrade.UpgradeInfo;
 import me.creepinson.mod.api.util.math.Vector3;
@@ -24,7 +24,7 @@ import java.util.List;
  **/
 //@Optional.InterfaceList(value = {@Optional.Interface(iface = "mekanism.api.IConfigurable", modid = Hooks.MEKANISM, striprefs = true)})
 
-public abstract class InventoryNetworkTileEntity extends TileEntity implements INetworkedTile, IItemHandler, ITickable {
+public abstract class InventoryNetworkTileEntity extends TileEntity implements INetworkTile, IItemHandler, ITickable {
 
     public final List<UpgradeInfo> upgrades = new ArrayList<>();
 

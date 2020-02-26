@@ -42,6 +42,21 @@ public class CreepinoUtils {
             entity.addVelocity(0.1, 0, 0);
     }
 
+    public static void entityAccelerate(Entity entity, EnumFacing direction, double speed) {
+        if (direction == EnumFacing.DOWN)
+            entity.addVelocity(0, -speed, 0);
+        else if (direction == EnumFacing.UP)
+            entity.addVelocity(0, speed, 0);
+        else if (direction == EnumFacing.NORTH)
+            entity.addVelocity(0, 0, -speed);
+        else if (direction == EnumFacing.SOUTH)
+            entity.addVelocity(0, 0, speed);
+        else if (direction == EnumFacing.EAST)
+            entity.addVelocity(-speed, 0, 0);
+        else if (direction == EnumFacing.WEST)
+            entity.addVelocity(speed, 0, 0);
+    }
+
     public static void entityLimitSpeed(Entity entity, double limit) {
         entity.motionX = MathHelper.clamp(entity.motionX, -limit, limit);
         entity.motionY = MathHelper.clamp(entity.motionY, -limit, limit);
@@ -67,6 +82,13 @@ public class CreepinoUtils {
         return null;
     }
 
+    public static void moveEntityByRotation(Entity entity) {
+        double motionX = (double) (-MathHelper.sin(entity.rotationYaw / 180.0F * (float) Math.PI) * MathHelper.cos(entity.rotationPitch / 180.0F * (float) Math.PI) * 1.5F);
+        double motionZ = (double) (MathHelper.cos(entity.rotationYaw / 180.0F * (float) Math.PI) * MathHelper.cos(entity.rotationPitch / 180.0F * (float) Math.PI) * 1.5F);
+        double motionY = (double) (-MathHelper.sin((entity.rotationPitch + 0F) / 180.0F * (float) Math.PI) * 1.5F);
+        entity.addVelocity(motionX, motionY, motionZ);
+    }
+
     static double AXIS_MIN_MIN = 0, AXIS_MIN_MAX = 0.1, AXIS_MAX_MIN = 0.9, AXIS_MAX_MAX = 1, AXIS_FLOOR_MIN = -0.01, AXIS_FLOOR_MAX = 0;
 
     public static AxisAlignedBB getCollisionBoxPart(int x, int y, int z, EnumFacing direction) {
@@ -87,7 +109,7 @@ public class CreepinoUtils {
     }
 
     public static AxisAlignedBB getCollisionBoxPart(Vector3 pos, EnumFacing direction) {
-        return getCollisionBoxPart(pos, direction);
+        return getCollisionBoxPart(pos.intX(), pos.intY(), pos.intZ(), direction);
     }
 
     public static AxisAlignedBB getCollisionBoxPartFloor(Vector3 pos) {
@@ -122,7 +144,7 @@ public class CreepinoUtils {
     }
 
     public static EnumFacing getDirectionFromSide(Vector3 pos, int s) {
-        return getDirectionFromSide(pos, s);
+        return getDirectionFromSide(pos.intX(), pos.intY(), pos.intZ(), s);
     }
 
     public static EnumFacing getDirectionFromSide(int x, int y, int z, int s) {
@@ -256,8 +278,8 @@ public class CreepinoUtils {
         TileEntity tile = world.getTileEntity(position);
         if (tile != null && !tile.isInvalid()) {
             if (!done.contains(position)) {
-                for(Class c : searchFor) {
-                    if(c.isInstance(tile)) {
+                for (Class c : searchFor) {
+                    if (c.isInstance(tile)) {
                         done.add(position);
                     }
                 }

@@ -20,6 +20,23 @@ public class Vector3 {
     public static final Vector3 Y_AXIS_NEG = new Vector3(0, -1, 0);
     public static final Vector3 Z_AXIS_NEG = new Vector3(0, 0, -1);
 
+
+    /**
+     * Offset this Vector 1 block in the given direction
+     */
+    public Vector3 offset(EnumFacing facing) {
+        return this.offset(facing, 1);
+    }
+
+
+    /**
+     * Offsets this Vector n blocks in the given direction
+     */
+    public Vector3 offset(EnumFacing facing, int n) {
+        return n == 0 ? this : new Vector3(this.x + facing.getXOffset() * n, this.y + facing.getYOffset() * n, this.z + facing.getZOffset() * n);
+    }
+
+
     /**
      * Calculates the scalar-product of the given vectors.
      */
@@ -342,5 +359,9 @@ public class Vector3 {
      */
     public TileEntity getTileEntity(IBlockAccess world) {
         return world.getTileEntity(toBlockPos());
+    }
+
+    public boolean intersects(Vector3 other) {
+        return this.equals(other);
     }
 }
