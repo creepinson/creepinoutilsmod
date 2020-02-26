@@ -33,7 +33,7 @@ public abstract class EnergyNetworkTileEntity extends TileEntity implements INet
 
     @Override
     public INetwork getNetwork() {
-        if(network == null) {
+        if (network == null) {
             this.refreshNetwork();
         }
         return this.network;
@@ -58,13 +58,6 @@ public abstract class EnergyNetworkTileEntity extends TileEntity implements INet
         this.active = value;
     }
 
-
-    @Override
-    public boolean isConnectable() {
-        return connectable;
-    }
-
-    @Override
     public void setConnectable(boolean value) {
         this.connectable = value;
         if (this.getNetwork() != null) {
@@ -72,8 +65,11 @@ public abstract class EnergyNetworkTileEntity extends TileEntity implements INet
         }
     }
 
-    protected boolean active;
+    public boolean isConnectable() {
+        return connectable;
+    }
 
+    protected boolean active;
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
@@ -88,5 +84,10 @@ public abstract class EnergyNetworkTileEntity extends TileEntity implements INet
     @Override
     public boolean canConnectTo(IBlockAccess blockAccess, Vector3 v, EnumFacing f) {
         return isConnectable() && isActive() && blockAccess.getTileEntity(v.toBlockPos()) != null && !blockAccess.getTileEntity(v.toBlockPos()).isInvalid();
+    }
+
+    @Override
+    public boolean canConnectToStrict(IBlockAccess blockAccess, Vector3 pos, EnumFacing side) {
+        return canConnectTo(blockAccess, pos, side);
     }
 }

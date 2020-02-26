@@ -40,7 +40,6 @@ public class BlockAnimationTest extends BaseBlockWithTile {
                 TileEntityAnimationTest tile = (TileEntityAnimationTest) te;
                 if (player.isSneaking() && player.getHeldItem(hand).isEmpty()) {
                     tile.setConnectable(!tile.isConnectable());
-                    CreepinoUtilsMod.getInstance().getLogger().info("connectable " + tile.isConnectable());
                 } else {
                     tile.onClick();
                 }

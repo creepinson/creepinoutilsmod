@@ -85,12 +85,11 @@ public abstract class InventoryNetworkTileEntity extends TileEntity implements I
     }
 
 
-    @Override
     public boolean isConnectable() {
         return connectable;
     }
 
-    @Override
+
     public void setConnectable(boolean value) {
         this.connectable = value;
     }
@@ -129,5 +128,10 @@ public abstract class InventoryNetworkTileEntity extends TileEntity implements I
     @Override
     public boolean canConnectTo(IBlockAccess blockAccess, Vector3 vector3, EnumFacing f) {
         return isConnectable() && isActive();
+    }
+
+    @Override
+    public boolean canConnectToStrict(IBlockAccess blockAccess, Vector3 pos, EnumFacing side) {
+        return canConnectTo(blockAccess, pos, side);
     }
 }
