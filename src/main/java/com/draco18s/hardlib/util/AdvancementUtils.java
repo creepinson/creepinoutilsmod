@@ -1,6 +1,6 @@
 package com.draco18s.hardlib.util;
 
-import me.creepinson.mod.CreepinoUtilsMod;
+import me.creepinson.creepinoutils.CreepinoUtilsMod;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementList;
 import net.minecraft.advancements.AdvancementManager;
