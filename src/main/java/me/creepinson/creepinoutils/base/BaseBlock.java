@@ -30,6 +30,7 @@ public class BaseBlock extends Block {
 
 	public BaseBlock(Material mat, ResourceLocation name) {
 		super(mat);
+		setRegistryName(name);
 		setTranslationKey(name.getPath());
 	}
 

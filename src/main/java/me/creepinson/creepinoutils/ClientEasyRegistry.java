@@ -1,6 +1,5 @@
-package com.draco18s.hardlib.client;
+package me.creepinson.creepinoutils;
 
-import com.draco18s.hardlib.EasyRegistry;
 import com.draco18s.hardlib.api.interfaces.IBlockWithMapper;
 import com.draco18s.hardlib.api.interfaces.IItemWithMeshDefinition;
 import com.draco18s.hardlib.api.internal.IMetaLookup;
@@ -40,6 +39,7 @@ import java.util.List;
  *
  * @author Draco18s
  */
+@Deprecated
 public class ClientEasyRegistry extends EasyRegistry {
     protected List<ModelRegistryObj> modelsToReg = new ArrayList<ModelRegistryObj>();
     protected List<ModelBakeObj> modelsToBake = new ArrayList<ModelBakeObj>();

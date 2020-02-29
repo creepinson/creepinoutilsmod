@@ -1,21 +1,18 @@
-package com.draco18s.hardlib;
+package me.creepinson.creepinoutils;
 
 import com.draco18s.hardlib.api.interfaces.IBlockWithMapper;
 import com.draco18s.hardlib.api.interfaces.IItemWithMeshDefinition;
 import com.draco18s.hardlib.api.internal.IMetaLookup;
-import me.creepinson.creepinoutils.CreepinoUtilsMod;
 import me.creepinson.creepinoutils.base.BaseProxy;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.ICriterionInstance;
 import net.minecraft.advancements.ICriterionTrigger;
 import net.minecraft.block.Block;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
@@ -36,10 +33,11 @@ import java.util.List;
  *
  * @author Draco18s
  */
+@Deprecated
 public class EasyRegistry extends BaseProxy {
-    private List<Block> blocksToReg = new ArrayList<Block>();
-    private List<Item> itemsToReg = new ArrayList<Item>();
-    private List<IForgeRegistryEntry> otherItems = new ArrayList<IForgeRegistryEntry>();
+    List<Block> blocksToReg = new ArrayList<Block>();
+    List<Item> itemsToReg = new ArrayList<Item>();
+    List<IForgeRegistryEntry> otherItems = new ArrayList<IForgeRegistryEntry>();
     protected HashMap<Block, Item> blockItems = new HashMap<Block, Item>();
     private static Method CriterionRegister;
 
@@ -172,23 +170,24 @@ public class EasyRegistry extends BaseProxy {
         return object;
     }
 
-    @SubscribeEvent
-    public void registerBlocks(RegistryEvent.Register<Block> event) {
-        event.getRegistry().registerAll(blocksToReg.toArray(new Block[blocksToReg.size()]));
-    }
-
-    @SubscribeEvent
-    public void registerItems(RegistryEvent.Register<Item> event) {
-        event.getRegistry().registerAll(itemsToReg.toArray(new Item[itemsToReg.size()]));
-    }
-
-    @SubscribeEvent
-    public void registerEnchantments(RegistryEvent.Register<Enchantment> event) {
-        for (IForgeRegistryEntry e : otherItems) {
-            if (e instanceof Enchantment) call(event, e);
+    /*
+        @SubscribeEvent
+        public void registerBlocks(RegistryEvent.Register<Block> event) {
+            event.getRegistry().registerAll(blocksToReg.toArray(new Block[blocksToReg.size()]));
         }
-    }
 
+        @SubscribeEvent
+        public void registerItems(RegistryEvent.Register<Item> event) {
+            event.getRegistry().registerAll(itemsToReg.toArray(new Item[itemsToReg.size()]));
+        }
+
+        @SubscribeEvent
+        public void registerEnchantments(RegistryEvent.Register<Enchantment> event) {
+            for (IForgeRegistryEntry e : otherItems) {
+                if (e instanceof Enchantment) call(event, e);
+            }
+        }
+        */
     private <K extends IForgeRegistryEntry<K>, T> void call(RegistryEvent.Register<K> event, T value) {
         event.getRegistry().register((K) value);
     }
