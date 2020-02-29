@@ -1,6 +1,6 @@
 package com.creativemd.creativecore.common.utils.math.vec;
 
-import me.creepinson.mod.api.util.math.RotationUtils;
+import me.creepinson.creepinoutils.api.util.math.RotationUtils;
 import net.minecraft.util.EnumFacing.Axis;
 
 import javax.vecmath.Vector3d;

@@ -1,7 +1,7 @@
 package com.draco18s.hardlib.api;
 
 
-import me.creepinson.mod.api.util.math.HashUtils;
+import me.creepinson.creepinoutils.api.util.math.HashUtils;
 import net.minecraft.util.math.BlockPos;
 
 public class ChunkCoords {
