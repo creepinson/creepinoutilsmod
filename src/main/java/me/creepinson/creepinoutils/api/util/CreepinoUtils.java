@@ -87,10 +87,14 @@ public class CreepinoUtils {
         entity.motionX = mx;
         entity.motionY = my;
         entity.motionZ = mz;
+        entity.velocityChanged = true;
     }
 
     public static void addVelocity(Entity entity, double mx, double my, double mz) {
-        entity.addVelocity(mx, my, mz);
+        entity.motionX += mx;
+        entity.motionY += my;
+        entity.motionZ += mz;
+        entity.velocityChanged = true;
     }
 
     public static void entityLimitSpeed(Entity entity, double limit) {
@@ -149,7 +153,7 @@ public class CreepinoUtils {
     }
 
     public static AxisAlignedBB getCollisionBoxPartFloor(Vector3 pos) {
-        return getCollisionBoxPartFloor(pos);
+        return getCollisionBoxPartFloor(pos.intX(), pos.intY(), pos.intZ());
     }
 
 
@@ -158,7 +162,7 @@ public class CreepinoUtils {
     }
 
     public static BlockPos getCoordinatesFromSide(Vector3 pos, EnumFacing s) {
-        return getCoordinatesFromSide(pos, s);
+        return getCoordinatesFromSide(pos.intX(), pos.intY(), pos.intZ(), s.ordinal());
     }
 
 
