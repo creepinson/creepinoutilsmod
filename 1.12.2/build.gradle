@@ -1,0 +1,40 @@
+buildscript {
+	repositories {
+		jcenter()
+		maven { url = "https://files.minecraftforge.net/maven" }
+	}
+	dependencies {
+		classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+	}
+}
+plugins {
+    id 'java'
+}
+
+apply plugin: 'net.minecraftforge.gradle.forge'
+
+repositories {
+	maven {
+		name = 'curseforge'
+		url = 'https://minecraft.curseforge.com/api/maven/'
+	}
+}
+
+dependencies {
+	compileOnly "redstone-flux:RedstoneFlux-1.12:2.1.0.6:universal"
+	compileOnly "mekanism:Mekanism-1.12.2:9.4.13.349:api"
+	compileOnly "industrial-craft:industrialcraft-2-2.8.109:ex112:api"
+	compile project(":common")
+}
+
+version '1.12.2-1.0.0'
+archivesBaseName = "creepinoutilsmod"
+
+sourceCompatibility = 1.8
+
+minecraft {
+		version = "${minecraft_version}-${forge_version}"
+		runDir = '../run'
+		replace "${version}", project.version
+		mappings = forge_mappings
+}
