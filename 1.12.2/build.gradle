@@ -9,6 +9,7 @@ buildscript {
 }
 plugins {
     id 'java'
+	id "com.wynprice.cursemaven" version "2.1.1"
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
@@ -21,9 +22,11 @@ repositories {
 }
 
 dependencies {
-	compileOnly "redstone-flux:RedstoneFlux-1.12:2.1.0.6:universal"
-	compileOnly "mekanism:Mekanism-1.12.2:9.4.13.349:api"
-	compileOnly "industrial-craft:industrialcraft-2-2.8.109:ex112:api"
+	deobfCompile "redstone-flux:RedstoneFlux-1.12:2.1.0.6:universal"
+	deobfCompile "curse.maven:mekanism:2572881"
+	deobfCompile "industrial-craft:industrialcraft-2-2.8.109:ex112:api"
+	deobfCompile "curse.maven:mrcrayfishs-vehicle-mod:2715570"
+	deobfCompile "curse.maven:obfuscate:2625165"
 	compile project(":common")
 }
 
