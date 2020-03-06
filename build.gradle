@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'maven-publish'
 }
 
 archivesBaseName = project_name
@@ -15,24 +16,4 @@ dependencies {
 
     testCompileOnly 'org.projectlombok:lombok:1.18.12'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
-}
-
-publishing {
-  publications {
-    gitLab(MavenPublication) {
-      groupId 'groupid'
-      artifactId 'artifactId'
-    }
-  }
-  repositories {
-   maven {
-      url "https://gitlab.com/api/v4/projects/creepino-utils-mod/packages/maven"
-      credentials(HttpHeaderCredentials) {
-        name = "Private-Token"
-        value = project.hasProperty('token')
-      }
-      authentication {
-        header(HttpHeaderAuthentication)
-      }
-    }
 }
