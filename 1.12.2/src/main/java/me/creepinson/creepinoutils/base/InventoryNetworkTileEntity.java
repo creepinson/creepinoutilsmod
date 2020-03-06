@@ -1,30 +1,39 @@
 package me.creepinson.creepinoutils.base;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.annotation.Nonnull;
 
 import me.creepinson.creepinoutils.api.network.INetworkTile;
 import me.creepinson.creepinoutils.api.upgrade.Upgrade;
 import me.creepinson.creepinoutils.api.upgrade.UpgradeInfo;
+import me.creepinson.creepinoutils.api.util.BlockUtils;
 import me.creepinson.creepinoutils.api.util.math.Vector3;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * @author Creepinson http://gitlab.com/creepinson
- * Project creepinoutils
+ * @author Creepinson http://gitlab.com/creepinson Project creepinoutils
  **/
-//@Optional.InterfaceList(value = {@Optional.Interface(iface = "mekanism.api.IConfigurable", modid = Hooks.MEKANISM, striprefs = true)})
+// @Optional.InterfaceList(value = {@Optional.Interface(iface =
+// "mekanism.api.IConfigurable", modid = Hooks.MEKANISM, striprefs = true)})
 
-public abstract class InventoryNetworkTileEntity extends TileEntity implements INetworkTile<ItemStack>, IItemHandler, ITickable {
+public abstract class InventoryNetworkTileEntity extends TileEntity implements INetworkTile, IItemHandler {
+    private Set<Vector3> connections = new HashSet<>();
+
+    @Override
+    public void refresh() {
+        connections = BlockUtils.getTilesWithCapability(world, new Vector3(pos),
+                CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+    }
 
     public final List<UpgradeInfo> upgrades = new ArrayList<>();
 
@@ -84,11 +93,9 @@ public abstract class InventoryNetworkTileEntity extends TileEntity implements I
         this.active = value;
     }
 
-
     public boolean isConnectable() {
         return connectable;
     }
-
 
     public void setConnectable(boolean value) {
         this.connectable = value;
@@ -96,13 +103,12 @@ public abstract class InventoryNetworkTileEntity extends TileEntity implements I
 
     protected boolean active;
 
-
     public void updateConnectedBlocks() {
         for (EnumFacing f : EnumFacing.values()) {
-            world.notifyBlockUpdate(pos.offset(f), world.getBlockState(pos.offset(f)), world.getBlockState(pos.offset(f)), 2);
+            world.notifyBlockUpdate(pos.offset(f), world.getBlockState(pos.offset(f)),
+                    world.getBlockState(pos.offset(f)), 2);
         }
     }
-
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
@@ -121,17 +127,29 @@ public abstract class InventoryNetworkTileEntity extends TileEntity implements I
     }
 
     @Override
+    public Set<Vector3> getConnections() {
+        return connections;
+    }
+
+    @Override
+    public Vector3 getPosition() {
+        return new Vector3(pos);
+    }
+
+    @Override
     public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
         return isConnectable() && isActive();
     }
 
     @Override
-    public boolean canConnectTo(IBlockAccess blockAccess, Vector3 vector3, EnumFacing f) {
-        return isConnectable() && isActive();
+    public boolean canConnectTo(IBlockAccess blockAccess, EnumFacing f) {
+        if (connections.isEmpty())
+            refresh();
+        return isConnectable() && isActive() && connections.contains(getPosition().offset(f));
     }
 
     @Override
-    public boolean canConnectToStrict(IBlockAccess blockAccess, Vector3 pos, EnumFacing side) {
-        return canConnectTo(blockAccess, pos, side);
+    public boolean canConnectToStrict(IBlockAccess blockAccess, EnumFacing side) {
+        return canConnectTo(blockAccess, side);
     }
 }

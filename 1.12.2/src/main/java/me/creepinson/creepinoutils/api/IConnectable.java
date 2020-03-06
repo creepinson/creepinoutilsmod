@@ -9,7 +9,7 @@ import net.minecraft.world.IBlockAccess;
  * Project creepinoutils
  **/
 public interface IConnectable {
-    boolean canConnectTo(IBlockAccess blockAccess, Vector3 pos, EnumFacing side);
+    boolean canConnectTo(IBlockAccess blockAccess, EnumFacing side);
 
-    boolean canConnectToStrict(IBlockAccess blockAccess, Vector3 pos, EnumFacing side);
+    boolean canConnectToStrict(IBlockAccess blockAccess, EnumFacing side);
 }

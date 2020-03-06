@@ -1,11 +1,18 @@
 package me.creepinson.creepinoutils.util;
 
-import com.google.common.collect.ImmutableList;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.function.Predicate;
 
+import com.google.common.collect.ImmutableList;
+
 public class PairList<K, V> extends ArrayList<Pair<K, V>> {
+    private static final long serialVersionUID = -7857974025247567866L;
 
     public PairList() {
         super();

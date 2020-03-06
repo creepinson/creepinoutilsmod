@@ -1,5 +1,6 @@
 package me.creepinson.creepinoutils.api.util.math;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
@@ -15,13 +16,13 @@ import java.util.List;
 
 public class Vector3 implements Serializable, Cloneable {
 
+    private static final long serialVersionUID = 4709144018768849633L;
     public static final Vector3 X_AXIS = new Vector3(1, 0, 0);
     public static final Vector3 Y_AXIS = new Vector3(0, 1, 0);
     public static final Vector3 Z_AXIS = new Vector3(0, 0, 1);
     public static final Vector3 X_AXIS_NEG = new Vector3(-1, 0, 0);
     public static final Vector3 Y_AXIS_NEG = new Vector3(0, -1, 0);
     public static final Vector3 Z_AXIS_NEG = new Vector3(0, 0, -1);
-
 
     /**
      * Offset this Vector 1 block in the given direction
@@ -30,14 +31,21 @@ public class Vector3 implements Serializable, Cloneable {
         return this.offset(facing, 1);
     }
 
+    /**
+     * 
+     */
+    public boolean exists(World world) {
+        return world.getChunk(toBlockPos()) != null && world.getChunk(toBlockPos()).isLoaded();
+    }
 
     /**
      * Offsets this Vector n blocks in the given direction
      */
     public Vector3 offset(EnumFacing facing, int n) {
-        return n == 0 ? this : new Vector3(this.x + facing.getXOffset() * n, this.y + facing.getYOffset() * n, this.z + facing.getZOffset() * n);
+        return n == 0 ? this
+                : new Vector3(this.x + facing.getXOffset() * n, this.y + facing.getYOffset() * n,
+                        this.z + facing.getZOffset() * n);
     }
-
 
     /**
      * Calculates the scalar-product of the given vectors.
@@ -56,7 +64,8 @@ public class Vector3 implements Serializable, Cloneable {
      * Calculates the cross-product of the given vectors.
      */
     public static Vector3 cross(Vector3 vec1, Vector3 vec2) {
-        return new Vector3(vec1.y * vec2.z - vec1.z * vec2.y, vec1.z * vec2.x - vec1.x * vec2.z, vec1.x * vec2.y - vec1.y * vec2.x);
+        return new Vector3(vec1.y * vec2.z - vec1.z * vec2.y, vec1.z * vec2.x - vec1.x * vec2.z,
+                vec1.x * vec2.y - vec1.y * vec2.x);
     }
 
     public float x;
@@ -117,7 +126,6 @@ public class Vector3 implements Serializable, Cloneable {
         this(0, 0, 0);
     }
 
-
     /**
      * Returns itself not a new Vector.
      *
@@ -137,7 +145,6 @@ public class Vector3 implements Serializable, Cloneable {
         this.z += z;
         return this;
     }
-
 
     /**
      * Returns itself not a new Vector.
@@ -196,8 +203,8 @@ public class Vector3 implements Serializable, Cloneable {
     }
 
     /**
-     * Returns itself not a new Vector. x-Axis = 0, y-Axis = 1, z-Axis = 2.
-     * Params are axis and angle.
+     * Returns itself not a new Vector. x-Axis = 0, y-Axis = 1, z-Axis = 2. Params
+     * are axis and angle.
      */
     public Vector3 rotate(int axis, int angle) {
 
@@ -207,9 +214,9 @@ public class Vector3 implements Serializable, Cloneable {
             this.y = (int) (y * Math.cos(a) + z * -Math.sin(a));
             this.z = (int) (y * Math.sin(a) + z * Math.cos(a));
         } else if (axis == 1) {
-            //System.out.println("Applying rotation for y-Axis with angle " + angle);
-            //System.out.println("radiant angle " + a);
-            //System.out.println("Cos a = " + Math.cos(a));
+            // System.out.println("Applying rotation for y-Axis with angle " + angle);
+            // System.out.println("radiant angle " + a);
+            // System.out.println("Cos a = " + Math.cos(a));
             this.x = (int) (x * Math.cos(a) + z * -Math.sin(a));
             this.z = (int) (x * Math.sin(a) + z * Math.cos(a));
         } else if (axis == 2) {
@@ -228,13 +235,14 @@ public class Vector3 implements Serializable, Cloneable {
     }
 
     /**
-     * Returns itself not a new Vector. Normalizes the vector to length 1.
-     * Note that this vector uses int values for coordinates.
+     * Returns itself not a new Vector. Normalizes the vector to length 1. Note that
+     * this vector uses int values for coordinates.
      */
     public Vector3 normalize() {
 
         int amt = this.amount();
-        if (amt == 0) return this;
+        if (amt == 0)
+            return this;
         this.x /= amt;
         this.y /= amt;
         this.z /= amt;
@@ -293,7 +301,8 @@ public class Vector3 implements Serializable, Cloneable {
      * Gets all entities inside of this position in block space.
      */
     public List<Entity> getEntitiesWithin(World worldObj, Class<? extends Entity> par1Class) {
-        return worldObj.getEntitiesWithinAABB(par1Class, new AxisAlignedBB(this.intX(), this.intY(), this.intZ(), this.intX() + 1, this.intY() + 1, this.intZ() + 1));
+        return worldObj.getEntitiesWithinAABB(par1Class, new AxisAlignedBB(this.intX(), this.intY(), this.intZ(),
+                this.intX() + 1, this.intY() + 1, this.intZ() + 1));
     }
 
     /**
@@ -397,4 +406,12 @@ public class Vector3 implements Serializable, Cloneable {
     public IBlockState getBlockOnSide(World world, EnumFacing direction) {
         return world.getBlockState(toBlockPos().offset(direction));
     }
+
+    public IBlockState getBlockState(World world) {
+        return world.getBlockState(toBlockPos());
+    }
+
+	public Block getBlock(World world) {
+		return world.getBlockState(toBlockPos()).getBlock();
+	}
 }

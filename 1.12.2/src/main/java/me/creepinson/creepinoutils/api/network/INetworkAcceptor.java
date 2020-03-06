@@ -2,7 +2,7 @@ package me.creepinson.creepinoutils.api.network;
 
 import net.minecraft.util.EnumFacing;
 
-public interface INetworkAcceptor<T> extends INetworkTile<T> {
+public interface INetworkAcceptor<T> extends INetworkTile {
     /**
      * @return How much energy does this TileEntity want?
      */

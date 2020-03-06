@@ -38,9 +38,10 @@ public abstract class BaseBlockWithTile extends BaseBlock implements ITileEntity
 
     @Override
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos fromPos) {
-        TileEntity te = WorldUtils.getTileEntity(world, pos);
+        Vector3 v = new Vector3(pos);
+        TileEntity te = WorldUtils.getTileEntity(world, v);
         if (te instanceof INetworkTile) {
-            ((INetworkTile) te).onNeighborChange(new Vector3(pos));
+            ((INetworkTile) te).onNeighborChange(v);
         }
     }
 

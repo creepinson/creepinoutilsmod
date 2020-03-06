@@ -17,15 +17,16 @@ import java.util.HashMap;
  * Made By Creepinson
  */
 
-
 public class ASMHelper {
-    public static HashMap<String, ClassNode> cacheNodes = new HashMap();
+    public static HashMap<String, ClassNode> cacheNodes = new HashMap<>();
 
     /**
      * srg support doesn't patch local vars nor instructions
      */
-    public static MethodNode replaceMethod(ClassNode classNode, String inputStream, String method_name, String method_desc, String srgname) {
-        MethodNode origin = Plugin.isObf ? getMethodNode(classNode, srgname, method_desc) : getMethodNode(classNode, method_name, method_desc);
+    public static MethodNode replaceMethod(ClassNode classNode, String inputStream, String method_name,
+            String method_desc, String srgname) {
+        MethodNode origin = Plugin.isObf ? getMethodNode(classNode, srgname, method_desc)
+                : getMethodNode(classNode, method_name, method_desc);
         try {
             MethodNode toReplace = getCachedMethodNode(inputStream, Plugin.isObf ? srgname : method_name, method_desc);
             origin.localVariables.clear();
@@ -56,13 +57,15 @@ public class ASMHelper {
     }
 
     /**
-     * notch name version of replacing a method don't recommend it at all since you can use regular replace method to do so
+     * notch name version of replacing a method don't recommend it at all since you
+     * can use regular replace method to do so
      */
-    public static void replaceMethodNotch(ClassNode classToTransform, String inputStream, MCPSidedString method_name, MCPSidedString method_desc, MCPSidedString methodNameInject) {
-        long time = System.currentTimeMillis();
+    public static void replaceMethodNotch(ClassNode classToTransform, String inputStream, MCPSidedString method_name,
+            MCPSidedString method_desc, MCPSidedString methodNameInject) {
         MethodNode origin = getMethodNode(classToTransform, method_name.toString(), method_desc.toString());
         try {
-            MethodNode toReplace = getCachedMethodNode(inputStream, methodNameInject.toString(), method_desc.toString());
+            MethodNode toReplace = getCachedMethodNode(inputStream, methodNameInject.toString(),
+                    method_desc.toString());
             origin.localVariables.clear();
             origin.instructions = toReplace.instructions;
             origin.localVariables = toReplace.localVariables;
@@ -79,7 +82,8 @@ public class ASMHelper {
     /**
      * get a method node from a possble cached classnode
      */
-    public static MethodNode getCachedMethodNode(String inputStream, String obMethod, String method_desc) throws IOException {
+    public static MethodNode getCachedMethodNode(String inputStream, String obMethod, String method_desc)
+            throws IOException {
         if (cacheNodes.containsKey(inputStream)) {
             ClassNode node = cacheNodes.get(inputStream);
             return getMethodNode(node, obMethod, method_desc);
@@ -128,7 +132,8 @@ public class ASMHelper {
     }
 
     /**
-     * patch all references on the local variable table instanceof of this to a new class
+     * patch all references on the local variable table instanceof of this to a new
+     * class
      */
     public static void patchLocals(MethodNode method, String name) {
         for (LocalVariableNode lvn : method.localVariables) {
@@ -140,7 +145,8 @@ public class ASMHelper {
     }
 
     /**
-     * patch previous object owner instructions to new owner with filtering out static fields/method calls
+     * patch previous object owner instructions to new owner with filtering out
+     * static fields/method calls
      */
     public static void patchInstructions(MethodNode mn, String class_name, String class_old, boolean patchStatic) {
         String className = class_name.replace('.', '/');
@@ -185,8 +191,9 @@ public class ASMHelper {
     }
 
     /**
-     * try not to use this replacing methods adding fields is more acceptable rather then replacing classes thus throwing out other people's asm
-     * and causing mod incompatibilities
+     * try not to use this replacing methods adding fields is more acceptable rather
+     * then replacing classes thus throwing out other people's asm and causing mod
+     * incompatibilities
      *
      * @param inputStream
      * @return
@@ -212,7 +219,8 @@ public class ASMHelper {
     }
 
     /**
-     * add a object field to the class with optional signature. The paramDesc is a descriptor of the types of a class HashMap<key,value>
+     * add a object field to the class with optional signature. The paramDesc is a
+     * descriptor of the types of a class HashMap<key,value>
      */
     public static void addFeild(ClassNode node, String feildName, String desc, String paramDesc) {
         FieldNode field = new FieldNode(Opcodes.ACC_PUBLIC, feildName, desc, paramDesc, null);
@@ -222,9 +230,9 @@ public class ASMHelper {
     /**
      * don't add the method if it's already has it
      */
-    public static void addIfMethod(ClassNode classNode, String inputStream, String method_name, String descriptor) throws IOException {
+    public static void addIfMethod(ClassNode classNode, String inputStream, String method_name, String descriptor)
+            throws IOException {
         MethodNode method = getCachedMethodNode(inputStream, method_name, descriptor);
-        Class c = method.getClass();
         if (containsMethod(classNode, method_name, descriptor))
             return;
         classNode.methods.add(method);
@@ -243,18 +251,20 @@ public class ASMHelper {
     }
 
     /**
-     * add a method no obfuscated checks you have to do that yourself if you got a deob compiled class
-     * no checks for patching the local variables nor the instructions
+     * add a method no obfuscated checks you have to do that yourself if you got a
+     * deob compiled class no checks for patching the local variables nor the
+     * instructions
      */
-    public static MethodNode addMethod(ClassNode classNode, String inputStream, String method_name, String descriptor) throws IOException {
+    public static MethodNode addMethod(ClassNode classNode, String inputStream, String method_name, String descriptor)
+            throws IOException {
         MethodNode method = getCachedMethodNode(inputStream, method_name, descriptor);
-        Class c = method.getClass();
         classNode.methods.add(method);
         return method;
     }
 
     /**
-     * remove a method don't remove ones that are going to get executed unless you immediately add the same method and descriptor back
+     * remove a method don't remove ones that are going to get executed unless you
+     * immediately add the same method and descriptor back
      *
      * @throws IOException
      */
@@ -282,7 +292,8 @@ public class ASMHelper {
     }
 
     /**
-     * getting the first instanceof of this will usually tell you where the initial injection point should be after
+     * getting the first instanceof of this will usually tell you where the initial
+     * injection point should be after
      */
     public static LineNumberNode getFirstInstruction(MethodNode method) {
         for (AbstractInsnNode obj : method.instructions.toArray())
@@ -304,11 +315,13 @@ public class ASMHelper {
     }
 
     public static boolean isReturnOpcode(int opcode) {
-        return opcode == Opcodes.RETURN || opcode == Opcodes.ARETURN || opcode == Opcodes.DRETURN || opcode == Opcodes.FRETURN || opcode == Opcodes.IRETURN || opcode == Opcodes.LRETURN;
+        return opcode == Opcodes.RETURN || opcode == Opcodes.ARETURN || opcode == Opcodes.DRETURN
+                || opcode == Opcodes.FRETURN || opcode == Opcodes.IRETURN || opcode == Opcodes.LRETURN;
     }
 
     /**
-     * use this if you ever are adding local variables to the table to dynamically get them
+     * use this if you ever are adding local variables to the table to dynamically
+     * get them
      *
      * @return -1 if doesn't exist
      */
@@ -379,7 +392,8 @@ public class ASMHelper {
         return node.name + " desc:" + node.desc + " signature:" + node.signature + " access:" + node.access;
     }
 
-    public static MethodInsnNode getLastMethodInsn(MethodNode node, int opcode, String owner, String name, String desc, boolean isInterface) {
+    public static MethodInsnNode getLastMethodInsn(MethodNode node, int opcode, String owner, String name, String desc,
+            boolean isInterface) {
         MethodInsnNode compare = new MethodInsnNode(opcode, owner, name, desc, isInterface);
         AbstractInsnNode[] list = node.instructions.toArray();
         for (int i = list.length - 1; i >= 0; i--) {
@@ -391,7 +405,8 @@ public class ASMHelper {
         return null;
     }
 
-    public static MethodInsnNode getFirstMethodInsn(MethodNode node, int opcode, String owner, String name, String desc, boolean isInterface) {
+    public static MethodInsnNode getFirstMethodInsn(MethodNode node, int opcode, String owner, String name, String desc,
+            boolean isInterface) {
         MethodInsnNode compare = new MethodInsnNode(opcode, owner, name, desc, isInterface);
         for (AbstractInsnNode ab : node.instructions.toArray()) {
             if (ab.getOpcode() == opcode && ab instanceof MethodInsnNode && equals(compare, (MethodInsnNode) ab)) {
@@ -402,11 +417,13 @@ public class ASMHelper {
     }
 
     public static boolean equals(MethodInsnNode obj1, MethodInsnNode obj2) {
-        return obj1.getOpcode() == obj2.getOpcode() && obj1.name.equals(obj2.name) && obj1.desc.equals(obj2.desc) && obj1.owner.equals(obj2.owner) && obj1.itf == obj2.itf;
+        return obj1.getOpcode() == obj2.getOpcode() && obj1.name.equals(obj2.name) && obj1.desc.equals(obj2.desc)
+                && obj1.owner.equals(obj2.owner) && obj1.itf == obj2.itf;
     }
 
     public static boolean equals(FieldInsnNode obj1, FieldInsnNode obj2) {
-        return obj1.getOpcode() == obj2.getOpcode() && obj1.name.equals(obj2.name) && obj1.desc.equals(obj2.desc) && obj1.owner.equals(obj2.owner);
+        return obj1.getOpcode() == obj2.getOpcode() && obj1.name.equals(obj2.name) && obj1.desc.equals(obj2.desc)
+                && obj1.owner.equals(obj2.owner);
     }
 
     public static boolean equals(FieldNode obj1, FieldNode obj2) {
@@ -456,7 +473,8 @@ public class ASMHelper {
                 return "V";
             throw new RuntimeException("Unrecognized primitive " + c);
         }
-        if (c.isArray()) return c.getName().replace('.', '/');
+        if (c.isArray())
+            return c.getName().replace('.', '/');
         return ('L' + c.getName() + ';').replace('.', '/');
     }
 
@@ -476,7 +494,8 @@ public class ASMHelper {
         return s + getTypeForClass(m.getReturnType());
     }
 
-    public static MethodInsnNode getMethodInsnNode(MethodNode node, int opcode, String owner, String name, String desc, boolean itf) {
+    public static MethodInsnNode getMethodInsnNode(MethodNode node, int opcode, String owner, String name, String desc,
+            boolean itf) {
         AbstractInsnNode[] arr = node.instructions.toArray();
         MethodInsnNode compare = new MethodInsnNode(opcode, owner, name, desc, itf);
         for (AbstractInsnNode ab : arr) {

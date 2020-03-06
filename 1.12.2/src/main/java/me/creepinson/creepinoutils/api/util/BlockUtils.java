@@ -1,5 +1,8 @@
 package me.creepinson.creepinoutils.api.util;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import me.creepinson.creepinoutils.api.util.math.Vector3;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
@@ -10,57 +13,64 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
-import java.util.HashSet;
-import java.util.Set;
+import net.minecraftforge.common.capabilities.Capability;
 
 public class BlockUtils {
 
     public static boolean isDirect(Vector3 p, Vector3 t) {
-        return ((p.x == t.x + 1 || p.x == t.x - 1) && !(p.y == t.y + 1 || p.y == t.y - 1) && !(p.z == t.z + 1 || p.z == t.z - 1))
-                || (!(p.x == t.x + 1 || p.x == t.x - 1) && (p.y == t.y + 1 || p.y == t.y - 1) && !(p.z == t.z + 1 || p.z == t.z - 1))
-                || (!(p.x == t.x + 1 || p.x == t.x - 1) && !(p.y == t.y + 1 || p.y == t.y - 1) && (p.z == t.z + 1 || p.z == t.z - 1));
+        return ((p.x == t.x + 1 || p.x == t.x - 1) && !(p.y == t.y + 1 || p.y == t.y - 1)
+                && !(p.z == t.z + 1 || p.z == t.z - 1))
+                || (!(p.x == t.x + 1 || p.x == t.x - 1) && (p.y == t.y + 1 || p.y == t.y - 1)
+                        && !(p.z == t.z + 1 || p.z == t.z - 1))
+                || (!(p.x == t.x + 1 || p.x == t.x - 1) && !(p.y == t.y + 1 || p.y == t.y - 1)
+                        && (p.z == t.z + 1 || p.z == t.z - 1));
     }
 
     public static boolean isIndirect(Vector3 p, Vector3 t) {
         return !isDirect(p, t);
     }
 
-    public static Set<Vector3> getTiles(World world, Vector3 startingPosition, Class... search) {
-        // TODO: replace with Map<Vector3, EnumFacing> for getting sides.
-        Set<Vector3> set = new HashSet();
-        getTilesRecursive(set, world, startingPosition, null, search);
+    /**
+     * Returns a set containing the positions of each tile entity that is found to be connected to the 
+     */
+    public static Set<Vector3> getTilesWithCapability(World world, Vector3 startingPosition, Capability... search) {
+        Set<Vector3> set = new HashSet<>();
+        getTilesWithCapabilityRecursive(set, world, startingPosition, null, search);
         return set;
     }
 
-    public static void getTilesRecursive(Set<Vector3> done, World world, Vector3 start, EnumFacing from, Class... search) {
+    public static void getTilesWithCapabilityRecursive(Set<Vector3> done, World world, Vector3 start, EnumFacing from,
+            Capability... search) {
         for (EnumFacing side : EnumFacing.values()) {
-            if (side == from) continue;
-            if (world.getTileEntity(start.toBlockPos()) != null && !world.getTileEntity(start.toBlockPos()).isInvalid()) {
+            if (side == from)
+                continue;
+            if (world.getTileEntity(start.toBlockPos()) != null
+                    && !world.getTileEntity(start.toBlockPos()).isInvalid()) {
                 TileEntity tile = world.getTileEntity(start.toBlockPos());
-                for (Class c : search) {
-                    if (c.isInstance(tile)) {
+                for (Capability c : search) {
+                    if (tile.getCapability(c, from) != null) {
                         done.add(start);
                     }
                 }
 
                 if (done.contains(start.offset(side))) {
-                    getTilesRecursive(done, world, start.offset(side), side.getOpposite(), search);
+                    getTilesWithCapabilityRecursive(done, world, start.offset(side), side.getOpposite(), search);
                 }
             }
         }
     }
 
     public static Set<Vector3> getBlocks(World world, Vector3 startingPosition, Class... search) {
-        // TODO: replace with Map<Vector3, EnumFacing> for getting sides.
-        Set<Vector3> set = new HashSet();
+        Set<Vector3> set = new HashSet<>();
         getBlocksRecursive(set, world, startingPosition, null, search);
         return set;
     }
 
-    public static void getBlocksRecursive(Set<Vector3> done, World world, Vector3 start, EnumFacing from, Class... search) {
+    public static void getBlocksRecursive(Set<Vector3> done, World world, Vector3 start, EnumFacing from,
+            Class... search) {
         for (EnumFacing side : EnumFacing.values()) {
-            if (side == from) continue;
+            if (side == from)
+                continue;
             IBlockState state = world.getBlockState(start.toBlockPos());
             for (Class c : search) {
                 if (c.isInstance(state.getBlock())) {

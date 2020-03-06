@@ -1,7 +1,5 @@
 package me.creepinson.creepinoutils.api.util.world;
 
-
-import mekanism.api.Coord4D;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
@@ -14,6 +12,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
 import javax.annotation.Nullable;
+
+import me.creepinson.creepinoutils.api.util.math.Vector3;
 
 /**
  * @author Creepinson http://gitlab.com/creepinson
@@ -152,7 +152,6 @@ public class WorldUtils {
         // anyways here in case IActiveState#renderUpdate() is false and we just had the block rotate.
         // For example the laser, or charge pad.
         world.markBlockRangeForRenderUpdate(pos, pos);
-        TileEntity tileEntity = world.getTileEntity(pos);
         updateAllLightTypes(world, pos);
     }
 
@@ -161,19 +160,19 @@ public class WorldUtils {
      * Notifies neighboring blocks of a TileEntity change without loading chunks.
      *
      * @param world - world to perform the operation in
-     * @param coord - Coord4D to perform the operation on
+     * @param coord - Vector3 to perform the operation on
      */
-    public static void notifyLoadedNeighborsOfTileChange(World world, Coord4D coord) {
+    public static void notifyLoadedNeighborsOfTileChange(World world, Vector3 coord) {
         for (EnumFacing dir : EnumFacing.VALUES) {
-            Coord4D offset = coord.offset(dir);
+            Vector3 offset = coord.offset(dir);
             if (offset.exists(world)) {
-                notifyNeighborofChange(world, offset, coord.getPos());
+                notifyNeighborofChange(world, offset, coord.toBlockPos());
                 if (offset.getBlockState(world).isNormalCube()) {
                     offset = offset.offset(dir);
                     if (offset.exists(world)) {
                         Block block1 = offset.getBlock(world);
-                        if (block1.getWeakChanges(world, offset.getPos())) {
-                            block1.onNeighborChange(world, offset.getPos(), coord.getPos());
+                        if (block1.getWeakChanges(world, offset.toBlockPos())) {
+                            block1.onNeighborChange(world, offset.toBlockPos(), coord.toBlockPos());
                         }
                     }
                 }
@@ -188,10 +187,10 @@ public class WorldUtils {
      * @param coord   neighbor to notify
      * @param fromPos pos of our block that updated
      */
-    public static void notifyNeighborofChange(World world, Coord4D coord, BlockPos fromPos) {
+    public static void notifyNeighborofChange(World world, Vector3 coord, BlockPos fromPos) {
         IBlockState state = coord.getBlockState(world);
-        state.getBlock().onNeighborChange(world, coord.getPos(), fromPos);
-        state.neighborChanged(world, coord.getPos(), world.getBlockState(fromPos).getBlock(), fromPos);
+        state.getBlock().onNeighborChange(world, coord.toBlockPos(), fromPos);
+        state.neighborChanged(world, coord.toBlockPos(), world.getBlockState(fromPos).getBlock(), fromPos);
     }
 
     /**
@@ -209,14 +208,14 @@ public class WorldUtils {
      * Checks if a block is directly getting powered by any of its neighbors without loading any chunks.
      *
      * @param world - the world to perform the check in
-     * @param coord - the Coord4D of the block to check
+     * @param coord - the Vector3 of the block to check
      * @return if the block is directly getting powered
      */
-    public static boolean isDirectlyGettingPowered(World world, Coord4D coord) {
+    public static boolean isDirectlyGettingPowered(World world, Vector3 coord) {
         for (EnumFacing side : EnumFacing.VALUES) {
-            Coord4D sideCoord = coord.offset(side);
+            Vector3 sideCoord = coord.offset(side);
             if (sideCoord.exists(world)) {
-                if (world.getRedstonePower(coord.getPos(), side) > 0) {
+                if (world.getRedstonePower(coord.toBlockPos(), side) > 0) {
                     return true;
                 }
             }
@@ -232,15 +231,15 @@ public class WorldUtils {
      * @param coord - the coordinate of the block performing the check
      * @return if the block is indirectly getting powered by LOADED chunks
      */
-    public static boolean isGettingPowered(World world, Coord4D coord) {
+    public static boolean isGettingPowered(World world, Vector3 coord) {
         for (EnumFacing side : EnumFacing.VALUES) {
-            Coord4D sideCoord = coord.offset(side);
+            Vector3 sideCoord = coord.offset(side);
             if (sideCoord.exists(world) && sideCoord.offset(side).exists(world)) {
                 IBlockState blockState = sideCoord.getBlockState(world);
-                boolean weakPower = blockState.getBlock().shouldCheckWeakPower(blockState, world, coord.getPos(), side);
+                boolean weakPower = blockState.getBlock().shouldCheckWeakPower(blockState, world, coord.toBlockPos(), side);
                 if (weakPower && isDirectlyGettingPowered(world, sideCoord)) {
                     return true;
-                } else if (!weakPower && blockState.getWeakPower(world, sideCoord.getPos(), side) > 0) {
+                } else if (!weakPower && blockState.getWeakPower(world, sideCoord.toBlockPos(), side) > 0) {
                     return true;
                 }
             }
@@ -256,10 +255,9 @@ public class WorldUtils {
      * @return tile entity if found, null if either not found or not valid
      */
     @Nullable
-    public static TileEntity getTileEntity(IBlockAccess world, BlockPos pos) {
-        if (world != null && world.getTileEntity(pos) != null && !world.getTileEntity(pos).isInvalid()) {
-            return world.getTileEntity(pos);
-        }
+    public static TileEntity getTileEntity(IBlockAccess world, Vector3 pos) {
+        if (world instanceof World && pos != null && pos.exists((World)world) && world.getTileEntity(pos.toBlockPos()) != null)
+            return world.getTileEntity(pos.toBlockPos());
         return null;
     }
 }
