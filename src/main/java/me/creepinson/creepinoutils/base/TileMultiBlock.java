@@ -28,7 +28,7 @@ public abstract class TileMultiBlock extends TileEntity implements ITickable, IN
         hasMaster = false;
         isMaster = false;
     }
-    
+
     public abstract void resetStructure();
 
     public boolean checkForMaster() {
@@ -54,17 +54,17 @@ public abstract class TileMultiBlock extends TileEntity implements ITickable, IN
 
     public abstract void setupStructure();
 
-@Override
-public void readFromNBT(NBTTagCompound data) {
-    super.readFromNBT(data);
-    masterPos = new Vector3(data.getInteger("masterX"), data.getInteger("masterY"), data.getInteger("masterZ"));
-    hasMaster = data.getBoolean("hasMaster");
-    isMaster = data.getBoolean("isMaster");
-    if (hasMaster() && isMaster()) {
-        // Any other values should ONLY BE READ BY THE MASTER
-        
+    @Override
+    public void readFromNBT(NBTTagCompound data) {
+        super.readFromNBT(data);
+        masterPos = new Vector3(data.getInteger("masterX"), data.getInteger("masterY"), data.getInteger("masterZ"));
+        hasMaster = data.getBoolean("hasMaster");
+        isMaster = data.getBoolean("isMaster");
+        if (hasMaster() && isMaster()) {
+            // Any other values should ONLY BE READ BY THE MASTER
+
+        }
     }
-}
 
     public boolean hasMaster() {
         return hasMaster;
