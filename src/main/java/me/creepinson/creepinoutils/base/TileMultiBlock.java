@@ -1,6 +1,10 @@
 package me.creepinson.creepinoutils.base;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import me.creepinson.creepinoutils.api.network.INetworkTile;
+import me.creepinson.creepinoutils.api.util.BlockUtils;
 import me.creepinson.creepinoutils.api.util.math.Vector3;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -11,6 +15,25 @@ import net.minecraft.util.math.BlockPos;
 public abstract class TileMultiBlock extends TileEntity implements ITickable, INetworkTile {
     private boolean hasMaster, isMaster;
     private Vector3 masterPos;
+
+    private Set<Vector3> connections = new HashSet<>();
+
+    @Override
+    public boolean isActive() {
+        // TODO Auto-generated method stub
+        return !isInvalid();
+    }
+
+    @Override
+    public void refresh() {
+        this.connections = BlockUtils.getTiles(world, getPosition(), BlockHackingController.class);
+    }
+
+    @Override
+    public void onNeighborChange(Vector3 v) {
+        refresh();
+    }
+
 
     @Override
     public void update() {
@@ -27,6 +50,12 @@ public abstract class TileMultiBlock extends TileEntity implements ITickable, IN
         masterPos = new Vector3();
         hasMaster = false;
         isMaster = false;
+    }
+    
+    
+    @Override
+    public Set<Vector3> getConnections() {
+        return connections;
     }
 
     public abstract void resetStructure();

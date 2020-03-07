@@ -31,7 +31,8 @@ public class BlockUtils {
     }
 
     /**
-     * Returns a set containing the positions of each tile entity that is found to be connected to the 
+     * Returns a set containing the positions of each tile entity that is found to
+     * be connected to the starting position.
      */
     public static Set<Vector3> getTilesWithCapability(World world, Vector3 startingPosition, Capability... search) {
         Set<Vector3> set = new HashSet<>();
@@ -55,6 +56,37 @@ public class BlockUtils {
 
                 if (done.contains(start.offset(side))) {
                     getTilesWithCapabilityRecursive(done, world, start.offset(side), side.getOpposite(), search);
+                }
+            }
+        }
+    }
+
+    /**
+     * Returns a set containing the positions of each tile entity that is found to
+     * be connected to the starting position.
+     */
+    public static Set<Vector3> getTiles(World world, Vector3 startingPosition, Class... search) {
+        Set<Vector3> set = new HashSet<>();
+        getTilesRecursive(set, world, startingPosition, null, search);
+        return set;
+    }
+
+    public static void getTilesRecursive(Set<Vector3> done, World world, Vector3 start, EnumFacing from,
+            Class... search) {
+        for (EnumFacing side : EnumFacing.values()) {
+            if (side == from)
+                continue;
+            if (world.getTileEntity(start.toBlockPos()) != null
+                    && !world.getTileEntity(start.toBlockPos()).isInvalid()) {
+                TileEntity tile = world.getTileEntity(start.toBlockPos());
+                for (Class c : search) {
+                    if (c.isInstance(tile)) {
+                        done.add(start);
+                    }
+                }
+
+                if (done.contains(start.offset(side))) {
+                    getTilesRecursive(done, world, start.offset(side), side.getOpposite(), search);
                 }
             }
         }
