@@ -7,15 +7,13 @@ import me.creepinson.creepinoutils.base.CreativeTab;
  * @author Creepinson http://gitlab.com/creepinson
  * Project CreepinoUtilsMod
  **/
-public class CreativeTabCallback {
+public abstract class CreativeTabCallback {
     public final BaseMod mod;
 
     public CreativeTabCallback(BaseMod mod) {
         this.mod = mod;
     }
 
-    public void init(CreativeTab tab) {
-
-    }
+    public abstract void init(CreativeTab tab);
 
 }

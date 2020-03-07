@@ -2,6 +2,7 @@
 
 ### Java ###
 *.class
+bin
 
 # BlueJ files
 *.ctxt
