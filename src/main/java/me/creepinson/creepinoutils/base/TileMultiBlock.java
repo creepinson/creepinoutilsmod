@@ -1,32 +1,25 @@
 package me.creepinson.creepinoutils.base;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Stack;
-
 import me.creepinson.creepinoutils.CreepinoUtilsMod;
 import me.creepinson.creepinoutils.api.network.INetworkTile;
 import me.creepinson.creepinoutils.api.upgrade.Upgrade;
 import me.creepinson.creepinoutils.api.upgrade.UpgradeInfo;
 import me.creepinson.creepinoutils.api.util.BlockUtils;
-import me.creepinson.creepinoutils.api.util.CreepinoUtils;
 import me.creepinson.creepinoutils.api.util.math.Vector3;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
+
+import java.util.*;
 
 public abstract class TileMultiBlock extends TileEntity implements ITickable, INetworkTile, IMultiBlockTile {
     private boolean hasMaster, isMaster;
     protected TileMultiBlock master;
     private boolean firstRun = true;
-    
+
     public boolean isFormed() {
         return master instanceof TileMultiBlock && !master.isInvalid();
     }
@@ -52,7 +45,7 @@ public abstract class TileMultiBlock extends TileEntity implements ITickable, IN
 
     @Override
     public void update() {
-        if(firstRun) {
+        if (firstRun) {
             initializeMultiBlockIfNecessary();
             firstRun = false;
         }
@@ -181,17 +174,17 @@ public abstract class TileMultiBlock extends TileEntity implements ITickable, IN
         return hasMaster;
     }
 
-    private void setMaster(TileMultiBlock master, int blocks) {
+    public void setMaster(TileMultiBlock master, int blocks) {
         this.master = master;
         boolean wasMaster = isMaster;
         isMaster = master == this;
         if (isMaster) {
             CreepinoUtilsMod.debug("Master set to " + blocks + " blocks");
         } /*
-           * else if(!isMaster && wasMaster) {
-           * 
-           * }
-           */
+         * else if(!isMaster && wasMaster) {
+         *
+         * }
+         */
     }
 
     public boolean isMaster() {

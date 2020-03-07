@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <annotationProcessing>
-      <profile name="Gradle Imported" enabled="true">
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="false">
-          <entry name="$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.12/48e4e5d60309ebd833bc528dcf77668eab3cd72c/lombok-1.18.12.jar" />
-        </processorPath>
-        <module name="CreepinoUtilsMod.main" />
-      </profile>
-    </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="CreepinoUtilsMod.1.12.2.api" target="1.8" />
+      <module name="CreepinoUtilsMod.1.12.2.main" target="1.8" />
+      <module name="CreepinoUtilsMod.1.12.2.test" target="1.8" />
       <module name="creepinoutilsmod.api" target="1.8" />
       <module name="creepinoutilsmod.common.api" target="1.8" />
+      <module name="CreepinoUtilsMod.common.main" target="1.8" />
+      <module name="CreepinoUtilsMod.common.test" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
