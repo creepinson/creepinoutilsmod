@@ -8,7 +8,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 
-public abstract class TileMultiBlock3x3 extends TileMultiBlock implements ITickable, INetworkTile {
+public abstract class TileMultiBlock3x3 extends TileMultiBlock {
     public void resetStructure() {
         int xCoord = getPosition().intX();
         int yCoord = getPosition().intY();
