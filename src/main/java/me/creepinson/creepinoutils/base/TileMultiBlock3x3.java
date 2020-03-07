@@ -22,6 +22,16 @@ public abstract class TileMultiBlock3x3 extends TileMultiBlock {
                 }
     }
 
+    public TileMultiBlock3x3 getMaster() {
+        if(checkForMaster()) return (TileMultiBlock3x3)getMasterPosition().getTileEntity(world);
+        else return null;
+    }
+
+    public boolean checkForMaster() {
+        TileEntity tile = getMasterPosition().getTileEntity(world);
+        return super.checkForMaster() && tile instanceof TileMultiBlock3x3;
+    }
+
     @Override
     public void onNeighborChange(Vector3 v) {
         TileEntity tile = v.getTileEntity(world);

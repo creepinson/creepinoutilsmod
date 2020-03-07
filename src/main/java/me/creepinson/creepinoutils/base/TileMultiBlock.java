@@ -31,6 +31,11 @@ public abstract class TileMultiBlock extends TileEntity implements ITickable, IN
 
     public abstract void resetStructure();
 
+    public TileMultiBlock getMaster() {
+        if(checkForMaster()) return (TileMultiBlock)masterPos.getTileEntity(world);
+        else return null;
+    }
+
     public boolean checkForMaster() {
         TileEntity tile = masterPos.getTileEntity(world);
         return (tile != null && (tile instanceof TileMultiBlock));
