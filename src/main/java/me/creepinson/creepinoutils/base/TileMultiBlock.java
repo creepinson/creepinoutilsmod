@@ -27,6 +27,10 @@ public abstract class TileMultiBlock extends TileEntity implements ITickable, IN
     protected TileMultiBlock master;
     private boolean firstRun = true;
     
+    public boolean isFormed() {
+        return master instanceof TileMultiBlock && !master.isInvalid();
+    }
+
     private Set<Vector3> connections = new HashSet<>(); // TODO: remove
 
     @Override
