@@ -24,7 +24,7 @@ import net.minecraft.world.IBlockAccess;
 
 public abstract class TileMultiBlock extends TileEntity implements ITickable, INetworkTile {
     private boolean hasMaster, isMaster;
-    private TileMultiBlock master;
+    protected TileMultiBlock master;
     private boolean firstRun = true;
     
     private Set<Vector3> connections = new HashSet<>(); // TODO: remove
