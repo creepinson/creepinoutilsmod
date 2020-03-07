@@ -22,7 +22,7 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
-public abstract class TileMultiBlock extends TileEntity implements ITickable, INetworkTile {
+public abstract class TileMultiBlock extends TileEntity implements ITickable, INetworkTile, IMultiBlockTile {
     private boolean hasMaster, isMaster;
     protected TileMultiBlock master;
     private boolean firstRun = true;
