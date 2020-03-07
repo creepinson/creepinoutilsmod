@@ -1,13 +1,17 @@
 package me.creepinson.creepinoutils.base;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Stack;
 
+import me.creepinson.creepinoutils.CreepinoUtilsMod;
 import me.creepinson.creepinoutils.api.network.INetworkTile;
 import me.creepinson.creepinoutils.api.upgrade.Upgrade;
 import me.creepinson.creepinoutils.api.upgrade.UpgradeInfo;
 import me.creepinson.creepinoutils.api.util.BlockUtils;
+import me.creepinson.creepinoutils.api.util.CreepinoUtils;
 import me.creepinson.creepinoutils.api.util.math.Vector3;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -20,9 +24,10 @@ import net.minecraft.world.IBlockAccess;
 
 public abstract class TileMultiBlock extends TileEntity implements ITickable, INetworkTile {
     private boolean hasMaster, isMaster;
-    private Vector3 masterPos;
-
-    private Set<Vector3> connections = new HashSet<>();
+    private TileMultiBlock master;
+    private boolean firstRun = true;
+    
+    private Set<Vector3> connections = new HashSet<>(); // TODO: remove
 
     @Override
     public boolean isActive() {
@@ -33,6 +38,7 @@ public abstract class TileMultiBlock extends TileEntity implements ITickable, IN
     @Override
     public void refresh() {
         this.connections = BlockUtils.getTiles(world, getPosition(), TileMultiBlock.class);
+        this.initializeMultiBlockIfNecessary();
     }
 
     @Override
@@ -40,15 +46,17 @@ public abstract class TileMultiBlock extends TileEntity implements ITickable, IN
         refresh();
     }
 
-
     @Override
     public void update() {
-
+        if(firstRun) {
+            initializeMultiBlockIfNecessary();
+            firstRun = false;
+        }
     }
 
     @Override
     public void setActive(boolean value) {
-        
+
     }
 
     @Override
@@ -62,10 +70,10 @@ public abstract class TileMultiBlock extends TileEntity implements ITickable, IN
     }
 
     public void invalidate() {
-        for(EnumFacing facing : EnumFacing.values()) {
+        for (EnumFacing facing : EnumFacing.values()) {
             TileEntity te = world.getTileEntity(pos.offset(facing));
-            if(te instanceof TileMultiBlock && !te.isInvalid()) {
-                ((TileMultiBlock)te).refresh();
+            if (te instanceof TileMultiBlock && !te.isInvalid()) {
+                ((TileMultiBlock) te).refresh();
             }
         }
     }
@@ -97,35 +105,28 @@ public abstract class TileMultiBlock extends TileEntity implements ITickable, IN
 
     // Reset method to be run when the master is gone or tells them to
     public void reset() {
-        masterPos = new Vector3();
+        master = null;
         hasMaster = false;
         isMaster = false;
     }
-    
-    
+
     @Override
     public Set<Vector3> getConnections() {
         return connections;
     }
 
-    public abstract void resetStructure();
-
     public TileMultiBlock getMaster() {
-        if(checkForMaster()) return (TileMultiBlock)masterPos.getTileEntity(world);
-        else return null;
+        initializeMultiBlockIfNecessary();
+        return master;
     }
 
     public boolean checkForMaster() {
-        TileEntity tile = masterPos.getTileEntity(world);
-        return (tile != null && (tile instanceof TileMultiBlock));
+        return (master != null && (master instanceof TileMultiBlock));
     }
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound data) {
         super.writeToNBT(data);
-        data.setInteger("masterX", masterPos.intX());
-        data.setInteger("masterY", masterPos.intY());
-        data.setInteger("masterZ", masterPos.intZ());
         data.setBoolean("hasMaster", hasMaster);
         data.setBoolean("isMaster", isMaster);
         if (hasMaster() && isMaster()) {
@@ -134,14 +135,36 @@ public abstract class TileMultiBlock extends TileEntity implements ITickable, IN
         return data;
     }
 
-    public abstract boolean checkMultiBlockForm();
-
-    public abstract void setupStructure();
+    public void initializeMultiBlockIfNecessary() {
+        if (master == null || master.isInvalid()) {
+            List<TileMultiBlock> connected = new ArrayList<>();
+            Stack<TileMultiBlock> traversing = new Stack<TileMultiBlock>();
+            TileMultiBlock master = this;
+            traversing.add(this);
+            while (!traversing.isEmpty()) {
+                TileMultiBlock tile = traversing.pop();
+                if (tile.isMaster) {
+                    master = tile;
+                }
+                connected.add(tile);
+                for (EnumFacing facing : EnumFacing.values()) {
+                    TileEntity te = tile.getPosition().offset(facing).getTileEntity(world);
+                    if (te instanceof TileMultiBlock && !connected.contains(te)) {
+                        traversing.add((TileMultiBlock) te);
+                    }
+                }
+            }
+            CreepinoUtilsMod.debug(
+                    "Setting master to " + master.getPosition().toString() + " for " + connected.size() + " blocks");
+            for (TileMultiBlock tile : connected) {
+                tile.setMaster(master, connected.size());
+            }
+        }
+    }
 
     @Override
     public void readFromNBT(NBTTagCompound data) {
         super.readFromNBT(data);
-        masterPos = new Vector3(data.getInteger("masterX"), data.getInteger("masterY"), data.getInteger("masterZ"));
         hasMaster = data.getBoolean("hasMaster");
         isMaster = data.getBoolean("isMaster");
         if (hasMaster() && isMaster()) {
@@ -154,12 +177,21 @@ public abstract class TileMultiBlock extends TileEntity implements ITickable, IN
         return hasMaster;
     }
 
-    public boolean isMaster() {
-        return isMaster;
+    private void setMaster(TileMultiBlock master, int blocks) {
+        this.master = master;
+        boolean wasMaster = isMaster;
+        isMaster = master == this;
+        if (isMaster) {
+            CreepinoUtilsMod.debug("Master set to " + blocks + " blocks");
+        } /*
+           * else if(!isMaster && wasMaster) {
+           * 
+           * }
+           */
     }
 
-    public Vector3 getMasterPosition() {
-        return masterPos;
+    public boolean isMaster() {
+        return isMaster;
     }
 
     public void setHasMaster(boolean bool) {
