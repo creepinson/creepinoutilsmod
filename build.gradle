@@ -1,19 +1,40 @@
-plugins {
-    id 'java'
-    id 'maven-publish'
+buildscript {
+	repositories {
+		jcenter()
+		maven { url = "https://files.minecraftforge.net/maven" }
+	}
+	dependencies {
+		classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+	}
 }
 
-archivesBaseName = project_name
-group = project_group
+plugins {
+    id 'java'
+	id "com.wynprice.cursemaven" version "2.1.1"
+}
+
+apply plugin: 'net.minecraftforge.gradle.forge'
 
 repositories {
-    mavenCentral()
+	maven {
+		name = 'curseforge'
+		url = 'https://minecraft.curseforge.com/api/maven/'
+	}
 }
 
 dependencies {
-    compileOnly 'org.projectlombok:lombok:1.18.12'
-    annotationProcessor 'org.projectlombok:lombok:1.18.12'
+	deobfCompile "curse.maven:mrcrayfishs-vehicle-mod:2715570"
+	deobfCompile "curse.maven:obfuscate:2625165"
+}
 
-    testCompileOnly 'org.projectlombok:lombok:1.18.12'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
+version '1.12.2-1.0.0'
+archivesBaseName = "creepinoutilsmod"
+
+sourceCompatibility = 1.8
+
+minecraft {
+		version = "${minecraft_version}-${forge_version}"
+		runDir = '../run'
+		replace "${version}", project.version
+		mappings = forge_mappings
 }
