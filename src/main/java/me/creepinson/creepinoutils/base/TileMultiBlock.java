@@ -61,6 +61,15 @@ public abstract class TileMultiBlock extends TileEntity implements ITickable, IN
         return ItemStack.EMPTY;
     }
 
+    public void invalidate() {
+        for(EnumFacing facing : EnumFacing.values()) {
+            TileEntity te = world.getTileEntity(pos.offset(facing));
+            if(te instanceof TileMultiBlock && !te.isInvalid()) {
+                ((TileMultiBlock)te).refresh();
+            }
+        }
+    }
+
     @Override
     public boolean canUpgrade() {
         return false;
