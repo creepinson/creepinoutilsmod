@@ -1,16 +1,22 @@
 package me.creepinson.creepinoutils.base;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import me.creepinson.creepinoutils.api.network.INetworkTile;
+import me.creepinson.creepinoutils.api.upgrade.Upgrade;
+import me.creepinson.creepinoutils.api.upgrade.UpgradeInfo;
 import me.creepinson.creepinoutils.api.util.BlockUtils;
 import me.creepinson.creepinoutils.api.util.math.Vector3;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 
 public abstract class TileMultiBlock extends TileEntity implements ITickable, INetworkTile {
     private boolean hasMaster, isMaster;
@@ -26,7 +32,7 @@ public abstract class TileMultiBlock extends TileEntity implements ITickable, IN
 
     @Override
     public void refresh() {
-        this.connections = BlockUtils.getTiles(world, getPosition(), BlockHackingController.class);
+        this.connections = BlockUtils.getTiles(world, getPosition(), TileMultiBlock.class);
     }
 
     @Override
@@ -38,6 +44,41 @@ public abstract class TileMultiBlock extends TileEntity implements ITickable, IN
     @Override
     public void update() {
 
+    }
+
+    @Override
+    public void setActive(boolean value) {
+        
+    }
+
+    @Override
+    public boolean upgrade(UpgradeInfo info) {
+        return canUpgrade();
+    }
+
+    @Override
+    public ItemStack removeUpgrade(Upgrade upgrade) {
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    public boolean canUpgrade() {
+        return false;
+    }
+
+    @Override
+    public List<UpgradeInfo> getStoredUpgrades() {
+        return null;
+    }
+
+    @Override
+    public boolean canConnectTo(IBlockAccess world, EnumFacing side) {
+        return this.connections.contains(new Vector3(pos).offset(side));
+    }
+
+    @Override
+    public boolean canConnectToStrict(IBlockAccess blockAccess, EnumFacing side) {
+        return canConnectTo(blockAccess, side);
     }
 
     @Override
