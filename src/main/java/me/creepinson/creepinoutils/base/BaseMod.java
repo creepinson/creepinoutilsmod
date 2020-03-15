@@ -4,9 +4,11 @@ import com.google.gson.JsonObject;
 import me.creepinson.creepinoutils.api.util.CreativeTabCallback;
 import me.creepinson.creepinoutils.api.util.GsonUtils;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -63,6 +65,18 @@ public abstract class BaseMod {
         Configurator.setLevel(_LOGGER.getName(), Level.DEBUG);
     }
 
+    public void clientPreInit(FMLPreInitializationEvent event) {
+
+    }
+
+    public void clientInit(FMLInitializationEvent event) {
+
+    }
+
+    public void clientPostInit(FMLPostInitializationEvent event) {
+
+    }
+
     public Logger getLogger() {
         return _LOGGER;
     }
@@ -89,14 +103,16 @@ public abstract class BaseMod {
         }
     }
 
+    @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-
+        if (event.getSide() == Side.CLIENT) clientInit(event);
     }
 
     /**
      * @param callback Callback once creative tab is created to change settings of the tab.
      *                 You can pass null to disable automatic initialization of the creative tab.
      */
+    @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event, CreativeTabCallback callback) {
         if (callback != null) {
             creativeTab = new CreativeTab(modId);
@@ -145,10 +161,14 @@ public abstract class BaseMod {
         }
 
         MinecraftForge.EVENT_BUS.register(this);
+        if (event.getSide() == Side.CLIENT) clientPreInit(event);
+
     }
 
+    @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         if (CHECK_FOR_UPDATES)
             checkForUpdates();
+        if (event.getSide() == Side.CLIENT) clientPostInit(event);
     }
 }
