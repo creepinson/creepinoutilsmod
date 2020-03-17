@@ -4,18 +4,19 @@ import me.creepinson.creepinoutils.CreepinoUtilsMod;
 import me.creepinson.creepinoutils.api.network.INetworkTile;
 import me.creepinson.creepinoutils.api.upgrade.Upgrade;
 import me.creepinson.creepinoutils.api.upgrade.UpgradeInfo;
+import me.creepinson.creepinoutils.api.util.math.ForgeVector;
 import me.creepinson.creepinoutils.api.util.math.Vector3;
 import me.creepinson.creepinoutils.base.InventoryNetworkTileEntity;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author Creepinson http://gitlab.com/creepinson
@@ -62,9 +63,9 @@ public class TileEntityAnimationTest extends InventoryNetworkTileEntity {
 
     @Override
     public boolean canConnectTo(IBlockAccess world, EnumFacing f) {
-        Vector3 v = getPosition().offset(f);
+        ForgeVector v = getPosition().offset(f);
         return super.canConnectTo(world, f)
-                && (v.getTileEntity(world) instanceof IEnergyStorage || v.getTileEntity(world) instanceof INetworkTile);
+                && (v.getTileEntity((World) world) instanceof IEnergyStorage || v.getTileEntity((World) world) instanceof INetworkTile);
     }
 
     @Override

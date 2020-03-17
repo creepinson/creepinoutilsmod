@@ -1,16 +1,10 @@
 package me.creepinson.creepinoutils.base;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-
 import me.creepinson.creepinoutils.api.network.INetworkTile;
 import me.creepinson.creepinoutils.api.upgrade.Upgrade;
 import me.creepinson.creepinoutils.api.upgrade.UpgradeInfo;
 import me.creepinson.creepinoutils.api.util.BlockUtils;
+import me.creepinson.creepinoutils.api.util.math.ForgeVector;
 import me.creepinson.creepinoutils.api.util.math.Vector3;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -19,6 +13,12 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Creepinson http://gitlab.com/creepinson Project creepinoutils
@@ -31,7 +31,7 @@ public abstract class InventoryNetworkTileEntity extends TileEntity implements I
 
     @Override
     public void refresh() {
-        connections = BlockUtils.getTilesWithCapability(world, new Vector3(pos),
+        connections = BlockUtils.getTilesWithCapability(world, new ForgeVector(pos),
                 CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
     }
 
@@ -132,8 +132,8 @@ public abstract class InventoryNetworkTileEntity extends TileEntity implements I
     }
 
     @Override
-    public Vector3 getPosition() {
-        return new Vector3(pos);
+    public ForgeVector getPosition() {
+        return new ForgeVector(pos);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package me.creepinson.creepinoutils.api.util;
 
+import me.creepinson.creepinoutils.api.util.math.ForgeVector;
 import me.creepinson.creepinoutils.api.util.math.Vector3;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.state.IBlockState;
@@ -204,7 +205,7 @@ public class CreepinoUtils {
         return EnumFacing.NORTH;
     }
 
-    public static int getBlockMetadata(IBlockAccess blockAccess, Vector3 vector) {
+    public static int getBlockMetadata(IBlockAccess blockAccess, ForgeVector vector) {
         return getBlockMetadata(blockAccess, vector.toBlockPos());
     }
 
@@ -295,7 +296,7 @@ public class CreepinoUtils {
             BlockPos p = tile.getPos().offset(f);
             for (Class o : searchFor) {
                 if (o.isInstance(tile.getWorld().getTileEntity(p))) {
-                    map.put(new Vector3(p), f);
+                    map.put(new ForgeVector(p), f);
                 }
             }
 
@@ -341,7 +342,7 @@ public class CreepinoUtils {
             BlockPos p = tile.getPos().offset(f);
             for (Class o : searchFor) {
                 if (o.isInstance(tile.getWorld().getTileEntity(p))) {
-                    map.put(new Vector3(p), f);
+                    map.put(new ForgeVector(p), f);
                 } else {
                     if (!done.contains(p)) {
                         done.add(p);

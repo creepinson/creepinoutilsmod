@@ -1,8 +1,8 @@
 package me.creepinson.creepinoutils.api.util.animation;
 
+import me.creepinson.creepinoutils.api.util.Pair;
+import me.creepinson.creepinoutils.api.util.math.Facing.Axis;
 import me.creepinson.creepinoutils.api.util.math.Rotation;
-import me.creepinson.creepinoutils.util.Pair;
-import net.minecraft.util.EnumFacing.Axis;
 
 import java.util.Collection;
 import java.util.HashMap;

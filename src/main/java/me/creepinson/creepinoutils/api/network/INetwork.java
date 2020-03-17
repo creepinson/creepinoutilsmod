@@ -1,10 +1,7 @@
 package me.creepinson.creepinoutils.api.network;
 
-import me.creepinson.creepinoutils.api.util.math.Vector3;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-
-import java.util.Set;
 
 public interface INetwork<T> {
     World getWorld();

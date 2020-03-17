@@ -1,9 +1,9 @@
 package me.creepinson.creepinoutils.api.util.animation;
 
+import me.creepinson.creepinoutils.api.util.Pair;
+import me.creepinson.creepinoutils.api.util.PairList;
 import me.creepinson.creepinoutils.api.util.math.Rotation;
 import me.creepinson.creepinoutils.api.util.math.Vector3;
-import me.creepinson.creepinoutils.util.Pair;
-import me.creepinson.creepinoutils.util.PairList;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.Set;

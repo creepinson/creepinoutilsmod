@@ -2,6 +2,7 @@ package me.creepinson.creepinoutils.base;
 
 import me.creepinson.creepinoutils.api.network.INetworkTile;
 import me.creepinson.creepinoutils.api.util.BlockUtils;
+import me.creepinson.creepinoutils.api.util.math.ForgeVector;
 import me.creepinson.creepinoutils.api.util.math.Vector3;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -19,7 +20,7 @@ public abstract class EnergyNetworkTileEntity extends TileEntity implements INet
 
     @Override
     public void refresh() {
-        connections = BlockUtils.getTilesWithCapability(world, new Vector3(pos), CapabilityEnergy.ENERGY);
+        connections = BlockUtils.getTilesWithCapability(world, new ForgeVector(pos), CapabilityEnergy.ENERGY);
     }
 
     protected boolean connectable = true;
@@ -71,8 +72,8 @@ public abstract class EnergyNetworkTileEntity extends TileEntity implements INet
     }
 
     @Override
-    public Vector3 getPosition() {
-        return new Vector3(pos);
+    public ForgeVector getPosition() {
+        return new ForgeVector(pos);
     }
 
     @Override

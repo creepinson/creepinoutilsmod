@@ -31,6 +31,7 @@ import com.google.common.collect.Maps;
 import me.creepinson.creepinoutils.api.util.animation.AnimationGroup;
 import me.creepinson.creepinoutils.api.util.animation.AnimationKey;
 import me.creepinson.creepinoutils.api.util.animation.AnimationState;
+import me.creepinson.creepinoutils.api.util.math.ForgeVector;
 import me.creepinson.creepinoutils.api.util.math.Vector3;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -788,7 +789,7 @@ public class AnimatedOBJModel implements IModel {
                 vertices[i] = new Vertex(pos, v.getMaterial());
 
                 if (v.hasNormal()) {
-                    Vector3 normal = v.getNormal().getData().clone();
+                    ForgeVector normal = v.getNormal().getData().clone();
                     transform.transformNormal(normal.toJava());
                     vertices[i].setNormal(new Normal(normal));
                 }
@@ -804,7 +805,7 @@ public class AnimatedOBJModel implements IModel {
         }
 
         public Normal getNormal() {
-            Vector3 a = this.verts[2].getPos3();
+            ForgeVector a = this.verts[2].getPos3();
             a.sub(this.verts[0].getPos3());
             Vector3 b = this.verts[3].getPos3();
             b.sub(this.verts[1].getPos3());
@@ -833,8 +834,8 @@ public class AnimatedOBJModel implements IModel {
             return this.position;
         }
 
-        public Vector3 getPos3() {
-            return new Vector3(this.position.x, this.position.y, this.position.z);
+        public ForgeVector getPos3() {
+            return new ForgeVector(this.position.x, this.position.y, this.position.z);
         }
 
         public boolean hasNormal() {
@@ -895,7 +896,7 @@ public class AnimatedOBJModel implements IModel {
             this(data[0], data[1], data[2]);
         }
 
-        public Normal(Vector3 vector3f) {
+        public Normal(ForgeVector vector3f) {
             this(vector3f.x, vector3f.y, vector3f.z);
         }
 
@@ -905,8 +906,8 @@ public class AnimatedOBJModel implements IModel {
             this.z = z;
         }
 
-        public Vector3 getData() {
-            return new Vector3(this.x, this.y, this.z);
+        public ForgeVector getData() {
+            return new ForgeVector(this.x, this.y, this.z);
         }
     }
 

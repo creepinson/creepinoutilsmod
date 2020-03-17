@@ -1,30 +1,41 @@
 buildscript {
-	repositories {
-		jcenter()
-		maven { url = "https://files.minecraftforge.net/maven" }
-	}
-	dependencies {
-		classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-	}
+    repositories {
+        jcenter()
+        maven { url = "https://files.minecraftforge.net/maven" }
+        maven {
+            name = 'sponge'
+            url = 'https://repo.spongepowered.org/maven'
+        }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
+    }
 }
 
 plugins {
     id 'java'
-	id "com.wynprice.cursemaven" version "2.1.1"
+    id "com.wynprice.cursemaven" version "2.1.1"
+    id 'com.github.johnrengelman.shadow' version '2.0.1'
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'org.spongepowered.mixin'
 
 repositories {
-	maven {
-		name = 'curseforge'
-		url = 'https://minecraft.curseforge.com/api/maven/'
-	}
+    maven {
+        name = 'curseforge'
+        url = 'https://minecraft.curseforge.com/api/maven/'
+    }
+    maven { url 'https://jitpack.io' }
+    mavenLocal()
 }
 
 dependencies {
-	deobfCompile "curse.maven:mrcrayfishs-vehicle-mod:2715570"
-	deobfCompile "curse.maven:obfuscate:2625165"
+//    compile 'com.gitlab.creepino-creations:creepino-utils-plugin:creepinoutils-api:-SNAPSHOT'
+    compile 'me.creepinson:creepinoutils-core:1.0.0'
+    deobfCompile "curse.maven:mrcrayfishs-vehicle-mod:2715570"
+    deobfCompile "curse.maven:obfuscate:2625165"
 }
 
 version '1.12.2-1.0.0'
@@ -33,8 +44,22 @@ archivesBaseName = "creepinoutilsmod"
 sourceCompatibility = 1.8
 
 minecraft {
-		version = "${minecraft_version}-${forge_version}"
-		runDir = '../run'
-		replace "${version}", project.version
-		mappings = forge_mappings
+    version = "${minecraft_version}-${forge_version}"
+    runDir = '../run'
+    replace "${version}", project.version
+    mappings = forge_mappings
+}
+
+artifacts {
+    archives shadowJar
+}
+
+shadowJar {
+    dependencies {
+        include(dependency("me.creepinson:creepinoutils-core:1.0.0"))
+    }
+}
+
+mixin {
+    add sourceSets.main, "main.refmap.json"
 }

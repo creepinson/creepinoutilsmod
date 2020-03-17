@@ -1,9 +1,9 @@
 package me.creepinson.creepinoutils.api.network.path;
 
 import me.creepinson.creepinoutils.api.network.INetworkTile;
-import me.creepinson.creepinoutils.api.util.math.Vector3;
+import me.creepinson.creepinoutils.api.util.math.Facing;
+import me.creepinson.creepinoutils.api.util.math.ForgeVector;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
 import java.util.HashSet;
@@ -19,12 +19,12 @@ public class PathfinderChecker extends Pathfinder {
     public PathfinderChecker(final World world, final Class[] targets, final INetworkTile... ignoreConnector) {
         super(new IPathCallBack() {
             @Override
-            public Set<Vector3> getConnectedNodes(Pathfinder finder, Vector3 currentNode) {
-                Set<Vector3> neighbors = new HashSet<Vector3>();
+            public Set<ForgeVector> getConnectedNodes(Pathfinder finder, ForgeVector currentNode) {
+                Set<ForgeVector> neighbors = new HashSet<>();
 
                 for (int i = 0; i < 6; i++) {
-                    EnumFacing direction = EnumFacing.byIndex(i);
-                    Vector3 position = currentNode.clone().modifyPositionFromSide(direction);
+                    Facing direction = Facing.byIndex(i);
+                    ForgeVector position = currentNode.clone().modifyPositionFromSide(direction);
                     TileEntity connectedBlock = position.getTileEntity(world);
 
 /*					if (connectedBlock instanceof INetworkedTile && !Arrays.asList(ignoreConnector).contains(connectedBlock))
@@ -41,7 +41,7 @@ public class PathfinderChecker extends Pathfinder {
             }
 
             @Override
-            public boolean onSearch(Pathfinder finder, Vector3 node) {
+            public boolean onSearch(Pathfinder finder, ForgeVector node) {
                 for (Class c : targets) {
                     if (c.isInstance(node.getTileEntity(world))) {
                         finder.results.add(node);

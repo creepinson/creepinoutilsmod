@@ -1,8 +1,6 @@
 package me.creepinson.creepinoutils.block;
 
 import me.creepinson.creepinoutils.api.network.INetworkTile;
-import me.creepinson.creepinoutils.api.util.math.Vector3;
-import me.creepinson.creepinoutils.api.util.world.WorldUtils;
 import me.creepinson.creepinoutils.base.BaseBlockWithTile;
 import me.creepinson.creepinoutils.tile.TileEntityAnimationTest;
 import net.minecraft.block.material.Material;
@@ -30,9 +28,9 @@ public class BlockAnimationTest extends BaseBlockWithTile {
 
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand,
-            EnumFacing facing, float hitX, float hitY, float hitZ) {
+                                    EnumFacing facing, float hitX, float hitY, float hitZ) {
         if (!world.isRemote) {
-            TileEntity te = WorldUtils.getTileEntity(world, new Vector3(pos));
+            TileEntity te = world.getTileEntity(pos);
             if (te instanceof TileEntityAnimationTest) {
                 TileEntityAnimationTest tile = (TileEntityAnimationTest) te;
                 if (player.isSneaking() && player.getHeldItem(hand).isEmpty()) {
@@ -47,7 +45,7 @@ public class BlockAnimationTest extends BaseBlockWithTile {
 
     @Override
     public void harvestBlock(World worldIn, EntityPlayer player, BlockPos pos, IBlockState state,
-            @Nullable TileEntity te, ItemStack stack) {
+                             @Nullable TileEntity te, ItemStack stack) {
         super.harvestBlock(worldIn, player, pos, state, te, stack);
         if (te != null) {
             ((INetworkTile) te).refresh();

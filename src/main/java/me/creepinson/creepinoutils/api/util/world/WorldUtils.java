@@ -1,5 +1,6 @@
 package me.creepinson.creepinoutils.api.util.world;
 
+import me.creepinson.creepinoutils.api.util.math.ForgeVector;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
@@ -10,10 +11,6 @@ import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-
-import javax.annotation.Nullable;
-
-import me.creepinson.creepinoutils.api.util.math.Vector3;
 
 /**
  * @author Creepinson http://gitlab.com/creepinson
@@ -162,10 +159,10 @@ public class WorldUtils {
      * @param world - world to perform the operation in
      * @param coord - Vector3 to perform the operation on
      */
-    public static void notifyLoadedNeighborsOfTileChange(World world, Vector3 coord) {
+    public static void notifyLoadedNeighborsOfTileChange(World world, ForgeVector coord) {
         for (EnumFacing dir : EnumFacing.VALUES) {
-            Vector3 offset = coord.offset(dir);
-            if (offset.exists(world)) {
+            ForgeVector offset = coord.offset(dir);
+            if (coord.exists(world)) {
                 notifyNeighborofChange(world, offset, coord.toBlockPos());
                 if (offset.getBlockState(world).isNormalCube()) {
                     offset = offset.offset(dir);
@@ -187,7 +184,7 @@ public class WorldUtils {
      * @param coord   neighbor to notify
      * @param fromPos pos of our block that updated
      */
-    public static void notifyNeighborofChange(World world, Vector3 coord, BlockPos fromPos) {
+    public static void notifyNeighborofChange(World world, ForgeVector coord, BlockPos fromPos) {
         IBlockState state = coord.getBlockState(world);
         state.getBlock().onNeighborChange(world, coord.toBlockPos(), fromPos);
         state.neighborChanged(world, coord.toBlockPos(), world.getBlockState(fromPos).getBlock(), fromPos);
@@ -211,9 +208,9 @@ public class WorldUtils {
      * @param coord - the Vector3 of the block to check
      * @return if the block is directly getting powered
      */
-    public static boolean isDirectlyGettingPowered(World world, Vector3 coord) {
+    public static boolean isDirectlyGettingPowered(World world, ForgeVector coord) {
         for (EnumFacing side : EnumFacing.VALUES) {
-            Vector3 sideCoord = coord.offset(side);
+            ForgeVector sideCoord = coord.offset(side);
             if (sideCoord.exists(world)) {
                 if (world.getRedstonePower(coord.toBlockPos(), side) > 0) {
                     return true;
@@ -231,9 +228,9 @@ public class WorldUtils {
      * @param coord - the coordinate of the block performing the check
      * @return if the block is indirectly getting powered by LOADED chunks
      */
-    public static boolean isGettingPowered(World world, Vector3 coord) {
+    public static boolean isGettingPowered(World world, ForgeVector coord) {
         for (EnumFacing side : EnumFacing.VALUES) {
-            Vector3 sideCoord = coord.offset(side);
+            ForgeVector sideCoord = coord.offset(side);
             if (sideCoord.exists(world) && sideCoord.offset(side).exists(world)) {
                 IBlockState blockState = sideCoord.getBlockState(world);
                 boolean weakPower = blockState.getBlock().shouldCheckWeakPower(blockState, world, coord.toBlockPos(), side);
@@ -245,19 +242,5 @@ public class WorldUtils {
             }
         }
         return false;
-    }
-
-    /**
-     * Tile entity helper
-     *
-     * @param world - world
-     * @param pos   - position
-     * @return tile entity if found, null if either not found or not valid
-     */
-    @Nullable
-    public static TileEntity getTileEntity(IBlockAccess world, Vector3 pos) {
-        if (world instanceof World && pos != null && pos.exists((World)world) && world.getTileEntity(pos.toBlockPos()) != null)
-            return world.getTileEntity(pos.toBlockPos());
-        return null;
     }
 }

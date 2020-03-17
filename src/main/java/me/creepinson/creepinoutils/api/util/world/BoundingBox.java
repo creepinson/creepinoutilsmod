@@ -1,6 +1,6 @@
 package me.creepinson.creepinoutils.api.util.world;
 
-import me.creepinson.creepinoutils.api.util.math.Vector3;
+import me.creepinson.creepinoutils.api.util.math.ForgeVector;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -22,11 +22,11 @@ public class BoundingBox extends AxisAlignedBB implements Serializable {
         super(pos1, pos2);
     }
 
-    public BoundingBox(Vector3 vector) {
+    public BoundingBox(ForgeVector vector) {
         super(vector.toBlockPos());
     }
 
-    public BoundingBox(Vector3 pos1, Vector3 pos2) {
+    public BoundingBox(ForgeVector pos1, ForgeVector pos2) {
         super(pos1.toBlockPos(), pos2.toBlockPos());
     }
 

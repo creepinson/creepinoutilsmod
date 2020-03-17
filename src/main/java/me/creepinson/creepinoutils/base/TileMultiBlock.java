@@ -5,6 +5,7 @@ import me.creepinson.creepinoutils.api.network.INetworkTile;
 import me.creepinson.creepinoutils.api.upgrade.Upgrade;
 import me.creepinson.creepinoutils.api.upgrade.UpgradeInfo;
 import me.creepinson.creepinoutils.api.util.BlockUtils;
+import me.creepinson.creepinoutils.api.util.math.ForgeVector;
 import me.creepinson.creepinoutils.api.util.math.Vector3;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -87,7 +88,7 @@ public abstract class TileMultiBlock extends TileEntity implements ITickable, IN
 
     @Override
     public boolean canConnectTo(IBlockAccess world, EnumFacing side) {
-        return this.connections.contains(new Vector3(pos).offset(side));
+        return this.connections.contains(new ForgeVector(pos).offset(side));
     }
 
     @Override
@@ -96,8 +97,8 @@ public abstract class TileMultiBlock extends TileEntity implements ITickable, IN
     }
 
     @Override
-    public Vector3 getPosition() {
-        return new Vector3(pos);
+    public ForgeVector getPosition() {
+        return new ForgeVector(pos);
     }
 
     // Reset method to be run when the master is gone or tells them to
