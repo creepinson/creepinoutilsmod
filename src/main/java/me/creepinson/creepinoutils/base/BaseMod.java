@@ -125,7 +125,8 @@ public abstract class BaseMod {
             callback.init(creativeTab);
         }
 
-        _CONFIG_BASE = event.getSuggestedConfigurationFile().getParentFile();
+        _CONFIG_BASE = new File(event.getSuggestedConfigurationFile().getParentFile(), modId);
+        _CONFIG_BASE.mkdirs();
         if (genConfig) {
             config = new ModConfig(this, "config.cfg");
             if (!config.fileExists()) {
