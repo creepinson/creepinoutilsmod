@@ -15,8 +15,8 @@ hs_err_pid*
 
 
 ### Gradle ###
-**/.gradle
-**/build
+.gradle
+build
 
 # Ignore Gradle GUI config
 gradle-app.setting
@@ -33,4 +33,4 @@ gradle-app.setting
 # End of https://www.gitignore.io/api/java,gradle
 
 # Minecraft
-**/run
+run

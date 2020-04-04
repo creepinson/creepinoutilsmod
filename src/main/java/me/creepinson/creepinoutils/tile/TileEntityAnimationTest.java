@@ -1,7 +1,6 @@
 package me.creepinson.creepinoutils.tile;
 
 import me.creepinson.creepinoutils.CreepinoUtilsMod;
-import me.creepinson.creepinoutils.api.network.INetworkTile;
 import me.creepinson.creepinoutils.api.upgrade.Upgrade;
 import me.creepinson.creepinoutils.api.upgrade.UpgradeInfo;
 import me.creepinson.creepinoutils.api.util.math.ForgeVector;
@@ -11,8 +10,6 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
-import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -64,13 +61,12 @@ public class TileEntityAnimationTest extends InventoryNetworkTileEntity {
     @Override
     public boolean canConnectTo(IBlockAccess world, EnumFacing f) {
         ForgeVector v = getPosition().offset(f);
-        return super.canConnectTo(world, f)
-                && (v.getTileEntity((World) world) instanceof IEnergyStorage || v.getTileEntity((World) world) instanceof INetworkTile);
+        return super.canConnectTo(world, f);
     }
 
     @Override
     public void onNeighborChange(Vector3 vector3) {
-
+        updateConnectedBlocks();
     }
 
     @Override

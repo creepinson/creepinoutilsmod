@@ -2,64 +2,58 @@ buildscript {
     repositories {
         jcenter()
         maven { url = "https://files.minecraftforge.net/maven" }
-        maven {
-            name = 'sponge'
-            url = 'https://repo.spongepowered.org/maven'
-        }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-        classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
     }
 }
 
 plugins {
     id 'java'
     id "com.wynprice.cursemaven" version "2.1.1"
-    id 'com.github.johnrengelman.shadow' version '2.0.1'
+    id 'com.github.johnrengelman.shadow' version '2.0.4'
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
-apply plugin: 'org.spongepowered.mixin'
 
 repositories {
     maven {
         name = 'curseforge'
         url = 'https://minecraft.curseforge.com/api/maven/'
     }
-    maven { url 'https://jitpack.io' }
-    mavenLocal()
+    maven {
+        url = "https://jitpack.io"
+    }
 }
 
 dependencies {
-//    compile 'com.gitlab.creepino-creations:creepino-utils-plugin:creepinoutils-api:-SNAPSHOT'
-    compile 'me.creepinson:creepinoutils-core:1.0.0'
-    deobfCompile "curse.maven:mrcrayfishs-vehicle-mod:2715570"
-    deobfCompile "curse.maven:obfuscate:2625165"
+    compile 'com.gitlab.creepino-creations:creepino-utils-core:master-SNAPSHOT'
 }
 
-version '1.12.2-1.0.0'
-archivesBaseName = "creepinoutilsmod"
+shadowJar {
+    // Only shadow fluent-hc
+    dependencies {
+        include(dependency('com.gitlab.creepino-creations:creepino-utils-core:master-SNAPSHOT'))
+    }
 
-sourceCompatibility = 1.8
+    // Relocate fluent-hc to prevent conflicts with other mods that include it
+    relocate 'me.creepinson.creepinoutils.api.util', 'me.creepinson.creepinoutils.api.creepinoutilscore'
+
+    classifier '' // Replace the default JAR
+}
+
+reobf {
+    shadowJar {} // Reobfuscate the shadowed JAR
+}
+
+version = "${minecraft_version}-${mod_version}"
+archivesBaseName = "${mod_name}"
+
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 minecraft {
     version = "${minecraft_version}-${forge_version}"
     runDir = '../run'
     replace "${version}", project.version
     mappings = forge_mappings
-}
-
-artifacts {
-    archives shadowJar
-}
-
-shadowJar {
-    dependencies {
-        include(dependency("me.creepinson:creepinoutils-core:1.0.0"))
-    }
-}
-
-mixin {
-    add sourceSets.main, "main.refmap.json"
 }

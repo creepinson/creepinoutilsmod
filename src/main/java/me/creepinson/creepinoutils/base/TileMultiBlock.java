@@ -152,7 +152,7 @@ public abstract class TileMultiBlock extends TileEntity implements ITickable, IN
                     }
                 }
             }
-            CreepinoUtilsMod.debug(
+            CreepinoUtilsMod.getInstance().debug(
                     "Setting master to " + master.getPosition().toString() + " for " + connected.size() + " blocks");
             for (TileMultiBlock tile : connected) {
                 tile.setMaster(master, connected.size());
@@ -180,7 +180,7 @@ public abstract class TileMultiBlock extends TileEntity implements ITickable, IN
         boolean wasMaster = isMaster;
         isMaster = master == this;
         if (isMaster) {
-            CreepinoUtilsMod.debug("Master set to " + blocks + " blocks");
+            CreepinoUtilsMod.getInstance().debug("Master set to " + blocks + " blocks");
         } /*
          * else if(!isMaster && wasMaster) {
          *

@@ -16,7 +16,6 @@ import org.apache.logging.log4j.core.config.Configurator;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.net.URL;
 
@@ -30,7 +29,6 @@ public abstract class BaseMod {
     protected Logger _LOGGER;
     public final String modUrl;
     public final String modId;
-    public final String modName;
     public final String modVersion;
     protected String UPDATE_LATEST_VER = null;
 
@@ -43,6 +41,7 @@ public abstract class BaseMod {
     protected boolean genConfig = true;
     protected boolean debug;
 
+
     public boolean isDebug() {
         return debug;
     }
@@ -51,18 +50,22 @@ public abstract class BaseMod {
      * @param versionSettings Used for retrieving the latest version of the mod.
      *                        If you pas null, it will not check for the latest version.
      * @param id              The mod id used by minecraft forge
-     * @param name            The display name of the mod
      *                        If you are extending this class, then you can set BaseMod#hasCreativeTab to false if you do not want a
      *                        simple creative tab to be added to your mod.
      */
-    public BaseMod(String url, VersionSettings versionSettings, String id, String name, String ver) {
+    public BaseMod(String url, VersionSettings versionSettings, String id, String ver) {
         modUrl = url;
         modVersionSettings = versionSettings;
         modId = id;
-        modName = name;
         modVersion = ver;
-        _LOGGER = LogManager.getLogger(modName);
+        _LOGGER = LogManager.getLogger(modId);
         Configurator.setLevel(_LOGGER.getName(), Level.DEBUG);
+    }
+
+    public void debug(String s) {
+        if (this.isDebug()) {
+            getLogger().info("[DEBUG] " + s);
+        }
     }
 
     public void clientPreInit(FMLPreInitializationEvent event) {
@@ -121,43 +124,12 @@ public abstract class BaseMod {
 
         _CONFIG_BASE = event.getSuggestedConfigurationFile().getParentFile();
         if (genConfig) {
-            config = new ModConfig(this, "config") {
-                @Override
-                public void generate() {
-
-                }
-
-                @Override
-                protected JsonObject upgrade(JsonObject json, int version) {
-
-                    return json;
-                }
-
-                @Override
-                protected void load(JsonObject jsonObject) {
-                    if (jsonObject.has("debug")) {
-                        debug = jsonObject.get("debug").getAsBoolean();
-                    } else {
-                        debug = false;
-                    }
-
-                }
-
-                @Override
-                protected void save(FileWriter fileWriter) {
-                    JsonObject main = new JsonObject();
-                    main.addProperty("debug", false);
-                    main.addProperty("configVersion", CURRENT_VERSION);
-                    GsonUtils.getGson().toJson(main, fileWriter);
-                }
-            };
-        }
-
-        if (config != null) {
-            if (config.fileExists()) {
-                config.load();
+            config = new ModConfig(this, "config.cfg");
+            if (!config.fileExists()) {
+                config.writeConfig("main", "debug", false);
             }
-            config.save();
+            config.init();
+            this.debug = config.getBoolean("main", "debug");
         }
 
         MinecraftForge.EVENT_BUS.register(this);

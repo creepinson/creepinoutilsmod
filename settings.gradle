@@ -1,3 +1,1 @@
-include '1.12.2'
-include 'common'
 rootProject.name = 'CreepinoUtilsMod'
