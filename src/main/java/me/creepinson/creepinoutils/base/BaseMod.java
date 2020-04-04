@@ -41,6 +41,9 @@ public abstract class BaseMod {
     protected boolean genConfig = true;
     protected boolean debug;
 
+    public ModConfig getConfig() {
+        return config;
+    }
 
     public boolean isDebug() {
         return debug;
