@@ -29,6 +29,10 @@ public class ForgeVector extends Vector3 {
         this(pos.getX(), pos.getY(), pos.getZ());
     }
 
+    public ForgeVector(Vector3 v) {
+        this(v.x, v.y, v.z);
+    }
+
     public boolean exists(World world) {
         return world.getChunk(toBlockPos()).isLoaded();
     }
