@@ -209,6 +209,10 @@ public class CreepinoUtils {
         return getBlockMetadata(blockAccess, vector.toBlockPos());
     }
 
+    public static int getBlockMetadata(IBlockAccess blockAccess, Vector3 vector) {
+        return getBlockMetadata(blockAccess, new BlockPos(vector.x, vector.y, vector.z));
+    }
+
     public static int getBlockMetadata(IBlockAccess blockAccess, int x, int y, int z) {
         return getBlockMetadata(blockAccess, new BlockPos(x, y, z));
     }
