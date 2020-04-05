@@ -76,15 +76,13 @@ public abstract class EnergyNetworkTileEntity extends TileEntity implements INet
         return new ForgeVector(pos);
     }
 
-    @Override
-    public boolean canConnectTo(IBlockAccess blockAccess, EnumFacing f) {
+    public boolean canConnectTo(IBlockAccess blockAccess, Vector3 pos, EnumFacing f) {
         if (connections.isEmpty())
             refresh();
         return isConnectable() && isActive() && connections.contains(getPosition().offset(f));
     }
 
-    @Override
-    public boolean canConnectToStrict(IBlockAccess blockAccess, EnumFacing side) {
-        return canConnectTo(blockAccess, side);
+    public boolean canConnectToStrict(IBlockAccess blockAccess, Vector3 pos, EnumFacing side) {
+        return canConnectTo(blockAccess, pos, side);
     }
 }

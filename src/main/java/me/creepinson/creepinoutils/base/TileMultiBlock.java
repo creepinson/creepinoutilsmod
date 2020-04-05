@@ -87,13 +87,13 @@ public abstract class TileMultiBlock extends TileEntity implements ITickable, IN
     }
 
     @Override
-    public boolean canConnectTo(IBlockAccess world, EnumFacing side) {
+    public boolean canConnectTo(IBlockAccess world, Vector3 pos, EnumFacing side) {
         return this.connections.contains(new ForgeVector(pos).offset(side));
     }
 
     @Override
-    public boolean canConnectToStrict(IBlockAccess blockAccess, EnumFacing side) {
-        return canConnectTo(blockAccess, side);
+    public boolean canConnectToStrict(IBlockAccess blockAccess, Vector3 pos, EnumFacing side) {
+        return canConnectTo(blockAccess, pos, side);
     }
 
     @Override

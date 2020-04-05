@@ -59,9 +59,9 @@ public class TileEntityAnimationTest extends InventoryNetworkTileEntity {
     }
 
     @Override
-    public boolean canConnectTo(IBlockAccess world, EnumFacing f) {
+    public boolean canConnectTo(IBlockAccess world, Vector3 pos, EnumFacing f) {
         ForgeVector v = getPosition().offset(f);
-        return super.canConnectTo(world, f);
+        return super.canConnectTo(world, pos, f);
     }
 
     @Override
