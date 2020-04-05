@@ -13,11 +13,11 @@ public class ModConfig {
 
     public ModConfig(BaseMod mod, String fileName) {
         file = mod._CONFIG_BASE + "/" + fileName;
-        config = new Configuration(new File(file));
     }
 
     public void init() {
         try {
+            config = new Configuration(new File(file));
             config.load();
         } catch (Exception e) {
             System.out.println("Cannot load configuration file!");
