@@ -6,8 +6,11 @@ import me.creepinson.creepinoutils.api.util.math.shape.Cuboid;
 import me.creepinson.creepinoutils.base.BaseMod;
 import me.creepinson.creepinoutils.serializer.BlockInfoHolder;
 import net.minecraft.block.Block;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiErrorScreen;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.client.CustomModLoadingErrorDisplayException;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -51,9 +54,36 @@ public class CreepinoUtilsMod extends BaseMod {
         OreDictionary.registerOre("stoneAny", new ItemStack(Blocks.STONE, 1, 4));
         OreDictionary.registerOre("stoneAny", new ItemStack(Blocks.STONE, 1, 5));
         OreDictionary.registerOre("stoneAny", new ItemStack(Blocks.STONE, 1, 6));
-        // TODO: use registry events
-//        EasyRegistry.registerBlockWithItem(BlockHandler.ANIMATION_TEST_BLOCK, new ResourceLocation(MOD_ID, "animation_test_block"));
         CreepinoUtilsMod.getInstance().debug("Mod loading...");
+    }
+
+    @Override
+    public void clientPreInit(FMLPreInitializationEvent event) {
+        super.clientPreInit(event);
+        // Configuration
+        if (!config.hasKey("utils", "recommended_memory"))
+            config.writeConfig("utils", "recommended_memory", 2048D);
+
+        if (!config.hasKey("utils", "memory_check_enabled"))
+            config.writeConfig("utils", "memory_check_enabled", false);
+
+        // Memory Check
+        long maxMemory = Runtime.getRuntime().maxMemory() / 1024 / 1024;
+        debug("Memory allocated: " + maxMemory);
+        if (maxMemory < config.getDouble("utils", "recommended_memory") && config.getBoolean("utils", "memory_check_enabled")) {
+            throw new CustomModLoadingErrorDisplayException() {
+                @Override
+                public void initGui(GuiErrorScreen errorScreen, FontRenderer fontRenderer) {
+
+                }
+
+                @Override
+                public void drawScreen(GuiErrorScreen errorScreen, FontRenderer fontRenderer, int mouseRelX, int mouseRelY, float tickTime) {
+                    String text = "The modpack developer recommends " + config.getDouble("utils", "recommended_memory") + " memory, but you only have " + maxMemory + " MB.";
+                    fontRenderer.drawString(text, errorScreen.width / 2 - (fontRenderer.getStringWidth(text) / 2), errorScreen.height / 2, 0xFFFFFF);
+                }
+            };
+        }
     }
 
     @EventHandler
