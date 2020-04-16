@@ -1,31 +1,33 @@
 package me.creepinson.creepinoutils.base;
 
 import me.creepinson.creepinoutils.CreepinoUtilsMod;
-import me.creepinson.creepinoutils.api.network.INetworkTile;
-import me.creepinson.creepinoutils.api.upgrade.Upgrade;
-import me.creepinson.creepinoutils.api.upgrade.UpgradeInfo;
-import me.creepinson.creepinoutils.api.util.BlockUtils;
-import me.creepinson.creepinoutils.api.util.math.ForgeVector;
 import me.creepinson.creepinoutils.api.util.math.Vector3;
+import me.creepinson.creepinoutils.util.upgrade.Upgrade;
+import me.creepinson.creepinoutils.util.upgrade.UpgradeInfo;
+import me.creepinson.creepinoutils.util.util.BlockUtils;
+import me.creepinson.creepinoutils.util.util.math.ForgeVector;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
 import net.minecraft.world.IBlockAccess;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.Stack;
+import java.util.stream.Collectors;
 
-public abstract class TileMultiBlock extends TileEntity implements ITickable, INetworkTile, IMultiBlockTile {
+public abstract class TileMultiBlock extends BaseTile implements IMultiBlockTile {
     private boolean hasMaster, isMaster;
     protected TileMultiBlock master;
     private boolean firstRun = true;
 
     public boolean isFormed() {
-        return master instanceof TileMultiBlock && !master.isInvalid();
+        return master != null && !master.isInvalid();
     }
 
-    private Set<Vector3> connections = new HashSet<>(); // TODO: remove
+    List<TileMultiBlock> connected = new ArrayList<>();
 
     @Override
     public boolean isActive() {
@@ -109,8 +111,8 @@ public abstract class TileMultiBlock extends TileEntity implements ITickable, IN
     }
 
     @Override
-    public Set<Vector3> getConnections() {
-        return connections;
+    public Set<ForgeVector> getConnections() {
+        return connected.stream().map(TileMultiBlock::getPosition).collect(Collectors.toSet());
     }
 
     public TileMultiBlock getMaster() {
@@ -119,7 +121,7 @@ public abstract class TileMultiBlock extends TileEntity implements ITickable, IN
     }
 
     public boolean checkForMaster() {
-        return (master != null && (master instanceof TileMultiBlock));
+        return master != null;
     }
 
     @Override
@@ -133,9 +135,9 @@ public abstract class TileMultiBlock extends TileEntity implements ITickable, IN
         return data;
     }
 
+
     public void initializeMultiBlockIfNecessary() {
         if (master == null || master.isInvalid()) {
-            List<TileMultiBlock> connected = new ArrayList<>();
             Stack<TileMultiBlock> traversing = new Stack<TileMultiBlock>();
             TileMultiBlock master = this;
             traversing.add(this);
@@ -147,7 +149,7 @@ public abstract class TileMultiBlock extends TileEntity implements ITickable, IN
                 connected.add(tile);
                 for (EnumFacing facing : EnumFacing.values()) {
                     TileEntity te = tile.getPosition().offset(facing).getTileEntity(world);
-                    if (te instanceof TileMultiBlock && !connected.contains(te)) {
+                    if (te instanceof TileMultiBlock && !connected.contains(te) && canConnectToMultiBlock(facing, te)) {
                         traversing.add((TileMultiBlock) te);
                     }
                 }
@@ -155,9 +157,18 @@ public abstract class TileMultiBlock extends TileEntity implements ITickable, IN
             CreepinoUtilsMod.getInstance().debug(
                     "Setting master to " + master.getPosition().toString() + " for " + connected.size() + " blocks");
             for (TileMultiBlock tile : connected) {
-                tile.setMaster(master, connected.size());
+                tile.setMaster(master);
             }
         }
+    }
+
+    /**
+     * @param facing The direction the connection is coming from
+     * @param te     The tile entity of the multi block that is being checked
+     * @return Whether or not this multiblock tile can connect to the other one.
+     */
+    public boolean canConnectToMultiBlock(EnumFacing facing, TileEntity te) {
+        return true;
     }
 
     @Override
@@ -175,17 +186,13 @@ public abstract class TileMultiBlock extends TileEntity implements ITickable, IN
         return hasMaster;
     }
 
-    public void setMaster(TileMultiBlock master, int blocks) {
+    public void setMaster(TileMultiBlock master) {
         this.master = master;
         boolean wasMaster = isMaster;
         isMaster = master == this;
         if (isMaster) {
-            CreepinoUtilsMod.getInstance().debug("Master set to " + blocks + " blocks");
-        } /*
-         * else if(!isMaster && wasMaster) {
-         *
-         * }
-         */
+            CreepinoUtilsMod.getInstance().debug("Master set to " + master.getName());
+        }
     }
 
     public boolean isMaster() {

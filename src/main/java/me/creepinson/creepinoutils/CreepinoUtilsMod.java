@@ -5,12 +5,11 @@ import me.creepinson.creepinoutils.api.util.data.JsonUtils;
 import me.creepinson.creepinoutils.api.util.math.shape.Cuboid;
 import me.creepinson.creepinoutils.base.BaseMod;
 import me.creepinson.creepinoutils.serializer.BlockInfoHolder;
+import me.creepinson.creepinoutils.tile.TileEntityAnimationTest;
 import net.minecraft.block.Block;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiErrorScreen;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.client.CustomModLoadingErrorDisplayException;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -18,6 +17,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.io.File;
@@ -60,30 +60,6 @@ public class CreepinoUtilsMod extends BaseMod {
     @Override
     public void clientPreInit(FMLPreInitializationEvent event) {
         super.clientPreInit(event);
-        // Configuration
-        if (!config.hasKey("utils", "recommended_memory"))
-            config.writeConfig("utils", "recommended_memory", 2048D);
-
-        if (!config.hasKey("utils", "memory_check_enabled"))
-            config.writeConfig("utils", "memory_check_enabled", false);
-
-        // Memory Check
-        long maxMemory = Runtime.getRuntime().maxMemory() / 1024 / 1024;
-        debug("Memory allocated: " + maxMemory);
-        if (maxMemory < config.getDouble("utils", "recommended_memory") && config.getBoolean("utils", "memory_check_enabled")) {
-            throw new CustomModLoadingErrorDisplayException() {
-                @Override
-                public void initGui(GuiErrorScreen errorScreen, FontRenderer fontRenderer) {
-
-                }
-
-                @Override
-                public void drawScreen(GuiErrorScreen errorScreen, FontRenderer fontRenderer, int mouseRelX, int mouseRelY, float tickTime) {
-                    String text = "The modpack developer recommends " + config.getDouble("utils", "recommended_memory") + " memory, but you only have " + maxMemory + " MB.";
-                    fontRenderer.drawString(text, errorScreen.width / 2 - (fontRenderer.getStringWidth(text) / 2), errorScreen.height / 2, 0xFFFFFF);
-                }
-            };
-        }
     }
 
     @EventHandler
@@ -93,7 +69,7 @@ public class CreepinoUtilsMod extends BaseMod {
         Map<String, BlockInfoHolder> blocks = new HashMap<>();
         Map<String, Set<Cuboid>> boxes = new HashMap<>();
         for (Block b : ForgeRegistries.BLOCKS.getValuesCollection()) {
-//            blocks.put(b.getRegistryName().toString(), new BlockInfoHolder(b));
+            blocks.put(b.getRegistryName().toString(), new BlockInfoHolder(b));
 //            boxes.put(b.getRegistryName().toString(), BlockInfoHolder.CuboidUtils.getBoxes(b));
         }
 
@@ -102,13 +78,13 @@ public class CreepinoUtilsMod extends BaseMod {
             f1.write(JsonUtils.get().toJson(blocks));
             f1.close();
 
-            FileWriter f2 = new FileWriter(new File(_CONFIG_BASE, "exported_blocks.json"));
+            FileWriter f2 = new FileWriter(new File(_CONFIG_BASE, "exported_bounding_boxes.json"));
             f2.write(JsonUtils.get().toJson(boxes));
             f2.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        GameRegistry.registerTileEntity(TileEntityAnimationTest.class, new ResourceLocation(MOD_ID, "tile_animation_test"));
+        GameRegistry.registerTileEntity(TileEntityAnimationTest.class, new ResourceLocation(MOD_ID, "tile_animation_test"));
     }
 
     @EventHandler

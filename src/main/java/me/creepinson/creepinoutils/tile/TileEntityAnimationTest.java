@@ -1,25 +1,24 @@
 package me.creepinson.creepinoutils.tile;
 
 import me.creepinson.creepinoutils.CreepinoUtilsMod;
-import me.creepinson.creepinoutils.api.upgrade.Upgrade;
-import me.creepinson.creepinoutils.api.upgrade.UpgradeInfo;
-import me.creepinson.creepinoutils.api.util.math.ForgeVector;
 import me.creepinson.creepinoutils.api.util.math.Vector3;
 import me.creepinson.creepinoutils.base.InventoryNetworkTileEntity;
+import me.creepinson.creepinoutils.util.upgrade.UpgradeInfo;
+import me.creepinson.creepinoutils.util.util.math.ForgeVector;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
-
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 
 /**
  * @author Creepinson http://gitlab.com/creepinson
  **/
 
 public class TileEntityAnimationTest extends InventoryNetworkTileEntity {
+    private ItemStackHandler items = new ItemStackHandler(1);
+
     public void onClick() {
         setActive(!isActive());
     }
@@ -33,29 +32,8 @@ public class TileEntityAnimationTest extends InventoryNetworkTileEntity {
     }
 
     @Override
-    public int getSlots() {
-        return 0;
-    }
-
-    public ItemStack getStackInSlot(int slot) {
-        return extractItem(slot, 1, true);
-    }
-
-    @Nonnull
-
-    public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-        return ItemStack.EMPTY;
-    }
-
-    @Nonnull
-
-    public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        return isActive() ? new ItemStack(Items.APPLE, amount) : ItemStack.EMPTY;
-    }
-
-    @Override
-    public int getSlotLimit(int slot) {
-        return 0;
+    protected IItemHandler getItemHandler() {
+        return this.items;
     }
 
     @Override
@@ -65,18 +43,8 @@ public class TileEntityAnimationTest extends InventoryNetworkTileEntity {
     }
 
     @Override
-    public void onNeighborChange(Vector3 vector3) {
-        updateConnectedBlocks();
-    }
-
-    @Override
     public boolean upgrade(UpgradeInfo info) {
         return canUpgrade();
-    }
-
-    @Override
-    public ItemStack removeUpgrade(Upgrade upgrade) {
-        return ItemStack.EMPTY;
     }
 
     @Override
@@ -85,12 +53,7 @@ public class TileEntityAnimationTest extends InventoryNetworkTileEntity {
     }
 
     @Override
-    public List<UpgradeInfo> getStoredUpgrades() {
-        return new ArrayList<>();
-    }
-
-    @Override
     public void update() {
-
+        this.items.setStackInSlot(0, new ItemStack(Items.APPLE, 1));
     }
 }

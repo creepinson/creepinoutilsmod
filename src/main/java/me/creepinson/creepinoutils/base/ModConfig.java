@@ -15,6 +15,10 @@ public class ModConfig {
         file = mod._CONFIG_BASE + "/" + fileName;
     }
 
+    public ModConfig(String basePath, String fileName) {
+        file = basePath + "/" + fileName;
+    }
+
     public void init() {
         try {
             config = new Configuration(new File(file));

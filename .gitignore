@@ -4,6 +4,13 @@
 *.class
 bin
 
+### Project Files ###
+# Intellij
+.idea
+.settings
+.classpath
+.project
+
 # BlueJ files
 *.ctxt
 
@@ -35,3 +42,5 @@ gradle-app.setting
 
 # Minecraft
 run
+src/test/java/
+src/test/resources/

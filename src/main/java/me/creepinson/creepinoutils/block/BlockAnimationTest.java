@@ -1,7 +1,7 @@
 package me.creepinson.creepinoutils.block;
 
-import me.creepinson.creepinoutils.api.network.INetworkTile;
 import me.creepinson.creepinoutils.base.BaseBlockWithTile;
+import me.creepinson.creepinoutils.base.BaseTile;
 import me.creepinson.creepinoutils.tile.TileEntityAnimationTest;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -48,7 +48,7 @@ public class BlockAnimationTest extends BaseBlockWithTile {
                              @Nullable TileEntity te, ItemStack stack) {
         super.harvestBlock(worldIn, player, pos, state, te, stack);
         if (te != null) {
-            ((INetworkTile) te).refresh();
+            ((BaseTile) te).refresh();
         }
     }
 

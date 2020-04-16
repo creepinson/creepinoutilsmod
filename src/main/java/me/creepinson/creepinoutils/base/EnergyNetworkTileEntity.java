@@ -1,56 +1,33 @@
 package me.creepinson.creepinoutils.base;
 
-import me.creepinson.creepinoutils.api.network.INetworkTile;
-import me.creepinson.creepinoutils.api.util.BlockUtils;
-import me.creepinson.creepinoutils.api.util.math.ForgeVector;
 import me.creepinson.creepinoutils.api.util.math.Vector3;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
 
-import java.util.HashSet;
-import java.util.Set;
+/**
+ * @author Creepinson http://gitlab.com/creepinson
+ * A base tile entity that can be used to make your own tile entity have energy storage and to be able connect with other blocks.
+ */
+public abstract class EnergyNetworkTileEntity extends BaseTile {
 
-public abstract class EnergyNetworkTileEntity extends TileEntity implements INetworkTile, IEnergyStorage {
-
-    private Set<Vector3> connections = new HashSet<>();
-
-    @Override
-    public void refresh() {
-        connections = BlockUtils.getTilesWithCapability(world, new ForgeVector(pos), CapabilityEnergy.ENERGY);
-    }
+    private IEnergyStorage energyStorage;
 
     protected boolean connectable = true;
 
-    @Override
-    public void onNeighborChange(Vector3 v) {
-        refresh();
+    public IEnergyStorage getEnergyStorage() {
+        return this.energyStorage;
     }
 
-    @Override
-    public void onLoad() {
-        this.refresh();
+    public EnergyNetworkTileEntity(int capacity) {
+        this.energyStorage = new EnergyStorage(capacity);
     }
 
-    public boolean isActive() {
-        return active;
-    }
-
-    @Override
-    public void setActive(boolean value) {
-        this.active = value;
-    }
-
-    public void setConnectable(boolean value) {
-        this.connectable = value;
-        this.refresh();
-    }
-
-    public boolean isConnectable() {
-        return connectable;
+    protected void setEnergyStorage(IEnergyStorage energyStorage) {
+        this.energyStorage = energyStorage;
     }
 
     protected boolean active;
@@ -66,14 +43,9 @@ public abstract class EnergyNetworkTileEntity extends TileEntity implements INet
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
         if (capability == CapabilityEnergy.ENERGY) {
-            return (T) this;
+            return (T) this.energyStorage;
         }
         return super.getCapability(capability, facing);
-    }
-
-    @Override
-    public ForgeVector getPosition() {
-        return new ForgeVector(pos);
     }
 
     public boolean canConnectTo(IBlockAccess blockAccess, Vector3 pos, EnumFacing f) {

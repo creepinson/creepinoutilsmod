@@ -1,8 +1,8 @@
 package me.creepinson.creepinoutils.base;
 
 import com.google.gson.JsonObject;
-import me.creepinson.creepinoutils.api.util.CreativeTabCallback;
-import me.creepinson.creepinoutils.api.util.GsonUtils;
+import me.creepinson.creepinoutils.util.util.CreativeTabCallback;
+import me.creepinson.creepinoutils.util.util.GsonUtils;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;

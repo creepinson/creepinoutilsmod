@@ -29,9 +29,9 @@ public class BlockInfoHolder {
 
     public BlockInfoHolder(@Nonnull Block b) {
         this.registryName = b.getRegistryName().toString();
-        this.hardness = (float) ReflectionUtils.getFieldValue("blockHardness", b);
+/*        this.hardness = (float) ReflectionUtils.getFieldValue("blockHardness", b);
         this.resistance = (float) ReflectionUtils.getFieldValue("blockResistance", b);
-        this.lightValue = (float) ReflectionUtils.getFieldValue("lightValue", b);
+        this.lightValue = (float) ReflectionUtils.getFieldValue("lightValue", b);*/
     }
 
     public static class CuboidUtils {
