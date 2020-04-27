@@ -1,7 +1,6 @@
 package me.creepinson.creepinoutils.base;
 
-import me.creepinson.creepinoutils.util.util.BlockUtils;
-import me.creepinson.creepinoutils.util.util.math.ForgeVector;
+import me.creepinson.creepinoutils.util.VectorUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -37,11 +36,9 @@ public abstract class BaseBlockWithTile extends BaseBlock implements ITileEntity
 
     @Override
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos fromPos) {
-        ForgeVector v = new ForgeVector(pos);
-        TileEntity te = v.getTileEntity(world);
+        TileEntity te = world.getTileEntity(pos);
         if (te instanceof BaseTile) {
-            ((BaseTile) te).onNeighborChange(v);
-            BlockUtils.getTiles(world, new ForgeVector(pos), TileEntity.class);
+            ((BaseTile) te).onNeighborChange(VectorUtils.fromBlockPos(pos));
         }
     }
 

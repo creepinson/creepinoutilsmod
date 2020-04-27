@@ -4,7 +4,6 @@ import me.creepinson.creepinoutils.CreepinoUtilsMod;
 import me.creepinson.creepinoutils.api.util.math.Vector3;
 import me.creepinson.creepinoutils.base.InventoryNetworkTileEntity;
 import me.creepinson.creepinoutils.util.upgrade.UpgradeInfo;
-import me.creepinson.creepinoutils.util.util.math.ForgeVector;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -38,7 +37,6 @@ public class TileEntityAnimationTest extends InventoryNetworkTileEntity {
 
     @Override
     public boolean canConnectTo(IBlockAccess world, Vector3 pos, EnumFacing f) {
-        ForgeVector v = getPosition().offset(f);
         return super.canConnectTo(world, pos, f);
     }
 

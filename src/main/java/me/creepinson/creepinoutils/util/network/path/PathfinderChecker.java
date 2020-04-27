@@ -1,9 +1,9 @@
 package me.creepinson.creepinoutils.util.network.path;
 
 import me.creepinson.creepinoutils.api.util.math.Facing;
+import me.creepinson.creepinoutils.api.util.math.Vector3;
 import me.creepinson.creepinoutils.base.BaseTile;
-import me.creepinson.creepinoutils.util.util.math.ForgeVector;
-import net.minecraft.tileentity.TileEntity;
+import me.creepinson.creepinoutils.util.VectorUtils;
 import net.minecraft.world.World;
 
 import java.util.HashSet;
@@ -19,21 +19,12 @@ public class PathfinderChecker extends Pathfinder {
     public PathfinderChecker(final World world, final Class[] targets, final BaseTile... ignoreConnector) {
         super(new IPathCallBack() {
             @Override
-            public Set<ForgeVector> getConnectedNodes(Pathfinder finder, ForgeVector currentNode) {
-                Set<ForgeVector> neighbors = new HashSet<>();
+            public Set<Vector3> getConnectedNodes(Pathfinder finder, Vector3 currentNode) {
+                Set<Vector3> neighbors = new HashSet<>();
 
                 for (int i = 0; i < 6; i++) {
                     Facing direction = Facing.byIndex(i);
-                    ForgeVector position = currentNode.clone().modifyPositionFromSide(direction);
-                    TileEntity connectedBlock = position.getTileEntity(world);
-
-/*					if (connectedBlock instanceof INetworkedTile && !Arrays.asList(ignoreConnector).contains(connectedBlock))
-					{
-						if (((INetworkedTile) connectedBlock).canConnectTo(world, position, direction.getOpposite()))
-						{
-
-						}
-					}*/
+                    Vector3 position = currentNode.clone().modifyPositionFromSide(direction);
                     neighbors.add(position);
                 }
 
@@ -41,9 +32,9 @@ public class PathfinderChecker extends Pathfinder {
             }
 
             @Override
-            public boolean onSearch(Pathfinder finder, ForgeVector node) {
+            public boolean onSearch(Pathfinder finder, Vector3 node) {
                 for (Class c : targets) {
-                    if (c.isInstance(node.getTileEntity(world))) {
+                    if (c.isInstance(VectorUtils.getTile(world, node))) {
                         finder.results.add(node);
 
                         return true;

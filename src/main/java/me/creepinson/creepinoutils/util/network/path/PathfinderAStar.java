@@ -2,7 +2,6 @@ package me.creepinson.creepinoutils.util.network.path;
 
 import me.creepinson.creepinoutils.api.util.math.Facing;
 import me.creepinson.creepinoutils.api.util.math.Vector3;
-import me.creepinson.creepinoutils.util.util.math.ForgeVector;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,43 +23,43 @@ public class PathfinderAStar extends Pathfinder {
     /**
      * The set of tentative nodes to be evaluated, initially containing the start node
      */
-    public Set<ForgeVector> openSet;
+    public Set<Vector3> openSet;
 
     /**
      * The map of navigated nodes storing the data of which position came from which in the format
      * of: X came from Y.
      */
-    public HashMap<ForgeVector, ForgeVector> navigationMap;
+    public HashMap<Vector3, Vector3> navigationMap;
 
     /**
      * Score values, used to determine the score for a path to evaluate how optimal the path is.
      * G-Score is the cost along the best known path while F-Score is the total cost.
      */
-    public HashMap<ForgeVector, Double> gScore, fScore;
+    public HashMap<Vector3, Double> gScore, fScore;
 
     /**
      * The node in which the pathfinder is trying to reach.
      */
-    public ForgeVector goal;
+    public Vector3 goal;
 
-    public PathfinderAStar(IPathCallBack callBack, ForgeVector goal) {
+    public PathfinderAStar(IPathCallBack callBack, Vector3 goal) {
         super(callBack);
         this.goal = goal;
     }
 
     @Override
-    public boolean findNodes(ForgeVector start) {
+    public boolean findNodes(Vector3 start) {
         this.openSet.add(start);
         this.gScore.put(start, 0d);
         this.fScore.put(start, this.gScore.get(start) + getHeuristicEstimatedCost(start, this.goal));
 
         while (!this.openSet.isEmpty()) {
             // Current is the node in openset having the lowest f_score[] value
-            ForgeVector currentNode = null;
+            Vector3 currentNode = null;
 
             double lowestFScore = 0;
 
-            for (ForgeVector node : this.openSet) {
+            for (Vector3 node : this.openSet) {
                 if (currentNode == null || this.fScore.get(node) < lowestFScore) {
                     currentNode = node;
                     lowestFScore = this.fScore.get(node);
@@ -83,7 +82,7 @@ public class PathfinderAStar extends Pathfinder {
             this.openSet.remove(currentNode);
             this.closedSet.add(currentNode);
 
-            for (ForgeVector neighbor : getNeighborNodes(currentNode)) {
+            for (Vector3 neighbor : getNeighborNodes(currentNode)) {
                 double tentativeGScore = this.gScore.get(currentNode) + currentNode.distanceTo(neighbor);
 
                 if (this.closedSet.contains(neighbor)) {
@@ -114,8 +113,8 @@ public class PathfinderAStar extends Pathfinder {
     /**
      * A recursive function to back track and find the path in which we have analyzed.
      */
-    public Set<ForgeVector> reconstructPath(HashMap<ForgeVector, ForgeVector> nagivationMap, ForgeVector current_node) {
-        Set<ForgeVector> path = new HashSet<>();
+    public Set<Vector3> reconstructPath(HashMap<Vector3, Vector3> nagivationMap, Vector3 current_node) {
+        Set<Vector3> path = new HashSet<>();
         path.add(current_node);
 
         if (nagivationMap.containsKey(current_node)) {
@@ -136,11 +135,11 @@ public class PathfinderAStar extends Pathfinder {
     /**
      * @return A Set of neighboring Vector3 positions.
      */
-    public Set<ForgeVector> getNeighborNodes(ForgeVector vector) {
+    public Set<Vector3> getNeighborNodes(Vector3 vector) {
         if (this.callBackCheck != null) {
             return this.callBackCheck.getConnectedNodes(this, vector);
         } else {
-            Set<ForgeVector> neighbors = new HashSet<>();
+            Set<Vector3> neighbors = new HashSet<>();
 
             for (int i = 0; i < 6; i++) {
                 neighbors.add(vector.clone().modifyPositionFromSide(Facing.byIndex(i)));

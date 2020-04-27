@@ -1,7 +1,7 @@
 package me.creepinson.creepinoutils.util.upgrade;
 
-import me.creepinson.creepinoutils.util.util.text.EnumColor;
-import me.creepinson.creepinoutils.util.util.text.LangUtils;
+import me.creepinson.creepinoutils.util.text.EnumColor;
+import me.creepinson.creepinoutils.util.text.LangUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;

@@ -1,6 +1,7 @@
 package me.creepinson.creepinoutils.util.network;
 
-import me.creepinson.creepinoutils.util.util.math.ForgeVector;
+import me.creepinson.creepinoutils.api.util.math.Vector3;
+import me.creepinson.creepinoutils.util.VectorUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -13,7 +14,7 @@ import java.util.Set;
  **/
 public class BaseNetwork<T> implements INetwork<T> {
     protected World world;
-    protected Set<ForgeVector> connections;
+    protected Set<Vector3> connections;
 
     public BaseNetwork(World w) {
         this.world = w;
@@ -31,8 +32,8 @@ public class BaseNetwork<T> implements INetwork<T> {
 
     @Override
     public void refresh() {
-        for (ForgeVector v : connections) {
-            TileEntity conn = world.getTileEntity(v.toBlockPos());
+        for (Vector3 v : connections) {
+            TileEntity conn = world.getTileEntity(VectorUtils.toBlockPos(v));
             if (conn instanceof IBaseTile) {
                 ((IBaseTile) conn).refresh();
             }
@@ -40,7 +41,7 @@ public class BaseNetwork<T> implements INetwork<T> {
     }
 
     @Override
-    public Set<ForgeVector> getConnections() {
+    public Set<Vector3> getConnections() {
         return this.connections;
     }
 

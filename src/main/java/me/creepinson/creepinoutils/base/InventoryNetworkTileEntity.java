@@ -1,7 +1,7 @@
 package me.creepinson.creepinoutils.base;
 
-import me.creepinson.creepinoutils.util.util.BlockUtils;
-import me.creepinson.creepinoutils.util.util.math.ForgeVector;
+import me.creepinson.creepinoutils.util.BlockUtils;
+import me.creepinson.creepinoutils.util.VectorUtils;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -16,7 +16,7 @@ public abstract class InventoryNetworkTileEntity extends BaseTile {
 
     @Override
     public void refresh() {
-        connections = BlockUtils.getTilesWithCapability(world, new ForgeVector(pos),
+        connections = BlockUtils.getTilesWithCapability(world, VectorUtils.fromBlockPos(pos),
                 CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
     }
 

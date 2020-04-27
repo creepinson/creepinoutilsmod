@@ -1,8 +1,8 @@
 package me.creepinson.creepinoutils.base;
 
 import com.google.gson.JsonObject;
-import me.creepinson.creepinoutils.util.util.CreativeTabCallback;
-import me.creepinson.creepinoutils.util.util.GsonUtils;
+import me.creepinson.creepinoutils.api.util.data.JsonUtils;
+import me.creepinson.creepinoutils.util.CreativeTabCallback;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -97,7 +97,7 @@ public abstract class BaseMod {
                 } else {
                     StringBuilder builder = new StringBuilder();
                     in.lines().forEach(builder::append);
-                    JsonObject object = GsonUtils.getGson().fromJson(builder.toString(), JsonObject.class);
+                    JsonObject object = JsonUtils.get().fromJson(builder.toString(), JsonObject.class);
                     UPDATE_LATEST_VER = object.get("latestVersion").getAsString();
                 }
 

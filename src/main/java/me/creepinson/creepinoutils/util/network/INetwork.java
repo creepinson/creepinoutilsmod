@@ -1,6 +1,6 @@
 package me.creepinson.creepinoutils.util.network;
 
-import me.creepinson.creepinoutils.util.util.math.ForgeVector;
+import me.creepinson.creepinoutils.api.util.math.Vector3;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -13,7 +13,7 @@ public interface INetwork<T> extends INBTSerializable<NBTTagCompound>, Serializa
 
     void refresh();
 
-    Set<ForgeVector> getConnections();
+    Set<Vector3> getConnections();
 
     void merge(INetwork<T> net);
 

@@ -2,10 +2,10 @@ package me.creepinson.creepinoutils.base;
 
 import me.creepinson.creepinoutils.api.util.data.game.ITile;
 import me.creepinson.creepinoutils.api.util.math.Vector3;
+import me.creepinson.creepinoutils.util.VectorUtils;
 import me.creepinson.creepinoutils.util.network.IBaseTile;
 import me.creepinson.creepinoutils.util.upgrade.Upgrade;
 import me.creepinson.creepinoutils.util.upgrade.UpgradeInfo;
-import me.creepinson.creepinoutils.util.util.math.ForgeVector;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -23,7 +23,7 @@ import java.util.Set;
 public abstract class BaseTile extends TileEntity implements IBaseTile, ITile {
     private boolean active;
     private boolean connectable;
-    protected Set<ForgeVector> connections = new HashSet<>();
+    protected Set<Vector3> connections = new HashSet<>();
 
     public boolean isActive() {
         return this.active;
@@ -111,12 +111,12 @@ public abstract class BaseTile extends TileEntity implements IBaseTile, ITile {
     public boolean canConnectTo(IBlockAccess blockAccess, Vector3 pos, EnumFacing f) {
         if (connections.isEmpty())
             refresh();
-        return isConnectable() && isActive() && connections.contains(getPosition().offset(f));
+        return isConnectable() && isActive() && connections.contains(VectorUtils.offset(pos, f));
     }
 
     @Override
-    public ForgeVector getPosition() {
-        return new ForgeVector(pos);
+    public Vector3 getPosition() {
+        return VectorUtils.fromBlockPos(getPos());
     }
 
     @Override
@@ -124,8 +124,7 @@ public abstract class BaseTile extends TileEntity implements IBaseTile, ITile {
         return canConnectTo(blockAccess, pos, side);
     }
 
-    @Override
-    public Set<ForgeVector> getConnections() {
+    public Set<Vector3> getConnections() {
         return connections;
     }
 

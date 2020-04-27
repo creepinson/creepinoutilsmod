@@ -2,10 +2,10 @@ package me.creepinson.creepinoutils.base;
 
 import me.creepinson.creepinoutils.CreepinoUtilsMod;
 import me.creepinson.creepinoutils.api.util.math.Vector3;
+import me.creepinson.creepinoutils.util.BlockUtils;
+import me.creepinson.creepinoutils.util.VectorUtils;
 import me.creepinson.creepinoutils.util.upgrade.Upgrade;
 import me.creepinson.creepinoutils.util.upgrade.UpgradeInfo;
-import me.creepinson.creepinoutils.util.util.BlockUtils;
-import me.creepinson.creepinoutils.util.util.math.ForgeVector;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -90,17 +90,12 @@ public abstract class TileMultiBlock extends BaseTile implements IMultiBlockTile
 
     @Override
     public boolean canConnectTo(IBlockAccess world, Vector3 pos, EnumFacing side) {
-        return this.connections.contains(new ForgeVector(pos).offset(side));
+        return this.connections.contains(VectorUtils.offset(pos, side));
     }
 
     @Override
     public boolean canConnectToStrict(IBlockAccess blockAccess, Vector3 pos, EnumFacing side) {
         return canConnectTo(blockAccess, pos, side);
-    }
-
-    @Override
-    public ForgeVector getPosition() {
-        return new ForgeVector(pos);
     }
 
     // Reset method to be run when the master is gone or tells them to
@@ -111,7 +106,7 @@ public abstract class TileMultiBlock extends BaseTile implements IMultiBlockTile
     }
 
     @Override
-    public Set<ForgeVector> getConnections() {
+    public Set<Vector3> getConnections() {
         return connected.stream().map(TileMultiBlock::getPosition).collect(Collectors.toSet());
     }
 
@@ -148,7 +143,7 @@ public abstract class TileMultiBlock extends BaseTile implements IMultiBlockTile
                 }
                 connected.add(tile);
                 for (EnumFacing facing : EnumFacing.values()) {
-                    TileEntity te = tile.getPosition().offset(facing).getTileEntity(world);
+                    TileEntity te = VectorUtils.getTileOffset(world, tile.getPosition(), facing);
                     if (te instanceof TileMultiBlock && !connected.contains(te) && canConnectToMultiBlock(facing, te)) {
                         traversing.add((TileMultiBlock) te);
                     }
