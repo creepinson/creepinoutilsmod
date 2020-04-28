@@ -3,10 +3,13 @@ package me.creepinson.creepinoutils.util.world.fake;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.management.PlayerInteractionManager;
 import net.minecraft.stats.StatBase;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
@@ -19,9 +22,9 @@ All credit to the forge team.
 */
 
 //Preliminary, simple Fake Player class 
-public class LocalFakePlayer extends EntityPlayerMP {
+public class UsefulFakePlayer extends EntityPlayerMP {
 
-    public LocalFakePlayer(WorldServer world, GameProfile name) {
+    public UsefulFakePlayer(WorldServer world, GameProfile name) {
         super(FMLCommonHandler.instance().getMinecraftServerInstance(), world, name, new PlayerInteractionManager(world));
     }
 
@@ -33,6 +36,23 @@ public class LocalFakePlayer extends EntityPlayerMP {
     @Override
     public void sendMessage(ITextComponent component) {
 
+    }
+
+
+    // Allows for the position of the player to be the exact source when raytracing.
+    @Override
+    public float getEyeHeight() {
+        return 0;
+    }
+
+    @Override
+    public void sendAllContents(Container containerToSend, NonNullList<ItemStack> itemsList) {
+        //Prevent crashing when objects with containers are clicked on.
+    }
+
+    @Override
+    public float getCooledAttackStrength(float adjustTicks) {
+        return 1; //Prevent the attack strength from always being 0.03 due to not ticking.
     }
 
     @Override
