@@ -69,7 +69,7 @@ public class CreepinoUtilsMod extends BaseMod {
         Map<String, BlockInfoHolder> blocks = new HashMap<>();
         Map<String, Set<Cuboid>> boxes = new HashMap<>();
         for (Block b : ForgeRegistries.BLOCKS.getValuesCollection()) {
-            blocks.put(b.getRegistryName().toString(), new BlockInfoHolder(b));
+//            blocks.put(b.getRegistryName().toString(), new BlockInfoHolder(b));
 //            boxes.put(b.getRegistryName().toString(), BlockInfoHolder.CuboidUtils.getBoxes(b));
         }
 

@@ -21,11 +21,11 @@ public class RegistryHandler {
 
     @SubscribeEvent
     public static void onBlockRegister(RegistryEvent.Register<Block> event) {
-        event.getRegistry().registerAll(BLOCK_TEST);
+//        event.getRegistry().registerAll(BLOCK_TEST);
     }
 
     @SubscribeEvent
     public static void onItemRegister(RegistryEvent.Register<Item> event) {
-        event.getRegistry().registerAll(BLOCK_TEST.createItemBlock());
+//        event.getRegistry().registerAll(BLOCK_TEST.createItemBlock());
     }
 }
