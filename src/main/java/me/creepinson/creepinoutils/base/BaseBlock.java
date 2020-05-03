@@ -5,6 +5,7 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
 
 public class BaseBlock extends Block {
@@ -34,7 +35,8 @@ public class BaseBlock extends Block {
     }
 
     public Item createItemBlock() {
-        Item item = Item.getItemFromBlock(this);
+        Item item = new ItemBlock(this);
+        item.setRegistryName(this.getRegistryName());
         return item;
     }
 
