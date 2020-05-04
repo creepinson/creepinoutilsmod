@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ public abstract class TileMultiBlock extends BaseTile implements IMultiBlockTile
 
     @Override
     public void refresh() {
-        this.connections = BlockUtils.getTiles(world, getPosition(), TileMultiBlock.class);
+        this.connections = BlockUtils.getTiles(world, pos, TileMultiBlock.class);
         this.initializeMultiBlockIfNecessary();
     }
 
@@ -89,12 +90,12 @@ public abstract class TileMultiBlock extends BaseTile implements IMultiBlockTile
     }
 
     @Override
-    public boolean canConnectTo(IBlockAccess world, Vector3 pos, EnumFacing side) {
-        return this.connections.contains(VectorUtils.offset(pos, side));
+    public boolean canConnectTo(IBlockAccess world, BlockPos pos, EnumFacing side) {
+        return this.connections.contains(pos.offset(side));
     }
 
     @Override
-    public boolean canConnectToStrict(IBlockAccess blockAccess, Vector3 pos, EnumFacing side) {
+    public boolean canConnectToStrict(IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
         return canConnectTo(blockAccess, pos, side);
     }
 
@@ -106,8 +107,8 @@ public abstract class TileMultiBlock extends BaseTile implements IMultiBlockTile
     }
 
     @Override
-    public Set<Vector3> getConnections() {
-        return connected.stream().map(TileMultiBlock::getPosition).collect(Collectors.toSet());
+    public Set<BlockPos> getConnections() {
+        return connected.stream().map(TileMultiBlock::getPos).collect(Collectors.toSet());
     }
 
     public TileMultiBlock getMaster() {

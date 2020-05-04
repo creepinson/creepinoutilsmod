@@ -9,6 +9,7 @@ import me.creepinson.creepinoutils.util.upgrade.UpgradeInfo;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ import java.util.Set;
 public abstract class BaseTile extends TileEntity implements IBaseTile, ITile {
     private boolean active;
     private boolean connectable;
-    protected Set<Vector3> connections = new HashSet<>();
+    protected Set<BlockPos> connections = new HashSet<>();
 
     public boolean isActive() {
         return this.active;
@@ -108,23 +109,22 @@ public abstract class BaseTile extends TileEntity implements IBaseTile, ITile {
     }
 
     @Override
-    public boolean canConnectTo(IBlockAccess blockAccess, Vector3 pos, EnumFacing f) {
+    public boolean canConnectTo(IBlockAccess blockAccess, BlockPos pos, EnumFacing f) {
         if (connections.isEmpty())
             refresh();
-        return isConnectable() && isActive() && connections.contains(VectorUtils.offset(pos, f));
+        return isConnectable() && isActive() && connections.contains(pos.offset(f));
     }
 
-    @Override
     public Vector3 getPosition() {
         return VectorUtils.fromBlockPos(getPos());
     }
 
     @Override
-    public boolean canConnectToStrict(IBlockAccess blockAccess, Vector3 pos, EnumFacing side) {
+    public boolean canConnectToStrict(IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
         return canConnectTo(blockAccess, pos, side);
     }
 
-    public Set<Vector3> getConnections() {
+    public Set<BlockPos> getConnections() {
         return connections;
     }
 

@@ -1,7 +1,7 @@
 package me.creepinson.creepinoutils.util;
 
-import me.creepinson.creepinoutils.api.util.math.Vector3;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
 /**
@@ -9,7 +9,7 @@ import net.minecraft.world.IBlockAccess;
  * Project creepinoutils
  **/
 public interface IConnectable {
-    boolean canConnectTo(IBlockAccess blockAccess, Vector3 pos, EnumFacing side);
+    boolean canConnectTo(IBlockAccess blockAccess, BlockPos pos, EnumFacing side);
 
-    boolean canConnectToStrict(IBlockAccess blockAccess, Vector3 pos, EnumFacing side);
+    boolean canConnectToStrict(IBlockAccess blockAccess, BlockPos pos, EnumFacing side);
 }

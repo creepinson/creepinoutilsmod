@@ -124,28 +124,27 @@ public class BlockUtils {
      * Returns a set containing the positions of each tile entity that is found to
      * be connected to the starting position.
      */
-    public static Set<Vector3> getTilesWithCapability(World world, Vector3 startingPosition, Capability... search) {
-        Set<Vector3> set = new HashSet<>();
+    public static Set<BlockPos> getTilesWithCapability(World world, BlockPos startingPosition, Capability... search) {
+        Set<BlockPos> set = new HashSet<>();
         getTilesWithCapabilityRecursive(set, world, startingPosition, null, search);
         return set;
     }
 
-    public static void getTilesWithCapabilityRecursive(Set<Vector3> done, World world, Vector3 start, EnumFacing from,
+    public static void getTilesWithCapabilityRecursive(Set<BlockPos> done, World world, BlockPos start, EnumFacing from,
                                                        Capability... search) {
         for (EnumFacing side : EnumFacing.values()) {
             if (side == from)
                 continue;
-            if (VectorUtils.getTile(world, start) != null
-                    && !VectorUtils.getTile(world, start).isInvalid()) {
-                TileEntity tile = VectorUtils.getTile(world, start);
+            TileEntity tile = world.getTileEntity(start);
+            if (tile != null && !tile.isInvalid()) {
                 for (Capability c : search) {
                     if (tile.getCapability(c, from) != null) {
                         done.add(start);
                     }
                 }
 
-                if (done.contains(VectorUtils.offset(start, side))) {
-                    getTilesWithCapabilityRecursive(done, world, VectorUtils.offset(start, side), side.getOpposite(), search);
+                if (done.contains(start.offset(side))) {
+                    getTilesWithCapabilityRecursive(done, world, start.offset(side), side.getOpposite(), search);
                 }
             }
         }
@@ -155,28 +154,27 @@ public class BlockUtils {
      * Returns a set containing the positions of each tile entity that is found to
      * be connected to the starting position.
      */
-    public static Set<Vector3> getTiles(World world, Vector3 startingPosition, Class... search) {
-        Set<Vector3> set = new HashSet<>();
+    public static Set<BlockPos> getTiles(World world, BlockPos startingPosition, Class... search) {
+        Set<BlockPos> set = new HashSet<>();
         getTilesRecursive(set, world, startingPosition, null, search);
         return set;
     }
 
-    public static void getTilesRecursive(Set<Vector3> done, World world, Vector3 start, EnumFacing from,
+    public static void getTilesRecursive(Set<BlockPos> done, World world, BlockPos start, EnumFacing from,
                                          Class... search) {
         for (EnumFacing side : EnumFacing.values()) {
             if (side == from)
                 continue;
-            if (VectorUtils.getTile(world, start) != null
-                    && !VectorUtils.getTile(world, start).isInvalid()) {
-                TileEntity tile = VectorUtils.getTile(world, start);
+            TileEntity tile = world.getTileEntity(start);
+            if (tile != null && !tile.isInvalid()) {
                 for (Class c : search) {
                     if (tile != null && !tile.isInvalid()) {
                         done.add(start);
                     }
                 }
 
-                if (done.contains(VectorUtils.offset(start, side))) {
-                    getTilesRecursive(done, world, VectorUtils.offset(start, side), side.getOpposite(), search);
+                if (done.contains(start.offset(side))) {
+                    getTilesRecursive(done, world, start.offset(side), side.getOpposite(), search);
                 }
             }
         }
@@ -186,29 +184,26 @@ public class BlockUtils {
      * Returns a set containing the positions of each tile entity that is found to
      * be connected to the starting position.
      */
-    public static Set<Vector3> getBlocks(World world, Vector3 startingPosition, Class... search) {
-        Set<Vector3> set = new HashSet<>();
+    public static Set<BlockPos> getBlocks(World world, BlockPos startingPosition, Class... search) {
+        Set<BlockPos> set = new HashSet<>();
         getBlocksRecursive(set, world, startingPosition, null, search);
         return set;
     }
 
-    public static void getBlocksRecursive(Set<Vector3> done, World world, Vector3 start, EnumFacing from,
+    public static void getBlocksRecursive(Set<BlockPos> done, World world, BlockPos start, EnumFacing from,
                                           Class... search) {
         for (EnumFacing side : EnumFacing.values()) {
             if (side == from)
                 continue;
-            if (VectorUtils.getTile(world, start) != null
-                    && !VectorUtils.getTile(world, start).isInvalid()) {
-                Block tile = VectorUtils.getBlock(world, start);
-                for (Class c : search) {
-                    if (c.isInstance(tile)) {
-                        done.add(start);
-                    }
+            Block b = world.getBlockState(start).getBlock();
+            for (Class c : search) {
+                if (c.isInstance(b)) {
+                    done.add(start);
                 }
+            }
 
-                if (done.contains(VectorUtils.offset(start, side))) {
-                    getBlocksRecursive(done, world, VectorUtils.offset(start, side), side.getOpposite(), search);
-                }
+            if (done.contains(start.offset(side))) {
+                getBlocksRecursive(done, world, start.offset(side), side.getOpposite(), search);
             }
         }
     }
@@ -299,7 +294,7 @@ public class BlockUtils {
 
     public static IBlockState getState(ItemStack stack) {
         Block block = Block.getBlockFromItem(stack.getItem());
-        if (block != null && !(block instanceof BlockAir))
+        if (!(block instanceof BlockAir))
             return getState(block, stack.getMetadata());
         return Blocks.AIR.getDefaultState();
     }

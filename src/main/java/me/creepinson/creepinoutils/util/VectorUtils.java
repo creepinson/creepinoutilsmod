@@ -13,6 +13,8 @@ import net.minecraft.world.World;
 import javax.vecmath.Vector3f;
 
 /**
+ * A utility class used to convert between classes such as Vector3 and BlockPos.
+ *
  * @author Creepinson http://gitlab.com/creepinson
  **/
 public class VectorUtils {
