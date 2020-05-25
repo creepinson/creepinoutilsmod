@@ -31,7 +31,7 @@ public class FakePlayerUtils {
      * @param direction The direction to use in.
      * @param toHold    The stack the player will be using.  Should probably come from an ItemStackHandler or similar.
      */
-    public static void setupFakePlayerForUse(UsefulFakePlayer player, BlockPos pos, EnumFacing direction, ItemStack toHold, boolean sneaking) {
+    public static void setupFakePlayerForUse(FakeServerPlayer player, BlockPos pos, EnumFacing direction, ItemStack toHold, boolean sneaking) {
         player.inventory.mainInventory.set(player.inventory.currentItem, toHold);
         float pitch = direction == EnumFacing.UP ? -90 : direction == EnumFacing.DOWN ? 90 : 0;
         float yaw = direction == EnumFacing.SOUTH ? 0 : direction == EnumFacing.WEST ? 90 : direction == EnumFacing.NORTH ? 180 : -90;
@@ -54,7 +54,7 @@ public class FakePlayerUtils {
      * @param resultStack The stack that was returned from right/leftClickInDirection.
      * @param oldStack    The previous stack, from before use.
      */
-    public static void cleanupFakePlayerFromUse(UsefulFakePlayer player, ItemStack resultStack, ItemStack oldStack, Consumer<ItemStack> stackCallback) {
+    public static void cleanupFakePlayerFromUse(FakeServerPlayer player, ItemStack resultStack, ItemStack oldStack, Consumer<ItemStack> stackCallback) {
         if (!oldStack.isEmpty())
             player.getAttributeMap().removeAttributeModifiers(oldStack.getAttributeModifiers(EntityEquipmentSlot.MAINHAND));
         player.inventory.mainInventory.set(player.inventory.currentItem, ItemStack.EMPTY);
@@ -67,13 +67,13 @@ public class FakePlayerUtils {
      * Uses whatever the player happens to be holding in the given direction.
      *
      * @param player      The player.
-     * @param world       The world of the calling tile entity.  It may be a bad idea to use {@link UsefulFakePlayer#getEntityWorld()}.
+     * @param world       The world of the calling tile entity.  It may be a bad idea to use {@link FakeServerPlayer#getEntityWorld()}.
      * @param pos         The pos of the calling tile entity.
      * @param side        The direction to use in.
      * @param sourceState The state of the calling tile entity, so we don't click ourselves.
      * @return The remainder of whatever the player was holding.  This should be set back into the tile's stack handler or similar.
      */
-    public static ItemStack rightClickInDirection(UsefulFakePlayer player, World world, BlockPos pos, EnumFacing side, IBlockState sourceState) {
+    public static ItemStack rightClickInDirection(FakeServerPlayer player, World world, BlockPos pos, EnumFacing side, IBlockState sourceState) {
         Vec3d base = new Vec3d(player.posX, player.posY, player.posZ);
         Vec3d look = player.getLookVec();
         Vec3d target = base.add(look.x * 5, look.y * 5, look.z * 5);
@@ -107,7 +107,7 @@ public class FakePlayerUtils {
             }
         }
 
-        if (toUse == null || toUse.typeOfHit == RayTraceResult.Type.MISS) {
+        if (toUse.typeOfHit == RayTraceResult.Type.MISS) {
             for (int i = 1; i <= 5; i++) {
                 IBlockState state = world.getBlockState(pos.offset(side, i));
                 if (state != sourceState && state.getMaterial() != Material.AIR) {
@@ -117,7 +117,7 @@ public class FakePlayerUtils {
             }
         }
 
-        if (itemstack.isEmpty() && (toUse == null || toUse.typeOfHit == RayTraceResult.Type.MISS))
+        if (itemstack.isEmpty() && toUse.typeOfHit == RayTraceResult.Type.MISS)
             ForgeHooks.onEmptyClick(player, EnumHand.MAIN_HAND);
         if (!itemstack.isEmpty())
             player.interactionManager.processRightClick(player, world, itemstack, EnumHand.MAIN_HAND);
@@ -128,13 +128,13 @@ public class FakePlayerUtils {
      * Attacks with whatever the player happens to be holding in the given direction.
      *
      * @param player      The player.
-     * @param world       The world of the calling tile entity.  It may be a bad idea to use {@link UsefulFakePlayer#getEntityWorld()}.
+     * @param world       The world of the calling tile entity.  It may be a bad idea to use {@link FakeServerPlayer#getEntityWorld()}.
      * @param pos         The pos of the calling tile entity.
      * @param side        The direction to attack in.
      * @param sourceState The state of the calling tile entity, so we don't click ourselves.
      * @return The remainder of whatever the player was holding.  This should be set back into the tile's stack handler or similar.
      */
-    public static ItemStack leftClickInDirection(UsefulFakePlayer player, World world, BlockPos pos, EnumFacing side, IBlockState sourceState) {
+    public static ItemStack leftClickInDirection(FakeServerPlayer player, World world, BlockPos pos, EnumFacing side, IBlockState sourceState) {
         Vec3d base = new Vec3d(player.posX, player.posY, player.posZ);
         Vec3d look = player.getLookVec();
         Vec3d target = base.add(look.x * 5, look.y * 5, look.z * 5);
@@ -163,7 +163,7 @@ public class FakePlayerUtils {
             }
         }
 
-        if (toUse == null || toUse.typeOfHit == RayTraceResult.Type.MISS) {
+        if (toUse.typeOfHit == RayTraceResult.Type.MISS) {
             for (int i = 1; i <= 5; i++) {
                 IBlockState state = world.getBlockState(pos.offset(side, i));
                 if (state != sourceState && state.getMaterial() != Material.AIR) {
@@ -173,7 +173,7 @@ public class FakePlayerUtils {
             }
         }
 
-        if (itemstack.isEmpty() && (toUse == null || toUse.typeOfHit == RayTraceResult.Type.MISS))
+        if (itemstack.isEmpty() && toUse.typeOfHit == RayTraceResult.Type.MISS)
             ForgeHooks.onEmptyLeftClick(player);
         return player.getHeldItemMainhand();
     }
@@ -185,7 +185,7 @@ public class FakePlayerUtils {
      * @param world  The world of the calling tile entity.
      * @return A ray trace result that will likely be of type entity, but may be type block, or null.
      */
-    public static RayTraceResult traceEntities(UsefulFakePlayer player, Vec3d base, Vec3d target, World world) {
+    public static RayTraceResult traceEntities(FakeServerPlayer player, Vec3d base, Vec3d target, World world) {
         Entity pointedEntity = null;
         RayTraceResult result = null;
         Vec3d vec3d3 = null;
@@ -225,7 +225,7 @@ public class FakePlayerUtils {
 
         if (pointedEntity != null && base.distanceTo(vec3d3) > 5) {
             pointedEntity = null;
-            result = new RayTraceResult(RayTraceResult.Type.MISS, vec3d3, (EnumFacing) null, new BlockPos(vec3d3));
+            result = new RayTraceResult(RayTraceResult.Type.MISS, vec3d3, null, new BlockPos(vec3d3));
         }
 
         if (pointedEntity != null) {
@@ -245,7 +245,7 @@ public class FakePlayerUtils {
      * @param action The type of interaction to perform.
      * @return If the entity was used.
      */
-    public static boolean processUseEntity(UsefulFakePlayer player, World world, Entity entity, @Nullable RayTraceResult result, CPacketUseEntity.Action action) {
+    public static boolean processUseEntity(FakeServerPlayer player, World world, Entity entity, @Nullable RayTraceResult result, CPacketUseEntity.Action action) {
         if (entity != null) {
             boolean flag = player.canEntityBeSeen(entity);
             double d0 = 36.0D;
@@ -273,7 +273,7 @@ public class FakePlayerUtils {
     /**
      * A copy-paste of the SideOnly {@link Entity#rayTrace(double, float)}
      */
-    public static RayTraceResult rayTrace(UsefulFakePlayer player, World world, double reachDist, float partialTicks) {
+    public static RayTraceResult rayTrace(FakeServerPlayer player, World world, double reachDist, float partialTicks) {
         Vec3d vec3d = player.getPositionEyes(partialTicks);
         Vec3d vec3d1 = player.getLook(partialTicks);
         Vec3d vec3d2 = vec3d.add(vec3d1.x * reachDist, vec3d1.y * reachDist, vec3d1.z * reachDist);
