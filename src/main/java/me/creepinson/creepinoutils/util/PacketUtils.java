@@ -35,5 +35,6 @@ public class PacketUtils {
         return ByteBufUtils.readTag(input);
     }
 
-    // TODO: vector3 packet method
+    // TODO: Vector packet method
+
 }

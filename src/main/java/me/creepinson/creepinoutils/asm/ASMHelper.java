@@ -24,7 +24,7 @@ public class ASMHelper {
      * srg support doesn't patch local vars nor instructions
      */
     public static MethodNode replaceMethod(ClassNode classNode, String inputStream, String method_name,
-            String method_desc, String srgname) {
+                                           String method_desc, String srgname) {
         MethodNode origin = Plugin.isObf ? getMethodNode(classNode, srgname, method_desc)
                 : getMethodNode(classNode, method_name, method_desc);
         try {
@@ -61,7 +61,7 @@ public class ASMHelper {
      * can use regular replace method to do so
      */
     public static void replaceMethodNotch(ClassNode classToTransform, String inputStream, MCPSidedString method_name,
-            MCPSidedString method_desc, MCPSidedString methodNameInject) {
+                                          MCPSidedString method_desc, MCPSidedString methodNameInject) {
         MethodNode origin = getMethodNode(classToTransform, method_name.toString(), method_desc.toString());
         try {
             MethodNode toReplace = getCachedMethodNode(inputStream, methodNameInject.toString(),
@@ -393,7 +393,7 @@ public class ASMHelper {
     }
 
     public static MethodInsnNode getLastMethodInsn(MethodNode node, int opcode, String owner, String name, String desc,
-            boolean isInterface) {
+                                                   boolean isInterface) {
         MethodInsnNode compare = new MethodInsnNode(opcode, owner, name, desc, isInterface);
         AbstractInsnNode[] list = node.instructions.toArray();
         for (int i = list.length - 1; i >= 0; i--) {
@@ -406,7 +406,7 @@ public class ASMHelper {
     }
 
     public static MethodInsnNode getFirstMethodInsn(MethodNode node, int opcode, String owner, String name, String desc,
-            boolean isInterface) {
+                                                    boolean isInterface) {
         MethodInsnNode compare = new MethodInsnNode(opcode, owner, name, desc, isInterface);
         for (AbstractInsnNode ab : node.instructions.toArray()) {
             if (ab.getOpcode() == opcode && ab instanceof MethodInsnNode && equals(compare, (MethodInsnNode) ab)) {
@@ -495,7 +495,7 @@ public class ASMHelper {
     }
 
     public static MethodInsnNode getMethodInsnNode(MethodNode node, int opcode, String owner, String name, String desc,
-            boolean itf) {
+                                                   boolean itf) {
         AbstractInsnNode[] arr = node.instructions.toArray();
         MethodInsnNode compare = new MethodInsnNode(opcode, owner, name, desc, itf);
         for (AbstractInsnNode ab : arr) {

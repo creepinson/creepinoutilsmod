@@ -5,8 +5,6 @@
 
 package me.creepinson.creepinoutils.util.client;
 
-import me.creepinson.creepinoutils.util.client.IItemRenderer;
-import me.creepinson.creepinoutils.util.client.IItemRendererHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;

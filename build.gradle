@@ -27,13 +27,13 @@ repositories {
 }
 
 dependencies {
-    compile 'com.gitlab.creepino-creations:creepino-utils-core:master-SNAPSHOT'
+    compile 'com.github.creepinson:throw-out-utils-java:master-SNAPSHOT'
 }
 
 shadowJar {
     // Only shadow fluent-hc
     dependencies {
-        include(dependency('com.gitlab.creepino-creations:creepino-utils-core:master-SNAPSHOT'))
+        include(dependency('com.github.creepinson:throw-out-utils-java:master-SNAPSHOT'))
     }
 
     // Relocate fluent-hc to prevent conflicts with other mods that include it

@@ -13,8 +13,8 @@ import java.util.List;
 public class ReflectionUtils {
 
     /**
-     * Attempt to find a {@link Method} on the supplied class with the supplied
-     * name and parameter types. Searches all superclasses up to {@code Object}.
+     * Attempt to find a {@link Method} on the supplied class with the supplied name
+     * and parameter types. Searches all superclasses up to {@code Object}.
      * <p>
      * Returns {@code null} if no {@link Method} can be found.
      *
@@ -26,8 +26,7 @@ public class ReflectionUtils {
     public static Method findMethod(Class<?> clazz, String name) {
         Class<?> searchType = clazz;
         while (searchType != null) {
-            Method[] methods = (searchType.isInterface() ? searchType.getMethods() :
-                    searchType.getDeclaredMethods());
+            Method[] methods = (searchType.isInterface() ? searchType.getMethods() : searchType.getDeclaredMethods());
             for (Method method : methods) {
                 if (name.equals(method.getName())) {
                     return method;
@@ -39,9 +38,9 @@ public class ReflectionUtils {
     }
 
     /**
-     * Invoke the specified {@link Method} against the supplied target object
-     * with no arguments. The target object can be {@code null} when invoking a
-     * static {@link Method}.
+     * Invoke the specified {@link Method} against the supplied target object with
+     * no arguments. The target object can be {@code null} when invoking a static
+     * {@link Method}.
      * <p>
      * Thrown exceptions are handled via a call to
      * {@link #handleReflectionException}.
@@ -75,9 +74,9 @@ public class ReflectionUtils {
     }
 
     /**
-     * Invoke the specified {@link Method} against the supplied target object
-     * with the supplied arguments. The target object can be {@code null} when
-     * invoking a static {@link Method}.
+     * Invoke the specified {@link Method} against the supplied target object with
+     * the supplied arguments. The target object can be {@code null} when invoking a
+     * static {@link Method}.
      * <p>
      * Thrown exceptions are handled via a call to
      * {@link #handleReflectionException}.
@@ -147,17 +146,16 @@ public class ReflectionUtils {
     /**
      * Make the given method accessible, explicitly setting it accessible if
      * necessary. The {@code setAccessible(true)} method is only called when
-     * actually necessary, to avoid unnecessary conflicts with a JVM
-     * SecurityManager (if active).
+     * actually necessary, to avoid unnecessary conflicts with a JVM SecurityManager
+     * (if active).
      *
      * @param method the method to make accessible
      * @see java.lang.reflect.Method#setAccessible
      */
     @SuppressWarnings("deprecation") // on JDK 9
     public static void makeAccessible(Method method) {
-        if ((!Modifier.isPublic(method.getModifiers()) ||
-                !Modifier.isPublic(method.getDeclaringClass().getModifiers())) &&
-                !method.isAccessible()) {
+        if ((!Modifier.isPublic(method.getModifiers()) || !Modifier.isPublic(method.getDeclaringClass().getModifiers()))
+                && !method.isAccessible()) {
             method.setAccessible(true);
         }
     }
@@ -180,8 +178,8 @@ public class ReflectionUtils {
     }
 
     public static boolean isSetter(Method method) {
-        return method.getReturnType().equals(Void.TYPE) &&
-                !Modifier.isStatic(method.getModifiers()) && method.getParameterTypes().length == 1;
+        return method.getReturnType().equals(Void.TYPE) && !Modifier.isStatic(method.getModifiers())
+                && method.getParameterTypes().length == 1;
     }
 
     /**
@@ -249,10 +247,10 @@ public class ReflectionUtils {
      * non-static member class).
      *
      * <p>
-     * Technically speaking (i.e., according to the Java Language
-     * Specification), "an inner class may be a non-static member class, a local
-     * class, or an anonymous class." However, this method does not return
-     * {@code true} for a local or anonymous class.
+     * Technically speaking (i.e., according to the Java Language Specification),
+     * "an inner class may be a non-static member class, a local class, or an
+     * anonymous class." However, this method does not return {@code true} for a
+     * local or anonymous class.
      *
      * @param clazz the class to check; never {@code null}
      * @return {@code true} if the class is an <em>inner class</em>
@@ -276,13 +274,12 @@ public class ReflectionUtils {
     }
 
     /**
-     * Attempt to find a {@link Field field} on the supplied {@link Class} with
-     * the supplied {@code name} and/or {@link Class type}. Searches all
-     * superclasses up to {@link Object}.
+     * Attempt to find a {@link Field field} on the supplied {@link Class} with the
+     * supplied {@code name} and/or {@link Class type}. Searches all superclasses up
+     * to {@link Object}.
      *
      * @param clazz the class to introspect
-     * @param name  the name of the field (may be {@code null} if type is
-     *              specified)
+     * @param name  the name of the field (may be {@code null} if type is specified)
      * @return the corresponding Field object, or {@code null} if not found
      */
 
@@ -301,11 +298,10 @@ public class ReflectionUtils {
     }
 
     /**
-     * Set the field represented by the supplied {@link Field field object} on
-     * the specified {@link Object target object} to the specified
-     * {@code value}. In accordance with {@link Field#set(Object, Object)}
-     * semantics, the new value is automatically unwrapped if the underlying
-     * field has a primitive type.
+     * Set the field represented by the supplied {@link Field field object} on the
+     * specified {@link Object target object} to the specified {@code value}. In
+     * accordance with {@link Field#set(Object, Object)} semantics, the new value is
+     * automatically unwrapped if the underlying field has a primitive type.
      * <p>
      * Thrown exceptions are handled via a call to
      * {@link #handleReflectionException(Exception)}.
@@ -324,11 +320,10 @@ public class ReflectionUtils {
     }
 
     /**
-     * Set the field represented by the supplied {@link Field field object} on
-     * the specified {@link Object target object} to the specified
-     * {@code value}. In accordance with {@link Field#set(Object, Object)}
-     * semantics, the new value is automatically unwrapped if the underlying
-     * field has a primitive type.
+     * Set the field represented by the supplied {@link Field field object} on the
+     * specified {@link Object target object} to the specified {@code value}. In
+     * accordance with {@link Field#set(Object, Object)} semantics, the new value is
+     * automatically unwrapped if the underlying field has a primitive type.
      * <p>
      * Thrown exceptions are handled via a call to
      * {@link #handleReflectionException(Exception)}.
@@ -351,8 +346,8 @@ public class ReflectionUtils {
     }
 
     /**
-     * Get the field represented by the supplied {@link Field field object} on
-     * the specified {@link Object target object}. In accordance with
+     * Get the field represented by the supplied {@link Field field object} on the
+     * specified {@link Object target object}. In accordance with
      * {@link Field#get(Object)} semantics, the returned value is automatically
      * wrapped if the underlying field has a primitive type.
      * <p>
@@ -375,8 +370,8 @@ public class ReflectionUtils {
     }
 
     /**
-     * Get the field represented by the supplied {@link Field field object} on
-     * the specified {@link Object target object}. In accordance with
+     * Get the field represented by the supplied {@link Field field object} on the
+     * specified {@link Object target object}. In accordance with
      * {@link Field#get(Object)} semantics, the returned value is automatically
      * wrapped if the underlying field has a primitive type.
      * <p>
@@ -400,8 +395,8 @@ public class ReflectionUtils {
     }
 
     /**
-     * Handle the given reflection exception. Should only be called if no
-     * checked exception is expected to be thrown by the target method.
+     * Handle the given reflection exception. Should only be called if no checked
+     * exception is expected to be thrown by the target method.
      * <p>
      * Throws the underlying RuntimeException or Error in case of an
      * InvocationTargetException with such a root cause. Throws an
@@ -443,17 +438,16 @@ public class ReflectionUtils {
     /**
      * Make the given field accessible, explicitly setting it accessible if
      * necessary. The {@code setAccessible(true)} method is only called when
-     * actually necessary, to avoid unnecessary conflicts with a JVM
-     * SecurityManager (if active).
+     * actually necessary, to avoid unnecessary conflicts with a JVM SecurityManager
+     * (if active).
      *
      * @param field the field to make accessible
      * @see java.lang.reflect.Field#setAccessible
      */
     @SuppressWarnings("deprecation") // on JDK 9
     public static void makeAcmakeAccessible(Field field) {
-        if ((!Modifier.isPublic(field.getModifiers()) ||
-                !Modifier.isPublic(field.getDeclaringClass().getModifiers()) ||
-                Modifier.isFinal(field.getModifiers())) && !field.isAccessible()) {
+        if ((!Modifier.isPublic(field.getModifiers()) || !Modifier.isPublic(field.getDeclaringClass().getModifiers())
+                || Modifier.isFinal(field.getModifiers())) && !field.isAccessible()) {
             field.setAccessible(true);
         }
     }
@@ -465,14 +459,13 @@ public class ReflectionUtils {
      */
     public static boolean isPublicStaticFinal(Field field) {
         int modifiers = field.getModifiers();
-        return (Modifier.isPublic(modifiers) && Modifier.isStatic(modifiers) &&
-                Modifier.isFinal(modifiers));
+        return (Modifier.isPublic(modifiers) && Modifier.isStatic(modifiers) && Modifier.isFinal(modifiers));
     }
 
     /**
-     * This variant retrieves {@link Class#getDeclaredFields()} from a local
-     * cache in order to avoid the JVM's SecurityManager check and defensive
-     * array copying.
+     * This variant retrieves {@link Class#getDeclaredFields()} from a local cache
+     * in order to avoid the JVM's SecurityManager check and defensive array
+     * copying.
      *
      * @param clazz the class to introspect
      * @return the cached array of fields
@@ -512,19 +505,18 @@ public class ReflectionUtils {
     }
 
     /**
-     * Make the given constructor accessible, explicitly setting it accessible
-     * if necessary. The {@code setAccessible(true)} method is only called when
-     * actually necessary, to avoid unnecessary conflicts with a JVM
-     * SecurityManager (if active).
+     * Make the given constructor accessible, explicitly setting it accessible if
+     * necessary. The {@code setAccessible(true)} method is only called when
+     * actually necessary, to avoid unnecessary conflicts with a JVM SecurityManager
+     * (if active).
      *
      * @param ctor the constructor to make accessible
      * @see java.lang.reflect.Constructor#setAccessible
      */
     @SuppressWarnings("deprecation") // on JDK 9
     public static void makeAccessible(Constructor<?> ctor) {
-        if ((!Modifier.isPublic(ctor.getModifiers()) ||
-                !Modifier.isPublic(ctor.getDeclaringClass().getModifiers())) &&
-                !ctor.isAccessible()) {
+        if ((!Modifier.isPublic(ctor.getModifiers()) || !Modifier.isPublic(ctor.getDeclaringClass().getModifiers()))
+                && !ctor.isAccessible()) {
             ctor.setAccessible(true);
         }
     }

@@ -117,7 +117,7 @@ public class IItemRendererHandler {
     }
 
     public static boolean hasKey(ItemStack stack) {
-        return stack.isEmpty() ? false : registry.containsKey(stack.getItem());
+        return !stack.isEmpty() && registry.containsKey(stack.getItem());
     }
 
     public static void register(Item item, IItemRenderer renderer) {
@@ -500,34 +500,34 @@ public class IItemRendererHandler {
     }
 
     public static boolean isThirdPerson(TransformType type) {
-        return type == type.THIRD_PERSON_RIGHT_HAND || type == type.THIRD_PERSON_LEFT_HAND;
+        return type == TransformType.THIRD_PERSON_RIGHT_HAND || type == TransformType.THIRD_PERSON_LEFT_HAND;
     }
 
     public static boolean isFirstPerson(TransformType type) {
-        return type == type.FIRST_PERSON_RIGHT_HAND || type == type.FIRST_PERSON_LEFT_HAND;
+        return type == TransformType.FIRST_PERSON_RIGHT_HAND || type == TransformType.FIRST_PERSON_LEFT_HAND;
     }
 
     /**
      * type none is most likely a gui or gui like thing so both gui and none type return true
      */
     public static boolean isGui(TransformType type) {
-        return type == type.GUI || type == type.NONE;
+        return type == TransformType.GUI || type == TransformType.NONE;
     }
 
     public static boolean isEntityItem(TransformType type) {
-        return type == type.GROUND;
+        return type == TransformType.GROUND;
     }
 
     public static boolean isItemFrame(TransformType type) {
-        return type == type.FIXED;
+        return type == TransformType.FIXED;
     }
 
     public static boolean isUnkown(TransformType type) {
-        return type == type.NONE;
+        return type == TransformType.NONE;
     }
 
     public static boolean isHead(TransformType type) {
-        return type == type.HEAD;
+        return type == TransformType.HEAD;
     }
 
     public static void restoreLastOpenGl() {

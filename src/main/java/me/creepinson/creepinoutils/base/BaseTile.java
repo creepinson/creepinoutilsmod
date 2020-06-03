@@ -1,7 +1,7 @@
 package me.creepinson.creepinoutils.base;
 
 import me.creepinson.creepinoutils.api.util.data.game.ITile;
-import me.creepinson.creepinoutils.api.util.math.Vector3;
+import me.creepinson.creepinoutils.api.util.math.Vector;
 import me.creepinson.creepinoutils.util.VectorUtils;
 import me.creepinson.creepinoutils.util.network.IBaseTile;
 import me.creepinson.creepinoutils.util.upgrade.Upgrade;
@@ -18,9 +18,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * @author Creepinson http://gitlab.com/creepinson
- * Project creepinoutils
- **/
+ * @author Theo Paris (https://theoparis.com)
+ */
 public abstract class BaseTile extends TileEntity implements IBaseTile, ITile {
     private boolean active;
     private boolean connectable;
@@ -115,7 +114,7 @@ public abstract class BaseTile extends TileEntity implements IBaseTile, ITile {
         return isConnectable() && isActive() && connections.contains(pos.offset(f));
     }
 
-    public Vector3 getPosition() {
+    public Vector getPosition() {
         return VectorUtils.fromBlockPos(getPos());
     }
 
@@ -128,7 +127,7 @@ public abstract class BaseTile extends TileEntity implements IBaseTile, ITile {
         return connections;
     }
 
-    public void onNeighborChange(Vector3 vector3) {
+    public void onNeighborChange(Vector Vector) {
         refresh();
         updateConnectedBlocks();
     }

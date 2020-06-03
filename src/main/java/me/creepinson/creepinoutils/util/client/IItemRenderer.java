@@ -9,12 +9,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 
-@SideOnly(Side.CLIENT)
-
 /**
  * This is main interface (and only) of IItem Renderer API. This allows for super-ultra-hyper dynamic item rendering and <u>GL calls</u>. It also has methods for better overlay rendering. <b>It is <u>NOT</u> required to use BOTH!!!</b>
  * <br>
- * Implement this (you can use anonymous classes) and register instance with {@link IItemRendererAPI#registerIItemRenderer(net.minecraft.item.Item, IItemRenderer)} to begin using dynamic rendering.
+ * Implement this (you can use anonymous classes) and register instance with to begin using dynamic rendering.
  * <br><br>
  * Interface consists of 2 parts, 2 methods each (pre and post): item rendering and item GUI overlay rendering. Item rendering is for item stack rendering and allows to do things like GL calls. GUI overlay is to change overlay displayed in GUI, like adding second durability bar.
  * <br>
@@ -26,6 +24,7 @@ import javax.annotation.Nullable;
  * @author jredfox, elix_x
  *
  */
+@SideOnly(Side.CLIENT)
 public interface IItemRenderer {
 
     /**
@@ -37,22 +36,22 @@ public interface IItemRenderer {
      * @param type         {@link TransformType} that will be/was used to transform model
      * @param partialTicks allows partialTicks to interpolate for animations usually the same as Minecraft.getMinecraft().getPartialTicks() unless someone manually renders your renderer
      */
-    public void render(ItemStack stack, IBakedModel model, TransformType type, float partialTicks);
+    void render(ItemStack stack, IBakedModel model, TransformType type, float partialTicks);
 
     /**
      * return what type of preset open gl transformations will occur
-     *
-     * @TYPE FIXED 1.7.10 fixed transforms ported
-     * @TYPE NONE no transforms done besides GlStateManager.translate(-0.5F, -0.5F, -0.5F);
+     * <p>
+     * FIXED 1.7.10 fixed transforms ported
+     * NONE no transforms done besides GlStateManager.translate(-0.5F, -0.5F, -0.5F);
      */
-    public TransformPreset getTransformPreset();
+    TransformPreset getTransformPreset();
 
     /**
      * This gets fired when your iitemrenderer is rendering another item and was unable to reset opn gl before
      * continuing due to recursion. Example An item renders an entity which then enables cull. Entity Head starts to render an item you want cull to be disabled so you override this
      * do not use this for transforms(scaling,rotation,translate) as this will can get fired more then once without checks
      */
-    public default void restoreLastOpenGl() {
+    default void restoreLastOpenGl() {
 
     }
 
@@ -64,7 +63,7 @@ public interface IItemRenderer {
     /**
      * the faster render for your renderer
      */
-    public default void renderFast(ItemStack stack, IBakedModel model, TransformType type, float partialTicks) {
+    default void renderFast(ItemStack stack, IBakedModel model, TransformType type, float partialTicks) {
         render(stack, model, type, partialTicks);
     }
 
@@ -77,14 +76,14 @@ public interface IItemRenderer {
      * @param text      {@link String} that replaces item stack's size, if not null
      * @return <b>TRUE</b> if rendering should proceed and default overlay should be rendered. <b>FALSE</b> if rendering should be cancelled.
      */
-    public default void renderOverlay(FontRenderer fr, ItemStack stack, int xPosition, int yPosition, @Nullable String text) {
+    default void renderOverlay(FontRenderer fr, ItemStack stack, int xPosition, int yPosition, @Nullable String text) {
         me.creepinson.creepinoutils.util.client.IItemRendererHandler.renderOverlay(fr, stack, xPosition, yPosition, text);
     }
 
     /**
      * the faster render of renderOverlay used when Minecraft's game settings are not fancyGraphics
      */
-    public default void renderOverlayFast(FontRenderer fr, ItemStack stack, int xPosition, int yPosition, @Nullable String text) {
+    default void renderOverlayFast(FontRenderer fr, ItemStack stack, int xPosition, int yPosition, @Nullable String text) {
         renderOverlay(fr, stack, xPosition, yPosition, text);
     }
 
@@ -92,13 +91,13 @@ public interface IItemRenderer {
      * by default most iitemrenderers can just simply render the whole thing again without the model changing each call for the enchantment effect. if it does then simply override this
      * note: binding textures will not occur here without re-enabling them first {@link IItemRendererHandler#canBind}
      */
-    public default void renderEffect(ItemStack stack, IBakedModel model, TransformType type, float partialTicks) {
+    default void renderEffect(ItemStack stack, IBakedModel model, TransformType type, float partialTicks) {
         me.creepinson.creepinoutils.util.client.IItemRendererHandler.render(this, stack, model, type, partialTicks);
     }
 
-    public static enum TransformPreset {
+    enum TransformPreset {
         FIXED(),
-        NONE();
+        NONE()
     }
 
 }

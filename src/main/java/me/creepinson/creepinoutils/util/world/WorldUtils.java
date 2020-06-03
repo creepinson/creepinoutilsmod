@@ -1,6 +1,6 @@
 package me.creepinson.creepinoutils.util.world;
 
-import me.creepinson.creepinoutils.api.util.math.Vector3;
+import me.creepinson.creepinoutils.api.util.math.Vector;
 import me.creepinson.creepinoutils.util.VectorUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -158,11 +158,11 @@ public class WorldUtils {
      * Notifies neighboring blocks of a TileEntity change without loading chunks.
      *
      * @param world - world to perform the operation in
-     * @param coord - Vector3 to perform the operation on
+     * @param coord - Vector to perform the operation on
      */
-    public static void notifyLoadedNeighborsOfTileChange(World world, Vector3 coord) {
+    public static void notifyLoadedNeighborsOfTileChange(World world, Vector coord) {
         for (EnumFacing dir : EnumFacing.VALUES) {
-            Vector3 offset = VectorUtils.offset(coord, dir);
+            Vector offset = VectorUtils.offset(coord, dir);
             notifyNeighborofChange(world, offset, VectorUtils.toBlockPos(coord));
             if (VectorUtils.getBlockState(world, offset).isNormalCube()) {
                 offset = VectorUtils.offset(offset, dir);
@@ -181,7 +181,7 @@ public class WorldUtils {
      * @param coord   neighbor to notify
      * @param fromPos pos of our block that updated
      */
-    public static void notifyNeighborofChange(World world, Vector3 coord, BlockPos fromPos) {
+    public static void notifyNeighborofChange(World world, Vector coord, BlockPos fromPos) {
         IBlockState state = VectorUtils.getBlockState(world, coord);
         state.getBlock().onNeighborChange(world, VectorUtils.toBlockPos(coord), fromPos);
         state.neighborChanged(world, VectorUtils.toBlockPos(coord), world.getBlockState(fromPos).getBlock(), fromPos);
@@ -202,12 +202,12 @@ public class WorldUtils {
      * Checks if a block is directly getting powered by any of its neighbors without loading any chunks.
      *
      * @param world - the world to perform the check in
-     * @param coord - the Vector3 of the block to check
+     * @param coord - the Vector of the block to check
      * @return if the block is directly getting powered
      */
-    public static boolean isDirectlyGettingPowered(World world, Vector3 coord) {
+    public static boolean isDirectlyGettingPowered(World world, Vector coord) {
         for (EnumFacing side : EnumFacing.VALUES) {
-            Vector3 sideCoord = VectorUtils.offset(coord, side);
+            Vector sideCoord = VectorUtils.offset(coord, side);
             if (world.getRedstonePower(VectorUtils.toBlockPos(coord), side) > 0) {
                 return true;
             }
@@ -223,9 +223,9 @@ public class WorldUtils {
      * @param coord - the coordinate of the block performing the check
      * @return if the block is indirectly getting powered by LOADED chunks
      */
-    public static boolean isGettingPowered(World world, Vector3 coord) {
+    public static boolean isGettingPowered(World world, Vector coord) {
         for (EnumFacing side : EnumFacing.VALUES) {
-            Vector3 sideCoord = VectorUtils.offset(coord, side);
+            Vector sideCoord = VectorUtils.offset(coord, side);
             IBlockState blockState = VectorUtils.getBlockState(world, coord);
             boolean weakPower = blockState.getBlock().shouldCheckWeakPower(blockState, world, VectorUtils.toBlockPos(coord), side);
             if (weakPower && isDirectlyGettingPowered(world, sideCoord)) {

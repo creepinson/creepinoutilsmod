@@ -1,6 +1,6 @@
 package me.creepinson.creepinoutils.util;
 
-import me.creepinson.creepinoutils.api.util.math.Vector3;
+import me.creepinson.creepinoutils.api.util.math.Vector;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
@@ -11,10 +11,10 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 public class BlockData implements INBTSerializable<NBTTagCompound> {
     private IBlockState state;
-    private Vector3 pos;
+    private Vector pos;
     private World world;
 
-    public BlockData(World world, Vector3 pos, IBlockState state) {
+    public BlockData(World world, Vector pos, IBlockState state) {
         this(pos, state);
         this.world = world;
     }
@@ -23,7 +23,7 @@ public class BlockData implements INBTSerializable<NBTTagCompound> {
         setWorld(world);
     }
 
-    public BlockData(Vector3 pos, IBlockState state) {
+    public BlockData(Vector pos, IBlockState state) {
         this.pos = pos;
         this.state = state;
     }
@@ -36,11 +36,11 @@ public class BlockData implements INBTSerializable<NBTTagCompound> {
         this.state = state;
     }
 
-    public Vector3 getPosition() {
+    public Vector getPosition() {
         return pos;
     }
 
-    public void setPosition(Vector3 pos) {
+    public void setPosition(Vector pos) {
         this.pos = pos;
     }
 

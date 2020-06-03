@@ -1,7 +1,7 @@
 package me.creepinson.creepinoutils.base;
 
 import me.creepinson.creepinoutils.CreepinoUtilsMod;
-import me.creepinson.creepinoutils.api.util.math.Vector3;
+import me.creepinson.creepinoutils.api.util.math.Vector;
 import me.creepinson.creepinoutils.util.BlockUtils;
 import me.creepinson.creepinoutils.util.VectorUtils;
 import me.creepinson.creepinoutils.util.upgrade.Upgrade;
@@ -43,7 +43,7 @@ public abstract class TileMultiBlock extends BaseTile implements IMultiBlockTile
     }
 
     @Override
-    public void onNeighborChange(Vector3 v) {
+    public void onNeighborChange(Vector v) {
         refresh();
     }
 

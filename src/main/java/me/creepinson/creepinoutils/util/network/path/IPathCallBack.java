@@ -1,6 +1,6 @@
 package me.creepinson.creepinoutils.util.network.path;
 
-import me.creepinson.creepinoutils.api.util.math.Vector3;
+import me.creepinson.creepinoutils.api.util.math.Vector;
 
 import java.util.Set;
 
@@ -11,7 +11,7 @@ public interface IPathCallBack {
      * @return A set of nodes connected to the currentNode. Essentially one should return a set of
      * neighboring nodes.
      */
-    public Set<Vector3> getConnectedNodes(Pathfinder finder, Vector3 currentNode);
+    Set<Vector> getConnectedNodes(Pathfinder finder, Vector currentNode);
 
     /**
      * Called when looping through nodes.
@@ -20,5 +20,5 @@ public interface IPathCallBack {
      * @param node   - The node being searched.
      * @return True to stop the path finding operation.
      */
-    public boolean onSearch(Pathfinder finder, Vector3 node);
+    boolean onSearch(Pathfinder finder, Vector node);
 }

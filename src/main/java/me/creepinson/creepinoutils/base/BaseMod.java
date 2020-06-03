@@ -20,9 +20,9 @@ import java.io.InputStreamReader;
 import java.net.URL;
 
 /**
- * @author Creepinson http://gitlab.com/creepinson
- * Project creepinoutils
+ * @author Theo Paris (https://theoparis.com)
  */
+
 public abstract class BaseMod {
     public final VersionSettings modVersionSettings;
     protected File _CONFIG_BASE;
@@ -50,10 +50,12 @@ public abstract class BaseMod {
     }
 
     /**
-     * @param versionSettings Used for retrieving the latest version of the mod.
-     *                        If you pas null, it will not check for the latest version.
-     * @param id              The mod id used by minecraft forge
-     *                        If you are extending this class, then you can set BaseMod#hasCreativeTab to false if you do not want a
+     * @param versionSettings Used for retrieving the latest version of the mod. If
+     *                        you pas null, it will not check for the latest
+     *                        version.
+     * @param id              The mod id used by minecraft forge If you are
+     *                        extending this class, then you can set
+     *                        BaseMod#hasCreativeTab to false if you do not want a
      *                        simple creative tab to be added to your mod.
      */
     public BaseMod(String url, VersionSettings versionSettings, String id, String ver) {
@@ -111,12 +113,14 @@ public abstract class BaseMod {
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        if (event.getSide() == Side.CLIENT) clientInit(event);
+        if (event.getSide() == Side.CLIENT)
+            clientInit(event);
     }
 
     /**
-     * @param callback Callback once creative tab is created to change settings of the tab.
-     *                 You can pass null to disable automatic initialization of the creative tab.
+     * @param callback Callback once creative tab is created to change settings of
+     *                 the tab. You can pass null to disable automatic
+     *                 initialization of the creative tab.
      */
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event, CreativeTabCallback callback) {
@@ -137,7 +141,8 @@ public abstract class BaseMod {
         }
 
         MinecraftForge.EVENT_BUS.register(this);
-        if (event.getSide() == Side.CLIENT) clientPreInit(event);
+        if (event.getSide() == Side.CLIENT)
+            clientPreInit(event);
 
     }
 
@@ -145,6 +150,7 @@ public abstract class BaseMod {
     public void postInit(FMLPostInitializationEvent event) {
         if (CHECK_FOR_UPDATES)
             checkForUpdates();
-        if (event.getSide() == Side.CLIENT) clientPostInit(event);
+        if (event.getSide() == Side.CLIENT)
+            clientPostInit(event);
     }
 }

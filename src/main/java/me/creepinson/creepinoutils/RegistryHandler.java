@@ -12,20 +12,21 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 /**
- * @author Creepinson http://gitlab.com/creepinson
- * Project CreepinoUtilsMod
- **/
+ * @author Theo Paris (https://theoparis.com)
+ */
+
 @Mod.EventBusSubscriber(modid = CreepinoUtilsMod.MOD_ID)
 public class RegistryHandler {
-    public static final BaseBlock BLOCK_TEST = new BlockAnimationTest(Material.CLOTH, new ResourceLocation(CreepinoUtilsMod.MOD_ID, "test_block"), CreativeTabs.MISC);
+    public static final BaseBlock BLOCK_TEST = new BlockAnimationTest(Material.CLOTH,
+            new ResourceLocation(CreepinoUtilsMod.MOD_ID, "test_block"), CreativeTabs.MISC);
 
     @SubscribeEvent
     public static void onBlockRegister(RegistryEvent.Register<Block> event) {
-//        event.getRegistry().registerAll(BLOCK_TEST);
+        // event.getRegistry().registerAll(BLOCK_TEST);
     }
 
     @SubscribeEvent
     public static void onItemRegister(RegistryEvent.Register<Item> event) {
-//        event.getRegistry().registerAll(BLOCK_TEST.createItemBlock());
+        // event.getRegistry().registerAll(BLOCK_TEST.createItemBlock());
     }
 }

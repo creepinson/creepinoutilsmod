@@ -1,6 +1,6 @@
 package me.creepinson.creepinoutils.util;
 
-import me.creepinson.creepinoutils.api.util.math.Vector3;
+import me.creepinson.creepinoutils.api.util.math.Vector;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.state.IBlockState;
@@ -35,9 +35,9 @@ public class BlockUtils {
         if (y >= precMap[i1] - 1) {
             precMap[i1] = -999;
         }
-        //if (y >= chunk.precipitationHeightMap[i1] - 1) {
-        //	chunk.precipitationHeightMap[i1] = -999;
-        //}
+        // if (y >= chunk.precipitationHeightMap[i1] - 1) {
+        // chunk.precipitationHeightMap[i1] = -999;
+        // }
 
         IBlockState state1 = chunk.getBlockState(dx, y, dz);
         Block block1 = state1.getBlock();
@@ -53,7 +53,8 @@ public class BlockUtils {
                     return false;
                 }
 
-                extendedblockstorage = chunk.getBlockStorageArray()[y >> 4] = new ExtendedBlockStorage(y >> 4 << 4, !chunk.getWorld().provider.isNether());
+                extendedblockstorage = chunk.getBlockStorageArray()[y >> 4] = new ExtendedBlockStorage(y >> 4 << 4,
+                        !chunk.getWorld().provider.isNether());
             }
 
             extendedblockstorage.set(dx, y & 15, dz, block.getStateFromMeta(meta));
@@ -81,7 +82,8 @@ public class BlockUtils {
     }
 
     public static boolean canReplace(World world, BlockPos pos) {
-        return isValid(world, pos) && (world.isAirBlock(pos) || world.getBlockState(pos).getBlock().isReplaceable(world, pos));
+        return isValid(world, pos)
+                && (world.isAirBlock(pos) || world.getBlockState(pos).getBlock().isReplaceable(world, pos));
     }
 
     public static void markBlockForUpdate(World world, BlockPos pos) {
@@ -107,16 +109,16 @@ public class BlockUtils {
         }
     }
 
-    public static boolean isDirect(Vector3 p, Vector3 t) {
-        return ((p.x == t.x + 1 || p.x == t.x - 1) && !(p.y == t.y + 1 || p.y == t.y - 1)
-                && !(p.z == t.z + 1 || p.z == t.z - 1))
-                || (!(p.x == t.x + 1 || p.x == t.x - 1) && (p.y == t.y + 1 || p.y == t.y - 1)
-                && !(p.z == t.z + 1 || p.z == t.z - 1))
-                || (!(p.x == t.x + 1 || p.x == t.x - 1) && !(p.y == t.y + 1 || p.y == t.y - 1)
-                && (p.z == t.z + 1 || p.z == t.z - 1));
+    public static boolean isDirect(Vector p, Vector t) {
+        return ((p.x() == t.x() + 1 || p.x() == t.x() - 1) && !(p.y() == t.y() + 1 || p.y() == t.y() - 1)
+                && !(p.z() == t.z() + 1 || p.z() == t.z() - 1))
+                || (!(p.x() == t.x() + 1 || p.x() == t.x() - 1) && (p.y() == t.y() + 1 || p.y() == t.y() - 1)
+                && !(p.z() == t.z() + 1 || p.z() == t.z() - 1))
+                || (!(p.x() == t.x() + 1 || p.x() == t.x() - 1) && !(p.y() == t.y() + 1 || p.y() == t.y() - 1)
+                && (p.z() == t.z() + 1 || p.z() == t.z() - 1));
     }
 
-    public static boolean isIndirect(Vector3 p, Vector3 t) {
+    public static boolean isIndirect(Vector p, Vector t) {
         return !isDirect(p, t);
     }
 
@@ -228,8 +230,9 @@ public class BlockUtils {
     /**
      * @param pos    The starting position
      * @param radius The radius to expand from
-     * @return A list that contains each block STATE within the radius.
-     * Compared to the other getNearbyBlocks method, this one returns a list of blockstates to make it easier to get each block's information.
+     * @return A list that contains each block STATE within the radius. Compared to
+     * the other getNearbyBlocks method, this one returns a list of
+     * blockstates to make it easier to get each block's information.
      */
     public static List<IBlockState> getNearbyBlocks(World world, BlockPos pos, int radius) {
         List<IBlockState> scanResult = new ArrayList<IBlockState>();
@@ -243,10 +246,11 @@ public class BlockUtils {
     /**
      * @param pos    The starting position
      * @param radius The radius to expand from
-     * @return A list that contains each block STATE within the radius.
-     * Compared to the other getNearbyBlocks method, this one returns a list of blockstates to make it easier to get each block's information.
+     * @return A list that contains each block STATE within the radius. Compared to
+     * the other getNearbyBlocks method, this one returns a list of
+     * blockstates to make it easier to get each block's information.
      */
-    public static List<IBlockState> getNearbyBlocks(World world, Vector3 pos, int radius) {
+    public static List<IBlockState> getNearbyBlocks(World world, Vector pos, int radius) {
         List<IBlockState> scanResult = new ArrayList<IBlockState>();
         List<BlockPos> scans = getNearbyBlocks(VectorUtils.toBlockPos(pos), radius);
         for (BlockPos scanPos : scans) {
@@ -255,7 +259,7 @@ public class BlockUtils {
         return scanResult;
     }
 
-    public static int getBlockMetadata(IBlockAccess blockAccess, Vector3 v) {
+    public static int getBlockMetadata(IBlockAccess blockAccess, Vector v) {
         return getBlockMetadata(blockAccess, v.intX(), v.intY(), v.intZ());
     }
 

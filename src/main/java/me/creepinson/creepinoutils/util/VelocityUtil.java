@@ -1,7 +1,7 @@
 package me.creepinson.creepinoutils.util;
 
 import me.creepinson.creepinoutils.api.util.math.Facing;
-import me.creepinson.creepinoutils.api.util.math.Vector3;
+import me.creepinson.creepinoutils.api.util.math.Vector;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.MathHelper;
@@ -17,7 +17,7 @@ public class VelocityUtil {
         accelerate(entity, Facing.values()[v.ordinal()]);
     }
 
-    public static void accelerate(Entity entity, Vector3 v) {
+    public static void accelerate(Entity entity, Vector v) {
         accelerate(entity, v, MIN_SPEED);
     }
 
@@ -29,9 +29,9 @@ public class VelocityUtil {
         accelerate(entity, Facing.values()[v.ordinal()], speed);
     }
 
-    public static void accelerate(Entity entity, Vector3 vector, double speed) {
-        Vector3 v = vector.clone().mul(speed);
-        entity.addVelocity(v.x, v.y, v.z);
+    public static void accelerate(Entity entity, Vector vector, double speed) {
+        Vector v = vector.clone().mul((float) speed);
+        entity.addVelocity(v.x(), v.y(), v.z());
     }
 
     public static void limitEntitySpeed(Entity entity, double limit) {
@@ -40,12 +40,12 @@ public class VelocityUtil {
         entity.motionZ = MathHelper.clamp(entity.motionZ, -limit, limit);
     }
 
-    public static Vector3 calculateParabolicVelocity(Vector3 from, Vector3 to, int heightGain) {
+    public static Vector calculateParabolicVelocity(Vector from, Vector to, int heightGain) {
         // Gravity of a potion
         double gravity = 0.115;
 
         // Block locations
-        int endGain = (int) (to.y - from.y);
+        int endGain = (int) (to.y() - from.y());
         double horizDist = Math.sqrt(distanceSquared(from, to));
 
         // Height gain
@@ -66,8 +66,8 @@ public class VelocityUtil {
         double vh = vy / slope;
 
         // Calculate horizontal direction
-        int dx = (int) (to.x - from.x);
-        int dz = (int) (to.z - from.z);
+        int dx = (int) (to.x() - from.x());
+        int dz = (int) (to.z() - from.z());
         double mag = Math.sqrt(dx * dx + dz * dz);
         double dirx = dx / mag;
         double dirz = dz / mag;
@@ -76,12 +76,12 @@ public class VelocityUtil {
         double vx = vh * dirx;
         double vz = vh * dirz;
 
-        return new Vector3(vx, vy, vz);
+        return new Vector(vx, vy, vz);
     }
 
-    private static double distanceSquared(Vector3 from, Vector3 to) {
-        double dx = to.x - from.x;
-        double dz = to.z - from.z;
+    private static double distanceSquared(Vector from, Vector to) {
+        double dx = to.x() - from.x();
+        double dz = to.z() - from.z();
 
         return dx * dx + dz * dz;
     }

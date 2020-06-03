@@ -28,7 +28,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import me.creepinson.creepinoutils.api.util.math.Vector3;
+import me.creepinson.creepinoutils.api.util.math.Vector;
 import me.creepinson.creepinoutils.util.VectorUtils;
 import me.creepinson.creepinoutils.util.animation.AnimationGroup;
 import me.creepinson.creepinoutils.util.animation.AnimationKey;
@@ -76,7 +76,7 @@ import java.util.function.Function;
 import java.util.regex.Pattern;
 
 public class AnimatedOBJModel implements IModel {
-    //private Gson GSON = new GsonBuilder().create();
+    // private Gson GSON = new GsonBuilder().create();
     private MaterialLibrary matLib;
     private final ResourceLocation modelLocation;
     private CustomData customData;
@@ -102,22 +102,22 @@ public class AnimatedOBJModel implements IModel {
         GL11.glPushMatrix();
         if (currentAnimation.controller.getStates().isEmpty()) {
             GL11.glPushMatrix();
-            GL11.glTranslatef(group.translation.x, group.translation.y, group.translation.z);
-            GL11.glRotatef(group.rotation.x, 1, 0, 0);
-            GL11.glRotatef(group.rotation.y, 0, 1, 0);
-            GL11.glRotatef(group.rotation.z, 0, 0, 1);
+            GL11.glTranslatef(group.translation.x(), group.translation.y(), group.translation.z());
+            GL11.glRotatef(group.rotation.x(), 1, 0, 0);
+            GL11.glRotatef(group.rotation.y(), 0, 1, 0);
+            GL11.glRotatef(group.rotation.z(), 0, 0, 1);
             GL11.glPopMatrix();
         } else {
             AnimationState state = currentAnimation.controller.tick();
             group.rotation = state.getRotation();
-            group.translation.x = (float) state.get(AnimationKey.translationX);
-            group.translation.y = (float) state.get(AnimationKey.translationX);
-            group.translation.z = (float) state.get(AnimationKey.translationX);
+            group.translation.setValueByDim(0, (float) state.get(AnimationKey.translationX));
+            group.translation.setValueByDim(1, (float) state.get(AnimationKey.translationX));
+            group.translation.setValueByDim(2, (float) state.get(AnimationKey.translationX));
 
-            GL11.glTranslatef(group.translation.x, group.translation.y, group.translation.z);
-            GL11.glRotatef(group.rotation.x, 1, 0, 0);
-            GL11.glRotatef(group.rotation.y, 0, 1, 0);
-            GL11.glRotatef(group.rotation.z, 0, 0, 1);
+            GL11.glTranslatef(group.translation.x(), group.translation.y(), group.translation.z());
+            GL11.glRotatef(group.rotation.x(), 1, 0, 0);
+            GL11.glRotatef(group.rotation.y(), 0, 1, 0);
+            GL11.glRotatef(group.rotation.z(), 0, 0, 1);
         }
 
         for (Face f : group.faces) {
@@ -162,13 +162,15 @@ public class AnimatedOBJModel implements IModel {
     }
 
     @Override
-    public IBakedModel bake(IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {
+    public IBakedModel bake(IModelState state, VertexFormat format,
+                            Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {
         ImmutableMap.Builder<String, TextureAtlasSprite> builder = ImmutableMap.builder();
         builder.put(ModelLoader.White.LOCATION.toString(), ModelLoader.White.INSTANCE);
         TextureAtlasSprite missing = bakedTextureGetter.apply(new ResourceLocation("missingno"));
         for (Map.Entry<String, Material> e : matLib.materials.entrySet()) {
             if (e.getValue().getTexture().getTextureLocation().getPath().startsWith("#")) {
-                FMLLog.log.fatal("OBJLoader: Unresolved texture '{}' for obj model '{}'", e.getValue().getTexture().getTextureLocation().getPath(), modelLocation);
+                FMLLog.log.fatal("OBJLoader: Unresolved texture '{}' for obj model '{}'",
+                        e.getValue().getTexture().getTextureLocation().getPath(), modelLocation);
                 builder.put(e.getKey(), missing);
             } else {
                 builder.put(e.getKey(), bakedTextureGetter.apply(e.getValue().getTexture().getTextureLocation()));
@@ -184,13 +186,15 @@ public class AnimatedOBJModel implements IModel {
 
     @Override
     public IModel process(ImmutableMap<String, String> customData) {
-        AnimatedOBJModel ret = new AnimatedOBJModel(this.matLib, this.modelLocation, new CustomData(this.customData, customData));
+        AnimatedOBJModel ret = new AnimatedOBJModel(this.matLib, this.modelLocation,
+                new CustomData(this.customData, customData));
         return ret;
     }
 
     @Override
     public IModel retexture(ImmutableMap<String, String> textures) {
-        AnimatedOBJModel ret = new AnimatedOBJModel(this.matLib.makeLibWithReplacements(textures), this.modelLocation, this.customData);
+        AnimatedOBJModel ret = new AnimatedOBJModel(this.matLib.makeLibWithReplacements(textures), this.modelLocation,
+                this.customData);
         return ret;
     }
 
@@ -198,7 +202,7 @@ public class AnimatedOBJModel implements IModel {
         public boolean ambientOcclusion = true;
         public boolean gui3d = true;
         // should be an enum, TODO
-        //public boolean modifyUVs = false;
+        // public boolean modifyUVs = false;
         public boolean flipV = false;
 
         public CustomData(CustomData parent, ImmutableMap<String, String> customData) {
@@ -217,8 +221,10 @@ public class AnimatedOBJModel implements IModel {
                     this.ambientOcclusion = Boolean.valueOf(e.getValue());
                 else if (e.getKey().equals("gui3d"))
                     this.gui3d = Boolean.valueOf(e.getValue());
-                /*else if (e.getKey().equals("modifyUVs"))
-                    this.modifyUVs = Boolean.valueOf(e.getValue());*/
+                    /*
+                     * else if (e.getKey().equals("modifyUVs")) this.modifyUVs =
+                     * Boolean.valueOf(e.getValue());
+                     */
                 else if (e.getKey().equals("flip-v"))
                     this.flipV = Boolean.valueOf(e.getValue());
             }
@@ -258,7 +264,8 @@ public class AnimatedOBJModel implements IModel {
             return ret;
         }
 
-        //Partial reading of the OBJ format. Documentation taken from http://paulbourke.net/dataformats/obj/
+        // Partial reading of the OBJ format. Documentation taken from
+        // http://paulbourke.net/dataformats/obj/
         public AnimatedOBJModel parse() throws IOException {
             String currentLine = "";
             Material material = new Material();
@@ -269,9 +276,11 @@ public class AnimatedOBJModel implements IModel {
             for (; ; ) {
                 lineNum++;
                 currentLine = objReader.readLine();
-                if (currentLine == null) break;
+                if (currentLine == null)
+                    break;
                 currentLine.trim();
-                if (currentLine.isEmpty() || currentLine.startsWith("#")) continue;
+                if (currentLine.isEmpty() || currentLine.startsWith("#"))
+                    continue;
 
                 try {
                     String[] fields = WHITE_SPACE.split(currentLine, 2);
@@ -285,13 +294,16 @@ public class AnimatedOBJModel implements IModel {
                         if (this.materialLibrary.materials.containsKey(data)) {
                             material = this.materialLibrary.materials.get(data);
                         } else {
-                            FMLLog.log.error("OBJModel.Parser: (Model: '{}', Line: {}) material '{}' referenced but was not found", objFrom, lineNum, data);
+                            FMLLog.log.error(
+                                    "OBJModel.Parser: (Model: '{}', Line: {}) material '{}' referenced but was not found",
+                                    objFrom, lineNum, data);
                         }
                         usemtlCounter++;
                     } else if (key.equalsIgnoreCase("v")) // Vertices: x y z [w] - w Defaults to 1.0
                     {
                         float[] coords = parseFloats(splitData);
-                        Vector4f pos = new Vector4f(coords[0], coords[1], coords[2], coords.length == 4 ? coords[3] : 1.0F);
+                        Vector4f pos = new Vector4f(coords[0], coords[1], coords[2],
+                                coords.length == 4 ? coords[3] : 1.0F);
                         this.vertices.add(new Vertex(pos, material));
                     } else if (key.equalsIgnoreCase("vn")) // Vertex normals: x y z
                     {
@@ -300,15 +312,15 @@ public class AnimatedOBJModel implements IModel {
                     {
                         float[] coords = parseFloats(splitData);
                         TextureCoordinate texCoord = new TextureCoordinate(coords[0],
-                                coords.length >= 2 ? coords[1] : 0.0F,
-                                coords.length >= 3 ? coords[2] : 0.0F);
+                                coords.length >= 2 ? coords[1] : 0.0F, coords.length >= 3 ? coords[2] : 0.0F);
                         if (texCoord.u < 0.0f || texCoord.u > 1.0f || texCoord.v < 0.0f || texCoord.v > 1.0f)
                             throw new UVsOutOfBoundsException(this.objFrom);
                         this.texCoords.add(texCoord);
                     } else if (key.equalsIgnoreCase("f")) // Face Elements: f v1[/vt1][/vn1] ...
                     {
                         if (splitData.length > 4)
-                            FMLLog.log.warn("OBJModel.Parser: found a face ('f') with more than 4 vertices, only the first 4 of these vertices will be rendered!");
+                            FMLLog.log.warn(
+                                    "OBJModel.Parser: found a face ('f') with more than 4 vertices, only the first 4 of these vertices will be rendered!");
 
                         List<Vertex> v = Lists.newArrayListWithCapacity(splitData.length);
 
@@ -316,14 +328,18 @@ public class AnimatedOBJModel implements IModel {
                             String[] pts = splitData[i].split("/");
 
                             int vert = Integer.parseInt(pts[0]);
-                            Integer texture = pts.length < 2 || Strings.isNullOrEmpty(pts[1]) ? null : Integer.parseInt(pts[1]);
-                            Integer normal = pts.length < 3 || Strings.isNullOrEmpty(pts[2]) ? null : Integer.parseInt(pts[2]);
+                            Integer texture = pts.length < 2 || Strings.isNullOrEmpty(pts[1]) ? null
+                                    : Integer.parseInt(pts[1]);
+                            Integer normal = pts.length < 3 || Strings.isNullOrEmpty(pts[2]) ? null
+                                    : Integer.parseInt(pts[2]);
 
                             vert = vert < 0 ? this.vertices.size() - 1 : vert - 1;
-                            Vertex newV = new Vertex(new Vector4f(this.vertices.get(vert).getPos()), this.vertices.get(vert).getMaterial());
+                            Vertex newV = new Vertex(new Vector4f(this.vertices.get(vert).getPos()),
+                                    this.vertices.get(vert).getMaterial());
 
                             if (texture != null)
-                                newV.setTextureCoordinate(this.texCoords.get(texture < 0 ? this.texCoords.size() - 1 : texture - 1));
+                                newV.setTextureCoordinate(
+                                        this.texCoords.get(texture < 0 ? this.texCoords.size() - 1 : texture - 1));
                             if (normal != null)
                                 newV.setNormal(this.normals.get(normal < 0 ? this.normals.size() - 1 : normal - 1));
 
@@ -370,11 +386,15 @@ public class AnimatedOBJModel implements IModel {
                     } else {
                         if (!unknownObjectCommands.contains(key)) {
                             unknownObjectCommands.add(key);
-                            FMLLog.log.info("OBJLoader.Parser: command '{}' (model: '{}') is not currently supported, skipping. Line: {} '{}'", key, objFrom, lineNum, currentLine);
+                            FMLLog.log.info(
+                                    "OBJLoader.Parser: command '{}' (model: '{}') is not currently supported, skipping. Line: {} '{}'",
+                                    key, objFrom, lineNum, currentLine);
                         }
                     }
                 } catch (RuntimeException e) {
-                    throw new RuntimeException(String.format("OBJLoader.Parser: Exception parsing line #%d: `%s`", lineNum, currentLine), e);
+                    throw new RuntimeException(
+                            String.format("OBJLoader.Parser: Exception parsing line #%d: `%s`", lineNum, currentLine),
+                            e);
                 }
             }
 
@@ -390,8 +410,8 @@ public class AnimatedOBJModel implements IModel {
         private InputStreamReader mtlStream;
         private BufferedReader mtlReader;
 
-//        private float[] minUVBounds = new float[] {0.0f, 0.0f};
-//        private float[] maxUVBounds = new float[] {1.0f, 1.0f};
+        // private float[] minUVBounds = new float[] {0.0f, 0.0f};
+        // private float[] maxUVBounds = new float[] {1.0f, 1.0f};
 
         public MaterialLibrary() {
             this.groups.put(Group.DEFAULT_NAME, new Group(Group.DEFAULT_NAME, null));
@@ -405,20 +425,27 @@ public class AnimatedOBJModel implements IModel {
             for (Map.Entry<String, Material> e : this.materials.entrySet()) {
                 // key for the material name, with # added if missing
                 String keyMat = e.getKey();
-                if (!keyMat.startsWith("#")) keyMat = "#" + keyMat;
+                if (!keyMat.startsWith("#"))
+                    keyMat = "#" + keyMat;
                 // key for the texture name, with ".png" stripped and # added if missing
                 String keyTex = e.getValue().getTexture().getPath();
-                if (keyTex.endsWith(".png")) keyTex = keyTex.substring(0, keyTex.length() - ".png".length());
-                if (!keyTex.startsWith("#")) keyTex = "#" + keyTex;
+                if (keyTex.endsWith(".png"))
+                    keyTex = keyTex.substring(0, keyTex.length() - ".png".length());
+                if (!keyTex.startsWith("#"))
+                    keyTex = "#" + keyTex;
                 if (replacements.containsKey(keyMat)) {
                     Texture currentTexture = e.getValue().texture;
-                    Texture replacementTexture = new Texture(replacements.get(keyMat), currentTexture.position, currentTexture.scale, currentTexture.rotation);
-                    Material replacementMaterial = new Material(e.getValue().color, replacementTexture, e.getValue().name);
+                    Texture replacementTexture = new Texture(replacements.get(keyMat), currentTexture.position,
+                            currentTexture.scale, currentTexture.rotation);
+                    Material replacementMaterial = new Material(e.getValue().color, replacementTexture,
+                            e.getValue().name);
                     mats.put(e.getKey(), replacementMaterial);
                 } else if (replacements.containsKey(keyTex)) {
                     Texture currentTexture = e.getValue().texture;
-                    Texture replacementTexture = new Texture(replacements.get(keyTex), currentTexture.position, currentTexture.scale, currentTexture.rotation);
-                    Material replacementMaterial = new Material(e.getValue().color, replacementTexture, e.getValue().name);
+                    Texture replacementTexture = new Texture(replacements.get(keyTex), currentTexture.position,
+                            currentTexture.scale, currentTexture.rotation);
+                    Material replacementMaterial = new Material(e.getValue().color, replacementTexture,
+                            e.getValue().name);
                     mats.put(e.getKey(), replacementMaterial);
                 } else {
                     mats.put(e.getKey(), e.getValue());
@@ -430,28 +457,28 @@ public class AnimatedOBJModel implements IModel {
             ret.groups = this.groups;
             ret.mtlStream = this.mtlStream;
             ret.mtlReader = this.mtlReader;
-//            ret.minUVBounds = this.minUVBounds;
-//            ret.maxUVBounds = this.maxUVBounds;
+            // ret.minUVBounds = this.minUVBounds;
+            // ret.maxUVBounds = this.maxUVBounds;
             return ret;
         }
 
-//        public float[] getMinUVBounds()
-//        {
-//            return this.minUVBounds;
-//        }
+        // public float[] getMinUVBounds()
+        // {
+        // return this.minUVBounds;
+        // }
 
-//        public float[] getMaxUVBounds()
-//        {
-//            return this.maxUVBounds;
-//        }
+        // public float[] getMaxUVBounds()
+        // {
+        // return this.maxUVBounds;
+        // }
 
-//        public void setUVBounds(float minU, float maxU, float minV, float maxV)
-//        {
-//            this.minUVBounds[0] = minU;
-//            this.maxUVBounds[0] = maxU;
-//            this.minUVBounds[1] = minV;
-//            this.maxUVBounds[1] = maxV;
-//        }
+        // public void setUVBounds(float minU, float maxU, float minV, float maxV)
+        // {
+        // this.minUVBounds[0] = minU;
+        // this.maxUVBounds[0] = maxU;
+        // this.minUVBounds[1] = minV;
+        // this.maxUVBounds[1] = maxV;
+        // }
 
         public Map<String, Group> getGroups() {
             return this.groups;
@@ -460,7 +487,8 @@ public class AnimatedOBJModel implements IModel {
         public List<Group> getGroupsContainingFace(Face f) {
             List<Group> groupList = Lists.newArrayList();
             for (Group g : this.groups.values()) {
-                if (g.faces.contains(f)) groupList.add(g);
+                if (g.faces.contains(f))
+                    groupList.add(g);
             }
             return groupList;
         }
@@ -489,7 +517,8 @@ public class AnimatedOBJModel implements IModel {
             String domain = from.getNamespace();
             if (!path.contains("/"))
                 path = from.getPath().substring(0, from.getPath().lastIndexOf("/") + 1) + path;
-            mtlStream = new InputStreamReader(manager.getResource(new ResourceLocation(domain, path)).getInputStream(), StandardCharsets.UTF_8);
+            mtlStream = new InputStreamReader(manager.getResource(new ResourceLocation(domain, path)).getInputStream(),
+                    StandardCharsets.UTF_8);
             mtlReader = new BufferedReader(mtlStream);
 
             String currentLine = "";
@@ -501,9 +530,11 @@ public class AnimatedOBJModel implements IModel {
 
             for (; ; ) {
                 currentLine = mtlReader.readLine();
-                if (currentLine == null) break;
+                if (currentLine == null)
+                    break;
                 currentLine.trim();
-                if (currentLine.isEmpty() || currentLine.startsWith("#")) continue;
+                if (currentLine.isEmpty() || currentLine.startsWith("#"))
+                    continue;
 
                 String[] fields = WHITE_SPACE.split(currentLine, 2);
                 String key = fields[0];
@@ -518,13 +549,17 @@ public class AnimatedOBJModel implements IModel {
                 } else if (key.equalsIgnoreCase("Ka") || key.equalsIgnoreCase("Kd") || key.equalsIgnoreCase("Ks")) {
                     if (key.equalsIgnoreCase("Kd") || !hasSetColor) {
                         String[] rgbStrings = WHITE_SPACE.split(data, 3);
-                        Vector4f color = new Vector4f(Float.parseFloat(rgbStrings[0]), Float.parseFloat(rgbStrings[1]), Float.parseFloat(rgbStrings[2]), 1.0f);
+                        Vector4f color = new Vector4f(Float.parseFloat(rgbStrings[0]), Float.parseFloat(rgbStrings[1]),
+                                Float.parseFloat(rgbStrings[2]), 1.0f);
                         hasSetColor = true;
                         material.setColor(color);
                     } else {
-                        FMLLog.log.info("OBJModel: A color has already been defined for material '{}' in '{}'. The color defined by key '{}' will not be applied!", material.getName(), new ResourceLocation(domain, path).toString(), key);
+                        FMLLog.log.info(
+                                "OBJModel: A color has already been defined for material '{}' in '{}'. The color defined by key '{}' will not be applied!",
+                                material.getName(), new ResourceLocation(domain, path).toString(), key);
                     }
-                } else if (key.equalsIgnoreCase("map_Ka") || key.equalsIgnoreCase("map_Kd") || key.equalsIgnoreCase("map_Ks")) {
+                } else if (key.equalsIgnoreCase("map_Ka") || key.equalsIgnoreCase("map_Kd")
+                        || key.equalsIgnoreCase("map_Ks")) {
                     if (key.equalsIgnoreCase("map_Kd") || !hasSetTexture) {
                         if (data.contains(" ")) {
                             String[] mapStrings = WHITE_SPACE.split(data);
@@ -538,18 +573,22 @@ public class AnimatedOBJModel implements IModel {
                             material.setTexture(texture);
                         }
                     } else {
-                        FMLLog.log.info("OBJModel: A texture has already been defined for material '{}' in '{}'. The texture defined by key '{}' will not be applied!", material.getName(), new ResourceLocation(domain, path).toString(), key);
+                        FMLLog.log.info(
+                                "OBJModel: A texture has already been defined for material '{}' in '{}'. The texture defined by key '{}' will not be applied!",
+                                material.getName(), new ResourceLocation(domain, path).toString(), key);
                     }
                 } else if (key.equalsIgnoreCase("d") || key.equalsIgnoreCase("Tr")) {
-                    //d <-optional key here> float[0.0:1.0, 1.0]
-                    //Tr r g b OR Tr spectral map file OR Tr xyz r g b (CIEXYZ colorspace)
+                    // d <-optional key here> float[0.0:1.0, 1.0]
+                    // Tr r g b OR Tr spectral map file OR Tr xyz r g b (CIEXYZ colorspace)
                     String[] splitData = WHITE_SPACE.split(data);
                     float alpha = Float.parseFloat(splitData[splitData.length - 1]);
                     material.getColor().setW(alpha);
                 } else {
                     if (!unknownMaterialCommands.contains(key)) {
                         unknownMaterialCommands.add(key);
-                        FMLLog.log.info("OBJLoader.MaterialLibrary: key '{}' (model: '{}') is not currently supported, skipping", key, new ResourceLocation(domain, path));
+                        FMLLog.log.info(
+                                "OBJLoader.MaterialLibrary: key '{}' (model: '{}') is not currently supported, skipping",
+                                key, new ResourceLocation(domain, path));
                     }
                 }
             }
@@ -677,8 +716,8 @@ public class AnimatedOBJModel implements IModel {
 
     public static class Face {
         private Vertex[] verts = new Vertex[4];
-        //        private Normal[] norms = new Normal[4];
-//        private TextureCoordinate[] texCoords = new TextureCoordinate[4];
+        // private Normal[] norms = new Normal[4];
+        // private TextureCoordinate[] texCoords = new TextureCoordinate[4];
         private String materialName = Material.DEFAULT_NAME;
         private boolean isTri = false;
 
@@ -692,29 +731,31 @@ public class AnimatedOBJModel implements IModel {
             checkData();
         }
 
-//        public Face(Vertex[] verts, Normal[] norms)
-//        {
-//            this(verts, norms, null);
-//        }
+        // public Face(Vertex[] verts, Normal[] norms)
+        // {
+        // this(verts, norms, null);
+        // }
 
-//        public Face(Vertex[] verts, TextureCoordinate[] texCoords)
-//        {
-//            this(verts, null, texCoords);
-//        }
+        // public Face(Vertex[] verts, TextureCoordinate[] texCoords)
+        // {
+        // this(verts, null, texCoords);
+        // }
 
-//        public Face(Vertex[] verts, Normal[] norms, TextureCoordinate[] texCoords)
-//        {
-//            this(verts, norms, texCoords, Material.DEFAULT_NAME);
-//        }
+        // public Face(Vertex[] verts, Normal[] norms, TextureCoordinate[] texCoords)
+        // {
+        // this(verts, norms, texCoords, Material.DEFAULT_NAME);
+        // }
 
-//        public Face(Vertex[] verts, Normal[] norms, TextureCoordinate[] texCoords, String materialName)
-//        {
-//            this.verts = verts != null && verts.length > 2 ? verts : null;
-//            this.norms = norms != null && norms.length > 2 ? norms : null;
-//            this.texCoords = texCoords != null && texCoords.length > 2 ? texCoords : null;
-//            setMaterialName(materialName);
-//            checkData();
-//        }
+        // public Face(Vertex[] verts, Normal[] norms, TextureCoordinate[] texCoords,
+        // String materialName)
+        // {
+        // this.verts = verts != null && verts.length > 2 ? verts : null;
+        // this.norms = norms != null && norms.length > 2 ? norms : null;
+        // this.texCoords = texCoords != null && texCoords.length > 2 ? texCoords :
+        // null;
+        // setMaterialName(materialName);
+        // checkData();
+        // }
 
         private void checkData() {
             if (this.verts != null && this.verts.length == 3) {
@@ -736,8 +777,10 @@ public class AnimatedOBJModel implements IModel {
         }
 
         public boolean setVertices(Vertex[] verts) {
-            if (verts == null) return false;
-            else this.verts = verts;
+            if (verts == null)
+                return false;
+            else
+                this.verts = verts;
             checkData();
             return true;
         }
@@ -746,42 +789,43 @@ public class AnimatedOBJModel implements IModel {
             return this.verts;
         }
 
-//        public boolean areUVsNormalized()
-//        {
-//            for (Vertex v : this.verts)
-//                if (!v.hasNormalizedUVs())
-//                    return false;
-//            return true;
-//        }
+        // public boolean areUVsNormalized()
+        // {
+        // for (Vertex v : this.verts)
+        // if (!v.hasNormalizedUVs())
+        // return false;
+        // return true;
+        // }
 
-//        public void normalizeUVs(float[] min, float[] max)
-//        {
-//            if (!this.areUVsNormalized())
-//            {
-//                for (int i = 0; i < this.verts.length; i++) {
-//                    TextureCoordinate texCoord = this.verts[i].getTextureCoordinate();
-//                    min[0] = texCoord.u < min[0] ? texCoord.u : min[0];
-//                    max[0] = texCoord.u > max[0] ? texCoord.u : max[0];
-//                    min[1] = texCoord.v < min[1] ? texCoord.v : min[1];
-//                    max[1] = texCoord.v > max[1] ? texCoord.v : max[1];
-//                }
-//
-//                for (Vertex v : this.verts) {
-//                    v.texCoord.u = (v.texCoord.u - min[0]) / (max[0] - min[0]);
-//                    v.texCoord.v = (v.texCoord.v - min[1]) / (max[1] - max[1]);
-//                }
-//            }
-//        }
+        // public void normalizeUVs(float[] min, float[] max)
+        // {
+        // if (!this.areUVsNormalized())
+        // {
+        // for (int i = 0; i < this.verts.length; i++) {
+        // TextureCoordinate texCoord = this.verts[i].getTextureCoordinate();
+        // min[0] = texCoord.u < min[0] ? texCoord.u : min[0];
+        // max[0] = texCoord.u > max[0] ? texCoord.u : max[0];
+        // min[1] = texCoord.v < min[1] ? texCoord.v : min[1];
+        // max[1] = texCoord.v > max[1] ? texCoord.v : max[1];
+        // }
+        //
+        // for (Vertex v : this.verts) {
+        // v.texCoord.u = (v.texCoord.u - min[0]) / (max[0] - min[0]);
+        // v.texCoord.v = (v.texCoord.v - min[1]) / (max[1] - max[1]);
+        // }
+        // }
+        // }
 
         public Face bake(TRSRTransformation transform) {
             Vertex[] vertices = new Vertex[verts.length];
-//            Normal[] normals = norms != null ? new Normal[norms.length] : null;
-//            TextureCoordinate[] textureCoords = texCoords != null ? new TextureCoordinate[texCoords.length] : null;
+            // Normal[] normals = norms != null ? new Normal[norms.length] : null;
+            // TextureCoordinate[] textureCoords = texCoords != null ? new
+            // TextureCoordinate[texCoords.length] : null;
 
             for (int i = 0; i < verts.length; i++) {
                 Vertex v = verts[i];
-//                Normal n = norms != null ? norms[i] : null;
-//                TextureCoordinate t = texCoords != null ? texCoords[i] : null;
+                // Normal n = norms != null ? norms[i] : null;
+                // TextureCoordinate t = texCoords != null ? texCoords[i] : null;
 
                 Vector4f pos = new Vector4f(v.getPos());
                 pos.w = 1;
@@ -789,27 +833,28 @@ public class AnimatedOBJModel implements IModel {
                 vertices[i] = new Vertex(pos, v.getMaterial());
 
                 if (v.hasNormal()) {
-                    Vector3 normal = v.getNormal().getData().clone();
+                    Vector normal = v.getNormal().getData().clone();
                     transform.transformNormal(VectorUtils.toJava(normal));
                     vertices[i].setNormal(new Normal(normal));
                 }
 
+                if (v.hasTextureCoordinate())
+                    vertices[i].setTextureCoordinate(v.getTextureCoordinate());
+                else
+                    v.setTextureCoordinate(TextureCoordinate.getDefaultUVs()[i]);
 
-                if (v.hasTextureCoordinate()) vertices[i].setTextureCoordinate(v.getTextureCoordinate());
-                else v.setTextureCoordinate(TextureCoordinate.getDefaultUVs()[i]);
-
-                //texCoords TODO
-//                if (t != null) textureCoords[i] = t;
+                // texCoords TODO
+                // if (t != null) textureCoords[i] = t;
             }
             return new Face(vertices, this.materialName);
         }
 
         public Normal getNormal() {
-            Vector3 a = this.verts[2].getPos3();
+            Vector a = this.verts[2].getPos3();
             a.sub(this.verts[0].getPos3());
-            Vector3 b = this.verts[3].getPos3();
+            Vector b = this.verts[3].getPos3();
             b.sub(this.verts[1].getPos3());
-            a.cross(a, b);
+            Vector.cross(a, b);
             a.normalize();
             return new Normal(a);
         }
@@ -834,8 +879,8 @@ public class AnimatedOBJModel implements IModel {
             return this.position;
         }
 
-        public Vector3 getPos3() {
-            return new Vector3(this.position.x, this.position.y, this.position.z);
+        public Vector getPos3() {
+            return new Vector(this.position.x, this.position.y, this.position.z);
         }
 
         public boolean hasNormal() {
@@ -862,10 +907,11 @@ public class AnimatedOBJModel implements IModel {
             return this.texCoord;
         }
 
-//        public boolean hasNormalizedUVs()
-//        {
-//            return this.texCoord.u >= 0.0f && this.texCoord.u <= 1.0f && this.texCoord.v >= 0.0f && this.texCoord.v <= 1.0f;
-//        }
+        // public boolean hasNormalizedUVs()
+        // {
+        // return this.texCoord.u >= 0.0f && this.texCoord.u <= 1.0f && this.texCoord.v
+        // >= 0.0f && this.texCoord.v <= 1.0f;
+        // }
 
         public void setMaterial(Material material) {
             this.material = material;
@@ -880,7 +926,8 @@ public class AnimatedOBJModel implements IModel {
             StringBuilder builder = new StringBuilder();
             builder.append(String.format("v:%n"));
             builder.append(String.format("    position: %s %s %s%n", position.x, position.y, position.z));
-            builder.append(String.format("    material: %s %s %s %s %s%n", material.getName(), material.getColor().x, material.getColor().y, material.getColor().z, material.getColor().w));
+            builder.append(String.format("    material: %s %s %s %s %s%n", material.getName(), material.getColor().x,
+                    material.getColor().y, material.getColor().z, material.getColor().w));
             return builder.toString();
         }
     }
@@ -896,8 +943,8 @@ public class AnimatedOBJModel implements IModel {
             this(data[0], data[1], data[2]);
         }
 
-        public Normal(Vector3 vector3f) {
-            this(vector3f.x, vector3f.y, vector3f.z);
+        public Normal(Vector v) {
+            this(v.x(), v.y(), v.z());
         }
 
         public Normal(float x, float y, float z) {
@@ -906,8 +953,8 @@ public class AnimatedOBJModel implements IModel {
             this.z = z;
         }
 
-        public Vector3 getData() {
-            return new Vector3(this.x, this.y, this.z);
+        public Vector getData() {
+            return new Vector(this.x, this.y, this.z);
         }
     }
 
@@ -922,8 +969,8 @@ public class AnimatedOBJModel implements IModel {
             this(data[0], data[1], data[2]);
         }
 
-        public TextureCoordinate(Vector3 data) {
-            this(data.x, data.y, data.z);
+        public TextureCoordinate(Vector data) {
+            this(data.x(), data.y(), data.z());
         }
 
         public TextureCoordinate(float u, float v, float w) {
@@ -932,8 +979,8 @@ public class AnimatedOBJModel implements IModel {
             this.w = w;
         }
 
-        public Vector3 getData() {
-            return new Vector3(this.u, this.v, this.w);
+        public Vector getData() {
+            return new Vector(this.u, this.v, this.w);
         }
 
         public static TextureCoordinate[] getDefaultUVs() {
@@ -955,12 +1002,11 @@ public class AnimatedOBJModel implements IModel {
         private LinkedHashSet<Face> faces = new LinkedHashSet<Face>();
         public float[] minUVBounds = new float[]{0.0f, 0.0f};
         public float[] maxUVBounds = new float[]{1.0f, 1.0f};
-        public Vector3 rotation;
-        public Vector3 translation;
+        public Vector rotation;
+        public Vector translation;
 
-
-//        public float[] minUVBounds = new float[] {0.0f, 0.0f};
-//        public float[] maxUVBounds = new float[] {1.0f, 1.0f};
+        // public float[] minUVBounds = new float[] {0.0f, 0.0f};
+        // public float[] maxUVBounds = new float[] {1.0f, 1.0f};
 
         public Group(String name, @Nullable LinkedHashSet<Face> faces) {
             this.name = name != null ? name : DEFAULT_NAME;
@@ -970,7 +1016,8 @@ public class AnimatedOBJModel implements IModel {
         public LinkedHashSet<Face> applyTransform(Optional<TRSRTransformation> transform) {
             LinkedHashSet<Face> faceSet = new LinkedHashSet<Face>();
             for (Face f : this.faces) {
-//                if (minUVBounds != null && maxUVBounds != null) f.normalizeUVs(minUVBounds, maxUVBounds);
+                // if (minUVBounds != null && maxUVBounds != null) f.normalizeUVs(minUVBounds,
+                // maxUVBounds);
                 faceSet.add(f.bake(transform.orElse(TRSRTransformation.identity())));
             }
             return faceSet;
@@ -1009,19 +1056,23 @@ public class AnimatedOBJModel implements IModel {
 
         public OBJState(List<String> visibleGroups, boolean visibility, IModelState parent) {
             this.parent = parent;
-            for (String s : visibleGroups) this.visibilityMap.put(s, visibility);
+            for (String s : visibleGroups)
+                this.visibilityMap.put(s, visibility);
         }
 
         @Nullable
         public IModelState getParent(IModelState parent) {
-            if (parent == null) return null;
-            else if (parent instanceof OBJState) return ((OBJState) parent).parent;
+            if (parent == null)
+                return null;
+            else if (parent instanceof OBJState)
+                return ((OBJState) parent).parent;
             return parent;
         }
 
         @Override
         public Optional<TRSRTransformation> apply(Optional<? extends IModelPart> part) {
-            if (parent != null) return parent.apply(part);
+            if (parent != null)
+                return parent.apply(part);
             return Optional.empty();
         }
 
@@ -1044,7 +1095,8 @@ public class AnimatedOBJModel implements IModel {
         }
 
         public void changeGroupVisibilities(List<String> names, Operation operation) {
-            if (names == null || names.isEmpty()) return;
+            if (names == null || names.isEmpty())
+                return;
             this.operation = operation;
             if (names.get(0).equals(Group.ALL)) {
                 for (String s : this.visibilityMap.keySet()) {
@@ -1088,15 +1140,12 @@ public class AnimatedOBJModel implements IModel {
             if (getClass() != obj.getClass())
                 return false;
             OBJState other = (OBJState) obj;
-            return Objects.equal(visibilityMap, other.visibilityMap) &&
-                    Objects.equal(parent, other.parent) &&
-                    operation == other.operation;
+            return Objects.equal(visibilityMap, other.visibilityMap) && Objects.equal(parent, other.parent)
+                    && operation == other.operation;
         }
 
         public enum Operation {
-            SET_TRUE,
-            SET_FALSE,
-            TOGGLE;
+            SET_TRUE, SET_FALSE, TOGGLE;
 
             Operation() {
             }
@@ -1148,10 +1197,12 @@ public class AnimatedOBJModel implements IModel {
         private ImmutableMap<String, TextureAtlasSprite> textures;
         private TextureAtlasSprite sprite = ModelLoader.White.INSTANCE;
 
-        public OBJBakedModel(AnimatedOBJModel model, IModelState state, VertexFormat format, ImmutableMap<String, TextureAtlasSprite> textures) {
+        public OBJBakedModel(AnimatedOBJModel model, IModelState state, VertexFormat format,
+                             ImmutableMap<String, TextureAtlasSprite> textures) {
             this.model = model;
             this.state = state;
-            if (this.state instanceof OBJState) this.updateStateVisibilityMap((OBJState) this.state);
+            if (this.state instanceof OBJState)
+                this.updateStateVisibilityMap((OBJState) this.state);
             this.format = format;
             this.textures = textures;
         }
@@ -1162,7 +1213,8 @@ public class AnimatedOBJModel implements IModel {
         // FIXME: merge with getQuads
         @Override
         public List<BakedQuad> getQuads(IBlockState blockState, EnumFacing side, long rand) {
-            if (side != null) return ImmutableList.of();
+            if (side != null)
+                return ImmutableList.of();
             if (quads == null) {
                 quads = buildQuads(this.state);
             }
@@ -1186,11 +1238,13 @@ public class AnimatedOBJModel implements IModel {
             Set<Face> faces = Collections.synchronizedSet(new LinkedHashSet<Face>());
             Optional<TRSRTransformation> transform = Optional.empty();
             for (Group g : this.model.getMatLib().getGroups().values()) {
-//                g.minUVBounds = this.model.getMatLib().minUVBounds;
-//                g.maxUVBounds = this.model.getMatLib().maxUVBounds;
-//                FMLLog.info("Group: %s u: [%f, %f] v: [%f, %f]", g.name, g.minUVBounds[0], g.maxUVBounds[0], g.minUVBounds[1], g.maxUVBounds[1]);
+                // g.minUVBounds = this.model.getMatLib().minUVBounds;
+                // g.maxUVBounds = this.model.getMatLib().maxUVBounds;
+                // FMLLog.info("Group: %s u: [%f, %f] v: [%f, %f]", g.name, g.minUVBounds[0],
+                // g.maxUVBounds[0], g.minUVBounds[1], g.maxUVBounds[1]);
 
-                if (modelState.apply(Optional.of(Models.getHiddenModelPart(ImmutableList.of(g.getName())))).isPresent()) {
+                if (modelState.apply(Optional.of(Models.getHiddenModelPart(ImmutableList.of(g.getName()))))
+                        .isPresent()) {
                     continue;
                 }
                 if (modelState instanceof OBJState) {
@@ -1198,14 +1252,15 @@ public class AnimatedOBJModel implements IModel {
                     if (state.parent != null) {
                         transform = state.parent.apply(Optional.empty());
                     }
-                    //TODO: can this be replaced by updateStateVisibilityMap(OBJState)?
+                    // TODO: can this be replaced by updateStateVisibilityMap(OBJState)?
                     if (state.getGroupNamesFromMap().contains(Group.ALL)) {
                         state.visibilityMap.clear();
                         for (String s : this.model.getMatLib().getGroups().keySet()) {
                             state.visibilityMap.put(s, state.operation.performOperation(true));
                         }
                     } else if (state.getGroupNamesFromMap().contains(Group.ALL_EXCEPT)) {
-                        List<String> exceptList = state.getGroupNamesFromMap().subList(1, state.getGroupNamesFromMap().size());
+                        List<String> exceptList = state.getGroupNamesFromMap().subList(1,
+                                state.getGroupNamesFromMap().size());
                         state.visibilityMap.clear();
                         for (String s : this.model.getMatLib().getGroups().keySet()) {
                             if (!exceptList.contains(s)) {
@@ -1227,16 +1282,18 @@ public class AnimatedOBJModel implements IModel {
             }
             for (Face f : faces) {
                 if (this.model.getMatLib().materials.get(f.getMaterialName()).isWhite()) {
-                    for (Vertex v : f.getVertices()) {//update material in each vertex
+                    for (Vertex v : f.getVertices()) {// update material in each vertex
                         if (!v.getMaterial().equals(this.model.getMatLib().getMaterial(v.getMaterial().getName()))) {
                             v.setMaterial(this.model.getMatLib().getMaterial(v.getMaterial().getName()));
                         }
                     }
                     sprite = ModelLoader.White.INSTANCE;
-                } else sprite = this.textures.get(f.getMaterialName());
+                } else
+                    sprite = this.textures.get(f.getMaterialName());
                 UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(format);
                 builder.setContractUVs(true);
-                builder.setQuadOrientation(EnumFacing.getFacingFromVector(f.getNormal().x, f.getNormal().y, f.getNormal().z));
+                builder.setQuadOrientation(
+                        EnumFacing.getFacingFromVector(f.getNormal().x, f.getNormal().y, f.getNormal().z));
                 builder.setTexture(sprite);
                 Normal faceNormal = f.getNormal();
                 putVertexData(builder, f.verts[0], faceNormal, TextureCoordinate.getDefaultUVs()[0], sprite);
@@ -1248,7 +1305,8 @@ public class AnimatedOBJModel implements IModel {
             return ImmutableList.copyOf(quads);
         }
 
-        private final void putVertexData(UnpackedBakedQuad.Builder builder, Vertex v, Normal faceNormal, TextureCoordinate defUV, TextureAtlasSprite sprite) {
+        private final void putVertexData(UnpackedBakedQuad.Builder builder, Vertex v, Normal faceNormal,
+                                         TextureCoordinate defUV, TextureAtlasSprite sprite) {
             for (int e = 0; e < format.getElementCount(); e++) {
                 switch (format.getElement(e).getUsage()) {
                     case POSITION:
@@ -1256,24 +1314,20 @@ public class AnimatedOBJModel implements IModel {
                         break;
                     case COLOR:
                         if (v.getMaterial() != null)
-                            builder.put(e,
-                                    v.getMaterial().getColor().x,
-                                    v.getMaterial().getColor().y,
-                                    v.getMaterial().getColor().z,
-                                    v.getMaterial().getColor().w);
+                            builder.put(e, v.getMaterial().getColor().x, v.getMaterial().getColor().y,
+                                    v.getMaterial().getColor().z, v.getMaterial().getColor().w);
                         else
                             builder.put(e, 1, 1, 1, 1);
                         break;
                     case UV:
                         if (!v.hasTextureCoordinate())
-                            builder.put(e,
-                                    sprite.getInterpolatedU(defUV.u * 16),
-                                    sprite.getInterpolatedV((model.customData.flipV ? 1 - defUV.v : defUV.v) * 16),
-                                    0, 1);
+                            builder.put(e, sprite.getInterpolatedU(defUV.u * 16),
+                                    sprite.getInterpolatedV((model.customData.flipV ? 1 - defUV.v : defUV.v) * 16), 0,
+                                    1);
                         else
-                            builder.put(e,
-                                    sprite.getInterpolatedU(v.getTextureCoordinate().u * 16),
-                                    sprite.getInterpolatedV((model.customData.flipV ? 1 - v.getTextureCoordinate().v : v.getTextureCoordinate().v) * 16),
+                            builder.put(e, sprite.getInterpolatedU(v.getTextureCoordinate().u * 16),
+                                    sprite.getInterpolatedV((model.customData.flipV ? 1 - v.getTextureCoordinate().v
+                                            : v.getTextureCoordinate().v) * 16),
                                     0, 1);
                         break;
                     case NORMAL:
@@ -1290,12 +1344,12 @@ public class AnimatedOBJModel implements IModel {
 
         @Override
         public boolean isAmbientOcclusion() {
-            return model != null ? model.customData.ambientOcclusion : true;
+            return model == null || model.customData.ambientOcclusion;
         }
 
         @Override
         public boolean isGui3d() {
-            return model != null ? model.customData.gui3d : true;
+            return model == null || model.customData.gui3d;
         }
 
         @Override
@@ -1309,27 +1363,17 @@ public class AnimatedOBJModel implements IModel {
         }
 
         // FIXME: merge with getQuads
-        /* @Override
-        public OBJBakedModel handleBlockState(IBlockState state)
-        {
-            if (state instanceof IExtendedBlockState)
-            {
-                IExtendedBlockState exState = (IExtendedBlockState) state;
-                if (exState.getUnlistedNames().contains(OBJProperty.instance))
-                {
-                    OBJState s = exState.getValue(OBJProperty.instance);
-                    if (s != null)
-                    {
-                        if (s.visibilityMap.containsKey(Group.ALL) || s.visibilityMap.containsKey(Group.ALL_EXCEPT))
-                        {
-                            this.updateStateVisibilityMap(s);
-                        }
-                        return getCachedModel(s);
-                    }
-                }
-            }
-            return this;
-        }*/
+        /*
+         * @Override public OBJBakedModel handleBlockState(IBlockState state) { if
+         * (state instanceof IExtendedBlockState) { IExtendedBlockState exState =
+         * (IExtendedBlockState) state; if
+         * (exState.getUnlistedNames().contains(OBJProperty.instance)) { OBJState s =
+         * exState.getValue(OBJProperty.instance); if (s != null) { if
+         * (s.visibilityMap.containsKey(Group.ALL) ||
+         * s.visibilityMap.containsKey(Group.ALL_EXCEPT)) {
+         * this.updateStateVisibilityMap(s); } return getCachedModel(s); } } } return
+         * this; }
+         */
 
         private void updateStateVisibilityMap(OBJState state) {
             if (state.visibilityMap.containsKey(Group.ALL)) {
@@ -1353,12 +1397,13 @@ public class AnimatedOBJModel implements IModel {
             }
         }
 
-        private final LoadingCache<IModelState, OBJBakedModel> cache = CacheBuilder.newBuilder().maximumSize(20).build(new CacheLoader<IModelState, OBJBakedModel>() {
-            @Override
-            public OBJBakedModel load(IModelState state) throws Exception {
-                return new OBJBakedModel(model, state, format, textures);
-            }
-        });
+        private final LoadingCache<IModelState, OBJBakedModel> cache = CacheBuilder.newBuilder().maximumSize(20)
+                .build(new CacheLoader<IModelState, OBJBakedModel>() {
+                    @Override
+                    public OBJBakedModel load(IModelState state) throws Exception {
+                        return new OBJBakedModel(model, state, format, textures);
+                    }
+                });
 
         public OBJBakedModel getCachedModel(IModelState state) {
             return cache.getUnchecked(state);
@@ -1397,7 +1442,9 @@ public class AnimatedOBJModel implements IModel {
         public ResourceLocation modelLocation;
 
         public UVsOutOfBoundsException(ResourceLocation modelLocation) {
-            super(String.format("Model '%s' has UVs ('vt') out of bounds 0-1! The missing model will be used instead. Support for UV processing will be added to the OBJ loader in the future.", modelLocation));
+            super(String.format(
+                    "Model '%s' has UVs ('vt') out of bounds 0-1! The missing model will be used instead. Support for UV processing will be added to the OBJ loader in the future.",
+                    modelLocation));
             this.modelLocation = modelLocation;
         }
     }

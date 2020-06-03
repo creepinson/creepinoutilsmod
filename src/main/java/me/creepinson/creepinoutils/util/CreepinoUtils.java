@@ -1,6 +1,6 @@
 package me.creepinson.creepinoutils.util;
 
-import me.creepinson.creepinoutils.api.util.math.Vector3;
+import me.creepinson.creepinoutils.api.util.math.Vector;
 import net.minecraft.block.BlockAir;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -42,9 +42,9 @@ public class CreepinoUtils {
     }
 
     public static void moveEntityByRotation(Entity entity) {
-        double motionX = (double) (-MathHelper.sin(entity.rotationYaw / 180.0F * (float) Math.PI) * MathHelper.cos(entity.rotationPitch / 180.0F * (float) Math.PI) * 1.5F);
-        double motionZ = (double) (MathHelper.cos(entity.rotationYaw / 180.0F * (float) Math.PI) * MathHelper.cos(entity.rotationPitch / 180.0F * (float) Math.PI) * 1.5F);
-        double motionY = (double) (-MathHelper.sin((entity.rotationPitch + 0F) / 180.0F * (float) Math.PI) * 1.5F);
+        double motionX = -MathHelper.sin(entity.rotationYaw / 180.0F * (float) Math.PI) * MathHelper.cos(entity.rotationPitch / 180.0F * (float) Math.PI) * 1.5F;
+        double motionZ = MathHelper.cos(entity.rotationYaw / 180.0F * (float) Math.PI) * MathHelper.cos(entity.rotationPitch / 180.0F * (float) Math.PI) * 1.5F;
+        double motionY = -MathHelper.sin((entity.rotationPitch + 0F) / 180.0F * (float) Math.PI) * 1.5F;
         entity.addVelocity(motionX, motionY, motionZ);
     }
 
@@ -67,11 +67,11 @@ public class CreepinoUtils {
         return null;
     }
 
-    public static AxisAlignedBB getCollisionBoxPart(Vector3 pos, EnumFacing direction) {
+    public static AxisAlignedBB getCollisionBoxPart(Vector pos, EnumFacing direction) {
         return getCollisionBoxPart(pos.intX(), pos.intY(), pos.intZ(), direction);
     }
 
-    public static AxisAlignedBB getCollisionBoxPartFloor(Vector3 pos) {
+    public static AxisAlignedBB getCollisionBoxPartFloor(Vector pos) {
         return getCollisionBoxPartFloor(pos.intX(), pos.intY(), pos.intZ());
     }
 
@@ -80,7 +80,7 @@ public class CreepinoUtils {
         return new AxisAlignedBB(x, y + AXIS_FLOOR_MIN, z, x + 1, y + AXIS_FLOOR_MAX, z + 1);
     }
 
-    public static BlockPos getCoordinatesFromSide(Vector3 pos, EnumFacing s) {
+    public static BlockPos getCoordinatesFromSide(Vector pos, EnumFacing s) {
         return getCoordinatesFromSide(pos.intX(), pos.intY(), pos.intZ(), s.ordinal());
     }
 
@@ -101,7 +101,7 @@ public class CreepinoUtils {
         return new BlockPos(x, y, z);
     }
 
-    public static EnumFacing getDirectionFromSide(Vector3 pos, int s) {
+    public static EnumFacing getDirectionFromSide(Vector pos, int s) {
         return getDirectionFromSide(pos.intX(), pos.intY(), pos.intZ(), s);
     }
 
@@ -158,7 +158,6 @@ public class CreepinoUtils {
         for (blockpos = new BlockPos(pos.getX(), world.getSeaLevel(),
                 pos.getZ()); !(world.getBlockState(blockpos.up()).getBlock() instanceof BlockAir); blockpos = blockpos
                 .up()) {
-            ;
         }
         return blockpos;
     }

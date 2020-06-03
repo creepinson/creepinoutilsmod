@@ -1,9 +1,9 @@
 package me.creepinson.creepinoutils.base;
 
 /**
- * @author Creepinson http://gitlab.com/creepinson
- * Project CreepinoUtilsMod
- **/
+ * @author Theo Paris (https://theoparis.com)
+ */
+
 public class VersionSettings {
     public final String versionUrl;
     public final boolean raw;

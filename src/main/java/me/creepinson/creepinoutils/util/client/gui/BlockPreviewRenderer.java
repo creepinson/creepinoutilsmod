@@ -145,7 +145,7 @@ public class BlockPreviewRenderer {
         float percent = ((rotationTicks / 8.0f) + partialTicks) / rotationTime;
         */
 
-        GlStateManager.rotate((float) rotateX, 0.0f, 1.0f, 0.0f);
+        GlStateManager.rotate(rotateX, 0.0f, 1.0f, 0.0f);
 
         // Get rid of the wall+floor
         GlStateManager.translate(-8.0f, -8.0f, -8.0f);

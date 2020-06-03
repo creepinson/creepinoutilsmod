@@ -1,4 +1,3 @@
-
 package me.creepinson.creepinoutils.util.world.fake;
 
 import com.google.common.collect.Maps;

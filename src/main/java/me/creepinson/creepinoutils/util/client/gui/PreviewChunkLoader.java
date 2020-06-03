@@ -2,7 +2,7 @@ package me.creepinson.creepinoutils.util.client.gui;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import me.creepinson.creepinoutils.api.util.math.Vector3;
+import me.creepinson.creepinoutils.api.util.math.Vector;
 import me.creepinson.creepinoutils.util.VectorUtils;
 import me.creepinson.creepinoutils.util.world.ChunkUtils;
 import net.minecraft.block.state.IBlockState;
@@ -57,7 +57,7 @@ public class PreviewChunkLoader {
         return chunk;
     }
 
-    public Chunk loadChunk(Vector3 chunkPos) {
+    public Chunk loadChunk(Vector chunkPos) {
         return this.loadChunk(VectorUtils.toBlockPos(chunkPos));
     }
 

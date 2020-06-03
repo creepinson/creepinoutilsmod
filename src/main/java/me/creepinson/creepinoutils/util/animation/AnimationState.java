@@ -3,7 +3,7 @@ package me.creepinson.creepinoutils.util.animation;
 import me.creepinson.creepinoutils.api.util.Pair;
 import me.creepinson.creepinoutils.api.util.PairList;
 import me.creepinson.creepinoutils.api.util.math.Rotation;
-import me.creepinson.creepinoutils.api.util.math.Vector3;
+import me.creepinson.creepinoutils.api.util.math.Vector;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.Set;
@@ -45,12 +45,12 @@ public class AnimationState {
 
     }
 
-    public Vector3 getRotation() {
-        return new Vector3(get(AnimationKey.rotX), get(AnimationKey.rotY), get(AnimationKey.rotZ));
+    public Vector getRotation() {
+        return new Vector((float) get(AnimationKey.rotX), (float) get(AnimationKey.rotY), (float) get(AnimationKey.rotZ));
     }
 
-    public Vector3 getOffset() {
-        return new Vector3(get(AnimationKey.offX), get(AnimationKey.offY), get(AnimationKey.offZ));
+    public Vector getOffset() {
+        return new Vector((float) get(AnimationKey.offX), (float) get(AnimationKey.offY), (float) get(AnimationKey.offZ));
     }
 
     public void clear() {

@@ -27,6 +27,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * @author Theo Paris (https://theoparis.com)
+ */
 
 @Mod(modid = CreepinoUtilsMod.MOD_ID, name = CreepinoUtilsMod.MOD_NAME, acceptableRemoteVersions = "*", version = CreepinoUtilsMod.MOD_VERSION)
 public class CreepinoUtilsMod extends BaseMod {

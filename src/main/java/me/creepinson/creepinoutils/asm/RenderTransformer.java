@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class RenderTransformer implements IClassTransformer {
-    public static final List<String> clazzes = Arrays.asList(new String[]{"net.minecraftforge.client.ForgeHooksClient", "net.minecraft.client.Minecraft", "net.minecraft.client.renderer.entity.RenderManager", "net.minecraft.client.renderer.texture.TextureManager", "net.minecraft.client.renderer.RenderItem"});
+    public static final List<String> clazzes = Arrays.asList("net.minecraftforge.client.ForgeHooksClient", "net.minecraft.client.Minecraft", "net.minecraft.client.renderer.entity.RenderManager", "net.minecraft.client.renderer.texture.TextureManager", "net.minecraft.client.renderer.RenderItem");
 
     public RenderTransformer() {
     }

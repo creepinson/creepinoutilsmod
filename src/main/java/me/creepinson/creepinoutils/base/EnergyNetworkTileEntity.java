@@ -1,6 +1,6 @@
 package me.creepinson.creepinoutils.base;
 
-import me.creepinson.creepinoutils.api.util.math.Vector3;
+import me.creepinson.creepinoutils.api.util.math.Vector;
 import me.creepinson.creepinoutils.util.VectorUtils;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
@@ -49,13 +49,13 @@ public abstract class EnergyNetworkTileEntity extends BaseTile {
         return super.getCapability(capability, facing);
     }
 
-    public boolean canConnectTo(IBlockAccess blockAccess, Vector3 pos, EnumFacing f) {
+    public boolean canConnectTo(IBlockAccess blockAccess, Vector pos, EnumFacing f) {
         if (connections.isEmpty())
             refresh();
         return isConnectable() && isActive() && connections.contains(VectorUtils.offset(getPosition(), f));
     }
 
-    public boolean canConnectToStrict(IBlockAccess blockAccess, Vector3 pos, EnumFacing side) {
+    public boolean canConnectToStrict(IBlockAccess blockAccess, Vector pos, EnumFacing side) {
         return canConnectTo(blockAccess, pos, side);
     }
 }
