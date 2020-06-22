@@ -1,6 +1,6 @@
 package me.creepinson.creepinoutils.util;
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -21,16 +21,16 @@ public class BlockTileData extends BlockData {
     }
 
     @Override
-    public NBTTagCompound serializeNBT() {
-        NBTTagCompound nbt = super.serializeNBT();
-        if (tileEntity != null && !tileEntity.isInvalid()) {
+    public CompoundNBT serializeNBT() {
+        CompoundNBT nbt = super.serializeNBT();
+        if (tileEntity != null && !tileEntity.isRemoved()) {
             nbt.setTag("tile", tileEntity.serializeNBT());
         }
         return nbt;
     }
 
     @Override
-    public void deserializeNBT(NBTTagCompound nbt) {
+    public void deserializeNBT(CompoundNBT nbt) {
         super.deserializeNBT(nbt);
         if (nbt.hasKey("tile")) {
             this.tileEntity = TileEntity.create(getWorld(), nbt.getCompoundTag("tile"));

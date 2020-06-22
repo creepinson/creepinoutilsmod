@@ -3,7 +3,7 @@ package me.creepinson.creepinoutils.util;
 import me.creepinson.creepinoutils.api.util.math.Facing;
 import me.creepinson.creepinoutils.api.util.math.Vector;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.MathHelper;
 
 public class VelocityUtil {
@@ -13,7 +13,7 @@ public class VelocityUtil {
         accelerate(entity, v.getDirectionVec());
     }
 
-    public static void accelerate(Entity entity, EnumFacing v) {
+    public static void accelerate(Entity entity, Direction v) {
         accelerate(entity, Facing.values()[v.ordinal()]);
     }
 
@@ -25,7 +25,7 @@ public class VelocityUtil {
         accelerate(entity, v.getDirectionVec(), speed);
     }
 
-    public static void accelerate(Entity entity, EnumFacing v, double speed) {
+    public static void accelerate(Entity entity, Direction v, double speed) {
         accelerate(entity, Facing.values()[v.ordinal()], speed);
     }
 
@@ -35,9 +35,7 @@ public class VelocityUtil {
     }
 
     public static void limitEntitySpeed(Entity entity, double limit) {
-        entity.motionX = MathHelper.clamp(entity.motionX, -limit, limit);
-        entity.motionY = MathHelper.clamp(entity.motionY, -limit, limit);
-        entity.motionZ = MathHelper.clamp(entity.motionZ, -limit, limit);
+        entity.setMotion(MathHelper.clamp(entity.getMotion().x, -limit, limit), MathHelper.clamp(entity.getMotion().y, -limit, limit), MathHelper.clamp(entity.getMotion().z, -limit, limit));
     }
 
     public static Vector calculateParabolicVelocity(Vector from, Vector to, int heightGain) {

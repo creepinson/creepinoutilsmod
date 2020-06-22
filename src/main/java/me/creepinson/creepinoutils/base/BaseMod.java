@@ -1,14 +1,20 @@
 package me.creepinson.creepinoutils.base;
 
 import com.google.gson.JsonObject;
+
+import me.creepinson.creepinoutils.api.util.data.JsonConfiguration;
 import me.creepinson.creepinoutils.api.util.data.JsonUtils;
-import me.creepinson.creepinoutils.util.CreativeTabCallback;
+import me.creepinson.creepinoutils.util.ItemGroupCallback;
+import net.minecraft.item.ItemGroup;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLPaths;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,7 +33,6 @@ public abstract class BaseMod {
     public final VersionSettings modVersionSettings;
     protected File _CONFIG_BASE;
     protected Logger _LOGGER;
-    public final String modUrl;
     public final String modId;
     public final String modVersion;
     protected String UPDATE_LATEST_VER = null;
@@ -35,13 +40,14 @@ public abstract class BaseMod {
     /**
      * Defaults to NULL
      */
-    protected ModConfig config;
+    protected JsonConfiguration config;
     public boolean CHECK_FOR_UPDATES = true;
-    public CreativeTab creativeTab;
+    public BaseItemGroup itemGroup;
     protected boolean genConfig = true;
     protected boolean debug;
+    protected ItemGroupCallback tabCallback;
 
-    public ModConfig getConfig() {
+    public JsonConfiguration getConfig() {
         return config;
     }
 
@@ -55,16 +61,22 @@ public abstract class BaseMod {
      *                        version.
      * @param id              The mod id used by minecraft forge If you are
      *                        extending this class, then you can set
-     *                        BaseMod#hasCreativeTab to false if you do not want a
+     *                        BaseMod#hasItemGroup to false if you do not want a
      *                        simple creative tab to be added to your mod.
      */
-    public BaseMod(String url, VersionSettings versionSettings, String id, String ver) {
-        modUrl = url;
+    public BaseMod(String id, String ver, VersionSettings versionSettings) {
         modVersionSettings = versionSettings;
         modId = id;
         modVersion = ver;
         _LOGGER = LogManager.getLogger(modId);
         Configurator.setLevel(_LOGGER.getName(), Level.DEBUG);
+
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
+
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     public void debug(String s) {
@@ -73,15 +85,40 @@ public abstract class BaseMod {
         }
     }
 
-    public void clientPreInit(FMLPreInitializationEvent event) {
-
+    public void enqueueIMC(final InterModEnqueueEvent t) {
     }
 
-    public void clientInit(FMLInitializationEvent event) {
-
+    public void processIMC(final InterModProcessEvent t) {
     }
 
-    public void clientPostInit(FMLPostInitializationEvent event) {
+    public BaseMod withTabCallback(ItemGroupCallback callback) {
+        this.tabCallback = callback;
+        return this;
+    }
+
+    public void setup(final FMLCommonSetupEvent event) {
+        if (tabCallback != null) {
+            itemGroup = new BaseItemGroup(modId);
+            tabCallback.init(itemGroup);
+        }
+
+        _CONFIG_BASE = FMLPaths.CONFIGDIR.get().resolve(modId).toFile();
+        _CONFIG_BASE.mkdirs();
+        if (genConfig) {
+            config = new JsonConfiguration(new File(_CONFIG_BASE, "config.json"));
+            if (!config.fileExists()) {
+                config.getConfigMap().put("debug", false);
+            }
+            config.create();
+
+            this.debug = (boolean) config.getConfigMap().get("debug");
+        }
+
+        if (CHECK_FOR_UPDATES)
+            checkForUpdates();
+    }
+
+    public void clientSetup(final FMLClientSetupEvent event) {
 
     }
 
@@ -111,46 +148,4 @@ public abstract class BaseMod {
         }
     }
 
-    @Mod.EventHandler
-    public void init(FMLInitializationEvent event) {
-        if (event.getSide() == Side.CLIENT)
-            clientInit(event);
-    }
-
-    /**
-     * @param callback Callback once creative tab is created to change settings of
-     *                 the tab. You can pass null to disable automatic
-     *                 initialization of the creative tab.
-     */
-    @Mod.EventHandler
-    public void preInit(FMLPreInitializationEvent event, CreativeTabCallback callback) {
-        if (callback != null) {
-            creativeTab = new CreativeTab(modId);
-            callback.init(creativeTab);
-        }
-
-        _CONFIG_BASE = new File(event.getSuggestedConfigurationFile().getParentFile(), modId);
-        _CONFIG_BASE.mkdirs();
-        if (genConfig) {
-            config = new ModConfig(this, "config.cfg");
-            if (!config.fileExists()) {
-                config.writeConfig("main", "debug", false);
-            }
-            config.init();
-            this.debug = config.getBoolean("main", "debug");
-        }
-
-        MinecraftForge.EVENT_BUS.register(this);
-        if (event.getSide() == Side.CLIENT)
-            clientPreInit(event);
-
-    }
-
-    @Mod.EventHandler
-    public void postInit(FMLPostInitializationEvent event) {
-        if (CHECK_FOR_UPDATES)
-            checkForUpdates();
-        if (event.getSide() == Side.CLIENT)
-            clientPostInit(event);
-    }
 }

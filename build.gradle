@@ -1,20 +1,28 @@
 buildscript {
     repositories {
+        maven { url = 'https://files.minecraftforge.net/maven' }
         jcenter()
-        maven { url = "https://files.minecraftforge.net/maven" }
+        mavenCentral()
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
     }
 }
 
 plugins {
     id 'java'
     id "com.wynprice.cursemaven" version "2.1.1"
-    id 'com.github.johnrengelman.shadow' version '2.0.4'
+    id 'com.github.johnrengelman.shadow' version '4.0.4'
 }
 
-apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'net.minecraftforge.gradle'
+
+configurations {
+    // Configuration that holds JARs to shade inside the mod JAR
+    shade
+    // Make shadeded dependencies actually available during compilation/to IDEs
+    compile.extendsFrom shade
+}
 
 repositories {
     maven {
@@ -24,36 +32,98 @@ repositories {
     maven {
         url = "https://jitpack.io"
     }
+    mavenCentral()
 }
 
 dependencies {
-    compile 'com.github.creepinson:throw-out-utils-java:master-SNAPSHOT'
+    shade 'com.github.creepinson:throw-out-utils-java:master-SNAPSHOT'
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 }
+
+jar {
+    configurations.shade.each { dep ->
+        from(project.zipTree(dep)) {
+            exclude 'META-INF', 'META-INF/**'
+        }
+    }
+}
+
+version = "${project.minecraft_version}-${project.mod_version}"
+archivesBaseName = "${project.mod_name}"
+
+
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
 shadowJar {
-    // Only shadow fluent-hc
-    dependencies {
-        include(dependency('com.github.creepinson:throw-out-utils-java:master-SNAPSHOT'))
-    }
-
-    // Relocate fluent-hc to prevent conflicts with other mods that include it
-    relocate 'me.creepinson.creepinoutils.api.util', 'me.creepinson.creepinoutils.api.creepinoutilscore'
-
-    classifier '' // Replace the default JAR
+    classifier = ''
+    configurations = [project.configurations.shade]
+    relocate "me.creepinson.creepinoutils.api.util", "me.creepinson.creepinoutils.api.creepinoutilscore"
 }
 
-reobf {
-    shadowJar {} // Reobfuscate the shadowed JAR
-}
-
-version = "${minecraft_version}-${mod_version}"
-archivesBaseName = "${mod_name}"
-
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 minecraft {
-    version = "${minecraft_version}-${forge_version}"
-    runDir = '../run'
-    replace "${version}", project.version
-    mappings = forge_mappings
+    // The mappings can be changed at any time, and must be in the following format.
+    // snapshot_YYYYMMDD   Snapshot are built nightly.
+    // stable_#            Stables are built at the discretion of the MCP team.
+    // Use non-default mappings at your own risk. they may not always work.
+    // Simply re-run your setup task after changing the mappings to update your workspace.
+    mappings channel: "${project.forge_mappings}", version: "${project.forge_mapping_version}"
+    // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
+
+
+    // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+
+    // Default run configurations.
+    // These can be tweaked, removed, or duplicated as needed.
+    runs {
+        client {
+            workingDirectory project.file('run')
+
+            // Recommended logging data for a userdev environment
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            // Recommended logging level for the console
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+                "${project.mod_name}" {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        server {
+            workingDirectory project.file('run')
+
+            // Recommended logging data for a userdev environment
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            // Recommended logging level for the console
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+                "${project.mod_name}" {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        data {
+            workingDirectory project.file('run')
+
+            // Recommended logging data for a userdev environment
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            // Recommended logging level for the console
+            property 'forge.logging.console.level', 'debug'
+
+            args '--mod', project.mod_name, '--all', '--output', file('src/generated/resources/')
+
+            mods {
+                "${project.mod_name}" {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
 }

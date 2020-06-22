@@ -3,15 +3,12 @@ package me.creepinson.creepinoutils.util.world;
 import me.creepinson.creepinoutils.api.util.math.Vector;
 import me.creepinson.creepinoutils.util.VectorUtils;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ChunkCache;
-import net.minecraft.world.EnumSkyBlock;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
 
 /**
  * @author Creepinson http://gitlab.com/creepinson
@@ -22,7 +19,7 @@ public class WorldUtils {
     /**
      * Pre-calculated cache of translated block orientations
      */
-    private static final EnumFacing[][] baseOrientations = new EnumFacing[EnumFacing.VALUES.length][EnumFacing.VALUES.length];
+    private static final Direction[][] baseOrientations = new Direction[Direction.values().length][Direction.values().length];
 
     /**
      * Gets the left side of a certain orientation.
@@ -30,7 +27,7 @@ public class WorldUtils {
      * @param orientation Current orientation of the machine
      * @return left side
      */
-    public static EnumFacing getLeft(EnumFacing orientation) {
+    public static Direction getLeft(Direction orientation) {
         return orientation.rotateY();
     }
 
@@ -40,7 +37,7 @@ public class WorldUtils {
      * @param orientation Current orientation of the machine
      * @return right side
      */
-    public static EnumFacing getRight(EnumFacing orientation) {
+    public static Direction getRight(Direction orientation) {
         return orientation.rotateYCCW();
     }
 
@@ -50,7 +47,7 @@ public class WorldUtils {
      * @param orientation Current orientation of the machine
      * @return opposite side
      */
-    public static EnumFacing getBack(EnumFacing orientation) {
+    public static Direction getBack(Direction orientation) {
         return orientation.getOpposite();
     }
 
@@ -58,9 +55,9 @@ public class WorldUtils {
      * Returns the sides in the modified order relative to the machine-based orientation.
      *
      * @param blockFacing - what orientation the block is facing
-     * @return EnumFacing.VALUES, translated to machine orientation
+     * @return Direction.VALUES, translated to machine orientation
      */
-    public static EnumFacing[] getBaseOrientations(EnumFacing blockFacing) {
+    public static Direction[] getBaseOrientations(Direction blockFacing) {
         return baseOrientations[blockFacing.ordinal()];
     }
 
@@ -71,50 +68,50 @@ public class WorldUtils {
      * @param blockFacing - what orientation the block is facing
      * @return machine orientation
      */
-    public static EnumFacing getBaseOrientation(EnumFacing side, EnumFacing blockFacing) {
-        if (blockFacing == EnumFacing.DOWN) {
+    public static Direction getBaseOrientation(Direction side, Direction blockFacing) {
+        if (blockFacing == Direction.DOWN) {
             switch (side) {
                 case DOWN:
-                    return EnumFacing.NORTH;
+                    return Direction.NORTH;
                 case UP:
-                    return EnumFacing.SOUTH;
+                    return Direction.SOUTH;
                 case NORTH:
-                    return EnumFacing.UP;
+                    return Direction.UP;
                 case SOUTH:
-                    return EnumFacing.DOWN;
+                    return Direction.DOWN;
                 default:
                     return side;
             }
-        } else if (blockFacing == EnumFacing.UP) {
+        } else if (blockFacing == Direction.UP) {
             switch (side) {
                 case DOWN:
-                    return EnumFacing.SOUTH;
+                    return Direction.SOUTH;
                 case UP:
-                    return EnumFacing.NORTH;
+                    return Direction.NORTH;
                 case NORTH:
-                    return EnumFacing.DOWN;
+                    return Direction.DOWN;
                 case SOUTH:
-                    return EnumFacing.UP;
+                    return Direction.UP;
                 default:
                     return side;
             }
-        } else if (blockFacing == EnumFacing.SOUTH || side.getAxis() == EnumFacing.Axis.Y) {
-            if (side.getAxis() == EnumFacing.Axis.Z) {
+        } else if (blockFacing == Direction.SOUTH || side.getAxis() == Direction.Axis.Y) {
+            if (side.getAxis() == Direction.Axis.Z) {
                 return side.getOpposite();
             }
             return side;
-        } else if (blockFacing == EnumFacing.NORTH) {
-            if (side.getAxis() == EnumFacing.Axis.Z) {
+        } else if (blockFacing == Direction.NORTH) {
+            if (side.getAxis() == Direction.Axis.Z) {
                 return side;
             }
             return side.getOpposite();
-        } else if (blockFacing == EnumFacing.WEST) {
-            if (side.getAxis() == EnumFacing.Axis.Z) {
+        } else if (blockFacing == Direction.WEST) {
+            if (side.getAxis() == Direction.Axis.Z) {
                 return getRight(side);
             }
             return getLeft(side);
-        } else if (blockFacing == EnumFacing.EAST) {
-            if (side.getAxis() == EnumFacing.Axis.Z) {
+        } else if (blockFacing == Direction.EAST) {
+            if (side.getAxis() == Direction.Axis.Z) {
                 return getLeft(side);
             }
             return getRight(side);
@@ -122,13 +119,8 @@ public class WorldUtils {
         return side;
     }
 
-
-    public static TileEntity getTileEntitySafe(IBlockAccess worldIn, BlockPos pos) {
-        return worldIn instanceof ChunkCache ? ((ChunkCache) worldIn).getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK) : worldIn.getTileEntity(pos);
-    }
-
-    public static <T extends TileEntity> T getTileEntitySafe(IBlockAccess worldIn, BlockPos pos, Class<T> expectedClass) {
-        TileEntity te = getTileEntitySafe(worldIn, pos);
+    public static <T extends TileEntity> T getTileEntitySafe(IWorld world, BlockPos pos, Class<T> expectedClass) {
+        TileEntity te = world.getTileEntity(pos);
         if (expectedClass.isInstance(te)) {
             return expectedClass.cast(te);
         }
@@ -149,7 +141,6 @@ public class WorldUtils {
         // This is because that is mainly used for rendering machine effects, but we need to run a render update
         // anyways here in case IActiveState#renderUpdate() is false and we just had the block rotate.
         // For example the laser, or charge pad.
-        world.markBlockRangeForRenderUpdate(pos, pos);
         updateAllLightTypes(world, pos);
     }
 
@@ -161,7 +152,7 @@ public class WorldUtils {
      * @param coord - Vector to perform the operation on
      */
     public static void notifyLoadedNeighborsOfTileChange(World world, Vector coord) {
-        for (EnumFacing dir : EnumFacing.VALUES) {
+        for (Direction dir : Direction.values()) {
             Vector offset = VectorUtils.offset(coord, dir);
             notifyNeighborofChange(world, offset, VectorUtils.toBlockPos(coord));
             if (VectorUtils.getBlockState(world, offset).isNormalCube()) {
@@ -182,7 +173,7 @@ public class WorldUtils {
      * @param fromPos pos of our block that updated
      */
     public static void notifyNeighborofChange(World world, Vector coord, BlockPos fromPos) {
-        IBlockState state = VectorUtils.getBlockState(world, coord);
+        BlockState state = VectorUtils.getBlockState(world, coord);
         state.getBlock().onNeighborChange(world, VectorUtils.toBlockPos(coord), fromPos);
         state.neighborChanged(world, VectorUtils.toBlockPos(coord), world.getBlockState(fromPos).getBlock(), fromPos);
     }
@@ -206,7 +197,7 @@ public class WorldUtils {
      * @return if the block is directly getting powered
      */
     public static boolean isDirectlyGettingPowered(World world, Vector coord) {
-        for (EnumFacing side : EnumFacing.VALUES) {
+        for (Direction side : Direction.VALUES) {
             Vector sideCoord = VectorUtils.offset(coord, side);
             if (world.getRedstonePower(VectorUtils.toBlockPos(coord), side) > 0) {
                 return true;
@@ -224,9 +215,9 @@ public class WorldUtils {
      * @return if the block is indirectly getting powered by LOADED chunks
      */
     public static boolean isGettingPowered(World world, Vector coord) {
-        for (EnumFacing side : EnumFacing.VALUES) {
+        for (Direction side : Direction.VALUES) {
             Vector sideCoord = VectorUtils.offset(coord, side);
-            IBlockState blockState = VectorUtils.getBlockState(world, coord);
+            BlockState blockState = VectorUtils.getBlockState(world, coord);
             boolean weakPower = blockState.getBlock().shouldCheckWeakPower(blockState, world, VectorUtils.toBlockPos(coord), side);
             if (weakPower && isDirectlyGettingPowered(world, sideCoord)) {
                 return true;

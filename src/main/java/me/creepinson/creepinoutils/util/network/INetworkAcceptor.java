@@ -1,12 +1,12 @@
 package me.creepinson.creepinoutils.util.network;
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 public interface INetworkAcceptor<T> {
     /**
      * @return How much energy does this TileEntity want?
      */
-    T getRequest(EnumFacing direction);
+    T getRequest(Direction direction);
 
     /**
      * Adds electricity to an block. Returns the quantity of electricity that was accepted. This
@@ -17,7 +17,7 @@ public interface INetworkAcceptor<T> {
      * @param doReceive If false, the charge will only be simulated.
      * @return Amount of energy that was accepted by the block.
      */
-    T receive(EnumFacing side, T receive, boolean doReceive);
+    T receive(Direction side, T receive, boolean doReceive);
 
-    boolean canAccept(EnumFacing direction);
+    boolean canAccept(Direction direction);
 }

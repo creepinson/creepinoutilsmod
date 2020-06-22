@@ -5,9 +5,9 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import me.creepinson.creepinoutils.api.util.math.Vector;
 import me.creepinson.creepinoutils.util.VectorUtils;
 import me.creepinson.creepinoutils.util.world.ChunkUtils;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.init.Blocks;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
@@ -39,7 +39,7 @@ public class PreviewChunkLoader {
             for (int y = 15; y >= 0; y--) {
                 for (int z = 15; z >= 0; z--) {
                     BlockPos pos = new BlockPos(chunk.x * 16 + x, y + 40, z);
-                    IBlockState state = chunk.getBlockState(pos);
+                    BlockState state = chunk.getBlockState(pos);
                     if (state.getBlock() == Blocks.AIR) {
                         continue;
                     }
@@ -68,7 +68,7 @@ public class PreviewChunkLoader {
             for (int y = 15; y >= 0; y--) {
                 for (int z = 15; z >= 0; z--) {
                     BlockPos pos = new BlockPos(chunk.x * 16 + x, y + 40, z);
-                    IBlockState state = chunk.getBlockState(pos);
+                    BlockState state = chunk.getBlockState(pos);
                     if (state.getBlock() == Blocks.AIR) {
                         continue;
                     }
@@ -86,7 +86,7 @@ public class PreviewChunkLoader {
         return chunk;
     }
 
-    public Chunk loadChunkFromNBT(NBTTagCompound tag) {
+    public Chunk loadChunkFromNBT(CompoundNBT tag) {
         Chunk chunk = ChunkUtils.readChunkFromNBT(world, tag);
         chunk.markLoaded(true);
 
@@ -95,7 +95,7 @@ public class PreviewChunkLoader {
             for (int y = 15; y >= 0; y--) {
                 for (int z = 15; z >= 0; z--) {
                     BlockPos pos = new BlockPos(chunk.x * 16 + x, y + 40, z);
-                    IBlockState state = chunk.getBlockState(pos);
+                    BlockState state = chunk.getBlockState(pos);
                     if (state.getBlock() == Blocks.AIR) {
                         continue;
                     }

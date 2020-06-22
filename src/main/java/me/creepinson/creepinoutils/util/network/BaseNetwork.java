@@ -2,7 +2,7 @@ package me.creepinson.creepinoutils.util.network;
 
 import me.creepinson.creepinoutils.api.util.math.Vector;
 import me.creepinson.creepinoutils.util.VectorUtils;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -57,12 +57,12 @@ public class BaseNetwork<T> implements INetwork<T> {
 
 
     @Override
-    public NBTTagCompound serializeNBT() {
-        return new NBTTagCompound();
+    public CompoundNBT serializeNBT() {
+        return new CompoundNBT();
     }
 
     @Override
-    public void deserializeNBT(NBTTagCompound nbt) {
+    public void deserializeNBT(CompoundNBT nbt) {
         // TODO: implement this
     }
 }

@@ -33,7 +33,7 @@ import me.creepinson.creepinoutils.util.VectorUtils;
 import me.creepinson.creepinoutils.util.animation.AnimationGroup;
 import me.creepinson.creepinoutils.util.animation.AnimationKey;
 import me.creepinson.creepinoutils.util.animation.AnimationState;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -45,7 +45,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.client.resources.IResourceManager;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoader;
@@ -1212,7 +1212,7 @@ public class AnimatedOBJModel implements IModel {
 
         // FIXME: merge with getQuads
         @Override
-        public List<BakedQuad> getQuads(IBlockState blockState, EnumFacing side, long rand) {
+        public List<BakedQuad> getQuads(BlockState blockState, Direction side, long rand) {
             if (side != null)
                 return ImmutableList.of();
             if (quads == null) {
@@ -1293,7 +1293,7 @@ public class AnimatedOBJModel implements IModel {
                 UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(format);
                 builder.setContractUVs(true);
                 builder.setQuadOrientation(
-                        EnumFacing.getFacingFromVector(f.getNormal().x, f.getNormal().y, f.getNormal().z));
+                        Direction.getFacingFromVector(f.getNormal().x, f.getNormal().y, f.getNormal().z));
                 builder.setTexture(sprite);
                 Normal faceNormal = f.getNormal();
                 putVertexData(builder, f.verts[0], faceNormal, TextureCoordinate.getDefaultUVs()[0], sprite);
@@ -1364,7 +1364,7 @@ public class AnimatedOBJModel implements IModel {
 
         // FIXME: merge with getQuads
         /*
-         * @Override public OBJBakedModel handleBlockState(IBlockState state) { if
+         * @Override public OBJBakedModel handleBlockState(BlockState state) { if
          * (state instanceof IExtendedBlockState) { IExtendedBlockState exState =
          * (IExtendedBlockState) state; if
          * (exState.getUnlistedNames().contains(OBJProperty.instance)) { OBJState s =

@@ -3,14 +3,14 @@ package me.creepinson.creepinoutils.util;
 import me.creepinson.creepinoutils.api.util.math.Vector;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkCache;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
@@ -39,7 +39,7 @@ public class BlockUtils {
         // chunk.precipitationHeightMap[i1] = -999;
         // }
 
-        IBlockState state1 = chunk.getBlockState(dx, y, dz);
+        BlockState state1 = chunk.getBlockState(dx, y, dz);
         Block block1 = state1.getBlock();
         int k1 = block1.getMetaFromState(state1);
 
@@ -69,8 +69,8 @@ public class BlockUtils {
     }
 
     public static void breakBlockWithDrop(World world, BlockPos pos) {
-        IBlockState iblockstate = world.getBlockState(pos);
-        if (iblockstate.getMaterial().isLiquid()) {
+        BlockState BlockState = world.getBlockState(pos);
+        if (BlockState.getMaterial().isLiquid()) {
             world.setBlockState(pos, Blocks.AIR.getDefaultState(), 3);
         } else {
             world.destroyBlock(pos, true);
@@ -87,12 +87,12 @@ public class BlockUtils {
     }
 
     public static void markBlockForUpdate(World world, BlockPos pos) {
-        IBlockState state = world.getBlockState(pos);
+        BlockState state = world.getBlockState(pos);
         world.notifyBlockUpdate(pos, state, state, 0);
     }
 
     @Nullable
-    public static <T extends TileEntity> T getTileEntitySafely(IBlockAccess world, BlockPos pos, Class<T> tileClass) {
+    public static <T extends TileEntity> T getTileEntitySafely(IWorld world, BlockPos pos, Class<T> tileClass) {
         TileEntity te;
 
         if (world instanceof ChunkCache) {
@@ -132,13 +132,13 @@ public class BlockUtils {
         return set;
     }
 
-    public static void getTilesWithCapabilityRecursive(Set<BlockPos> done, World world, BlockPos start, EnumFacing from,
+    public static void getTilesWithCapabilityRecursive(Set<BlockPos> done, World world, BlockPos start, Direction from,
                                                        Capability... search) {
-        for (EnumFacing side : EnumFacing.values()) {
+        for (Direction side : Direction.values()) {
             if (side == from)
                 continue;
             TileEntity tile = world.getTileEntity(start);
-            if (tile != null && !tile.isInvalid()) {
+            if (tile != null && !tile.isRemoved()) {
                 for (Capability c : search) {
                     if (tile.getCapability(c, from) != null) {
                         done.add(start);
@@ -162,15 +162,15 @@ public class BlockUtils {
         return set;
     }
 
-    public static void getTilesRecursive(Set<BlockPos> done, World world, BlockPos start, EnumFacing from,
+    public static void getTilesRecursive(Set<BlockPos> done, World world, BlockPos start, Direction from,
                                          Class... search) {
-        for (EnumFacing side : EnumFacing.values()) {
+        for (Direction side : Direction.values()) {
             if (side == from)
                 continue;
             TileEntity tile = world.getTileEntity(start);
-            if (tile != null && !tile.isInvalid()) {
+            if (tile != null && !tile.isRemoved()) {
                 for (Class c : search) {
-                    if (tile != null && !tile.isInvalid()) {
+                    if (tile != null && !tile.isRemoved()) {
                         done.add(start);
                     }
                 }
@@ -192,9 +192,9 @@ public class BlockUtils {
         return set;
     }
 
-    public static void getBlocksRecursive(Set<BlockPos> done, World world, BlockPos start, EnumFacing from,
+    public static void getBlocksRecursive(Set<BlockPos> done, World world, BlockPos start, Direction from,
                                           Class... search) {
-        for (EnumFacing side : EnumFacing.values()) {
+        for (Direction side : Direction.values()) {
             if (side == from)
                 continue;
             Block b = world.getBlockState(start).getBlock();
@@ -234,8 +234,8 @@ public class BlockUtils {
      * the other getNearbyBlocks method, this one returns a list of
      * blockstates to make it easier to get each block's information.
      */
-    public static List<IBlockState> getNearbyBlocks(World world, BlockPos pos, int radius) {
-        List<IBlockState> scanResult = new ArrayList<IBlockState>();
+    public static List<BlockState> getNearbyBlocks(World world, BlockPos pos, int radius) {
+        List<BlockState> scanResult = new ArrayList<BlockState>();
         List<BlockPos> scans = getNearbyBlocks(pos, radius);
         for (BlockPos scanPos : scans) {
             scanResult.add(world.getBlockState(scanPos));
@@ -250,8 +250,8 @@ public class BlockUtils {
      * the other getNearbyBlocks method, this one returns a list of
      * blockstates to make it easier to get each block's information.
      */
-    public static List<IBlockState> getNearbyBlocks(World world, Vector pos, int radius) {
-        List<IBlockState> scanResult = new ArrayList<IBlockState>();
+    public static List<BlockState> getNearbyBlocks(World world, Vector pos, int radius) {
+        List<BlockState> scanResult = new ArrayList<BlockState>();
         List<BlockPos> scans = getNearbyBlocks(VectorUtils.toBlockPos(pos), radius);
         for (BlockPos scanPos : scans) {
             scanResult.add(world.getBlockState(scanPos));
@@ -259,19 +259,19 @@ public class BlockUtils {
         return scanResult;
     }
 
-    public static int getBlockMetadata(IBlockAccess blockAccess, Vector v) {
+    public static int getBlockMetadata(IWorld blockAccess, Vector v) {
         return getBlockMetadata(blockAccess, v.intX(), v.intY(), v.intZ());
     }
 
-    public static int getBlockMetadata(IBlockAccess blockAccess, int x, int y, int z) {
+    public static int getBlockMetadata(IWorld blockAccess, int x, int y, int z) {
         return getBlockMetadata(blockAccess, new BlockPos(x, y, z));
     }
 
-    public static int getBlockMetadata(IBlockAccess blockAccess, BlockPos pos) {
+    public static int getBlockMetadata(IWorld blockAccess, BlockPos pos) {
         return blockAccess.getBlockState(pos).getBlock().getMetaFromState(blockAccess.getBlockState(pos));
     }
 
-    public static EnumFacing getNeighborDirection(BlockPos pos, BlockPos neighbor) {
+    public static Direction getNeighborDirection(BlockPos pos, BlockPos neighbor) {
 
         int dx = pos.getX() - neighbor.getX();
 
@@ -280,30 +280,30 @@ public class BlockUtils {
             if (dz == 0) {
                 int dy = pos.getY() - neighbor.getY();
                 if (dy >= 1) {
-                    return EnumFacing.DOWN;
+                    return Direction.DOWN;
                 } else {
-                    return EnumFacing.UP;
+                    return Direction.UP;
                 }
             } else if (dz >= 1) {
-                return EnumFacing.NORTH;
+                return Direction.NORTH;
             } else {
-                return EnumFacing.SOUTH;
+                return Direction.SOUTH;
             }
         } else if (dx >= 1) {
-            return EnumFacing.WEST;
+            return Direction.WEST;
         } else {
-            return EnumFacing.EAST;
+            return Direction.EAST;
         }
     }
 
-    public static IBlockState getState(ItemStack stack) {
+    public static BlockState getState(ItemStack stack) {
         Block block = Block.getBlockFromItem(stack.getItem());
         if (!(block instanceof BlockAir))
             return getState(block, stack.getMetadata());
         return Blocks.AIR.getDefaultState();
     }
 
-    public static IBlockState getState(Block block, int meta) {
+    public static BlockState getState(Block block, int meta) {
         try {
             return block.getStateFromMeta(meta);
         } catch (Exception e) {

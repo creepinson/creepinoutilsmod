@@ -4,7 +4,7 @@ import me.creepinson.creepinoutils.api.util.Pair;
 import me.creepinson.creepinoutils.api.util.PairList;
 import me.creepinson.creepinoutils.api.util.math.Rotation;
 import me.creepinson.creepinoutils.api.util.math.Vector;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 import java.util.Set;
 
@@ -35,9 +35,9 @@ public class AnimationState {
         return this;
     }
 
-    public AnimationState(NBTTagCompound nbt) {
+    public AnimationState(CompoundNBT nbt) {
         for (AnimationKey key : AnimationKey.getKeys())
-            if (nbt.hasKey(key.name))
+            if (nbt.contains(key.name))
                 values.add(key, nbt.getDouble(key.name));
     }
 
@@ -72,9 +72,9 @@ public class AnimationState {
         return true;
     }
 
-    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+    public CompoundNBT writeToNBT(CompoundNBT nbt) {
         for (Pair<AnimationKey, Double> pair : values)
-            nbt.setDouble(pair.key.name, pair.value);
+            nbt.putDouble(pair.key.name, pair.value);
         return nbt;
     }
 

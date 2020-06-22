@@ -2,8 +2,8 @@ package me.creepinson.creepinoutils.util.upgrade;
 
 import me.creepinson.creepinoutils.util.text.EnumColor;
 import me.creepinson.creepinoutils.util.text.LangUtils;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants.NBT;
 
@@ -37,13 +37,13 @@ public class Upgrade {
         color = c;
     }
 
-    public static Map<Upgrade, Integer> buildMap(@Nullable NBTTagCompound nbtTags) {
+    public static Map<Upgrade, Integer> buildMap(@Nullable CompoundNBT nbtTags) {
         Map<Upgrade, Integer> upgrades = new HashMap<>();
         if (nbtTags != null) {
             if (nbtTags.hasKey("upgrades")) {
-                NBTTagList list = nbtTags.getTagList("upgrades", NBT.TAG_COMPOUND);
+                ListNBT list = nbtTags.getTagList("upgrades", NBT.TAG_COMPOUND);
                 for (int tagCount = 0; tagCount < list.tagCount(); tagCount++) {
-                    NBTTagCompound compound = list.getCompoundTagAt(tagCount);
+                    CompoundNBT compound = list.getCompoundTagAt(tagCount);
                     Upgrade upgrade = Upgrade.getUpgradesArray()[compound.getInteger("type")];
                     upgrades.put(upgrade, compound.getInteger("amount"));
                 }
@@ -56,16 +56,16 @@ public class Upgrade {
         return UPGRADES.values().toArray(new Upgrade[0]);
     }
 
-    public static void saveMap(Map<Upgrade, Integer> upgrades, NBTTagCompound nbtTags) {
-        NBTTagList list = new NBTTagList();
+    public static void saveMap(Map<Upgrade, Integer> upgrades, CompoundNBT nbtTags) {
+        ListNBT list = new ListNBT();
         for (Entry<Upgrade, Integer> entry : upgrades.entrySet()) {
             list.appendTag(getTagFor(entry.getKey(), entry.getValue()));
         }
         nbtTags.setTag("upgrades", list);
     }
 
-    public static NBTTagCompound getTagFor(Upgrade upgrade, int amount) {
-        NBTTagCompound compound = new NBTTagCompound();
+    public static CompoundNBT getTagFor(Upgrade upgrade, int amount) {
+        CompoundNBT compound = new CompoundNBT();
         compound.setString("type", upgrade.name);
         compound.setInteger("amount", amount);
         return compound;

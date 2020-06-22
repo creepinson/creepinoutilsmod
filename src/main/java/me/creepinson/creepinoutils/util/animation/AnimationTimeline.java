@@ -4,36 +4,39 @@ import me.creepinson.creepinoutils.api.util.Pair;
 import me.creepinson.creepinoutils.api.util.PairList;
 import me.creepinson.creepinoutils.api.util.PairListUtils;
 import me.creepinson.creepinoutils.api.util.math.Rotation;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 
 public class AnimationTimeline {
 
     public int duration;
     public PairList<AnimationKey, ValueTimeline> values;
 
-    public AnimationTimeline(NBTTagCompound nbt) {
-        duration = nbt.getInteger("duration");
+    public AnimationTimeline(CompoundNBT nbt) {
+        duration = nbt.getInt("duration");
         values = new PairList<>();
 
-        if (nbt.hasKey("values")) { // now
-            NBTTagList list = nbt.getTagList("values", 10);
-            for (int i = 0; i < list.tagCount(); i++) {
-                NBTTagCompound valueNBT = list.getCompoundTagAt(i);
-                values.add(AnimationKey.getKey(valueNBT.getString("key")), ValueTimeline.read(valueNBT.getIntArray("data")));
+        if (nbt.contains("values")) { // now
+            ListNBT list = nbt.getList("values", 10);
+            for (int i = 0; i < list.size(); i++) {
+                CompoundNBT valueNBT = list.getCompound(i);
+                values.add(AnimationKey.getKey(valueNBT.getString("key")),
+                        ValueTimeline.read(valueNBT.getIntArray("data")));
 
             }
         } else {// before pre132
-            NBTTagList list = nbt.getTagList("animations", 10);
-            for (int i = 0; i < list.tagCount(); i++) {
-                NBTTagCompound animationNBT = list.getCompoundTagAt(i);
-                this.values = getAnimation((int) animationNBT.getLong("time"), animationNBT.getInteger("type"), animationNBT.getIntArray("data")); // There was only one animation back then
+            ListNBT list = nbt.getList("animations", 10);
+            for (int i = 0; i < list.size(); i++) {
+                CompoundNBT animationNBT = list.getCompound(i);
+                this.values = getAnimation((int) animationNBT.getLong("time"), animationNBT.getInt("type"),
+                        animationNBT.getIntArray("data")); // There was only one animation back then
             }
         }
     }
 
     /**
-     * Old code please do not use it!!!! Used to stay compatible to existing pre-releases
+     * Old code please do not use it!!!! Used to stay compatible to existing
+     * pre-releases
      */
     public static PairList<AnimationKey, ValueTimeline> getAnimation(int begin, int type, int[] array) {
         PairList<AnimationKey, ValueTimeline> values = new PairList<>();
@@ -156,16 +159,16 @@ public class AnimationTimeline {
         return true;
     }
 
-    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-        nbt.setInteger("duration", duration);
-        NBTTagList list = new NBTTagList();
+    public CompoundNBT writeToNBT(CompoundNBT nbt) {
+        nbt.putInt("duration", duration);
+        ListNBT list = new ListNBT();
         for (Pair<AnimationKey, ValueTimeline> pair : values) {
-            NBTTagCompound valueNBT = new NBTTagCompound();
-            valueNBT.setString("key", pair.key.name);
-            valueNBT.setIntArray("data", pair.value.write());
-            list.appendTag(valueNBT);
+            CompoundNBT valueNBT = new CompoundNBT();
+            valueNBT.putString("key", pair.key.name);
+            valueNBT.putIntArray("data", pair.value.write());
+            list.add(valueNBT);
         }
-        nbt.setTag("values", list);
+        nbt.put("values", list);
         return nbt;
     }
 

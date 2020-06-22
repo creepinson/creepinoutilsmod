@@ -6,8 +6,8 @@ import me.creepinson.creepinoutils.base.BaseItemGroup;
  * @author Creepinson http://gitlab.com/creepinson
  * Project CreepinoUtilsMod
  **/
-public abstract class ItemGroupCallback {
+public interface ItemGroupCallback {
 
-    public abstract void init(BaseItemGroup tab);
+    void init(BaseItemGroup tab);
 
 }

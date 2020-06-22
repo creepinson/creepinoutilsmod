@@ -2,7 +2,7 @@ package me.creepinson.creepinoutils.util;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 /**
@@ -27,11 +27,11 @@ public class PacketUtils {
         return ByteBufUtils.readItemStack(input);
     }
 
-    public static void writeNBT(ByteBuf output, NBTTagCompound nbtTags) {
+    public static void writeNBT(ByteBuf output, CompoundNBT nbtTags) {
         ByteBufUtils.writeTag(output, nbtTags);
     }
 
-    public static NBTTagCompound readNBT(ByteBuf input) {
+    public static CompoundNBT readNBT(ByteBuf input) {
         return ByteBufUtils.readTag(input);
     }
 

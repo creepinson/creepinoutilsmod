@@ -2,7 +2,7 @@ package me.creepinson.creepinoutils.util.client.gui;
 
 import me.creepinson.creepinoutils.CreepinoUtilsMod;
 import me.creepinson.creepinoutils.util.world.ChunkUtils;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -183,7 +183,7 @@ public class BlockPreviewRenderer {
 
     public void renderLayer(BlockRendererDispatcher blockrendererdispatcher, BufferBuilder buffer, BlockRenderLayer renderLayer, List<BlockPos> toRender) {
         for (BlockPos pos : toRender) {
-            IBlockState state = chunkHandler.world.getBlockState(pos);
+            BlockState state = chunkHandler.world.getBlockState(pos);
 
             if (!state.getBlock().canRenderInLayer(state, renderLayer)) {
                 continue;

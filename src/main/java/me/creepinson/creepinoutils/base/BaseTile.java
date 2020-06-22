@@ -8,9 +8,10 @@ import me.creepinson.creepinoutils.util.upgrade.Upgrade;
 import me.creepinson.creepinoutils.util.upgrade.UpgradeInfo;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IWorld;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -24,6 +25,10 @@ public abstract class BaseTile extends TileEntity implements IBaseTile, ITile {
     private boolean active;
     private boolean connectable;
     protected Set<BlockPos> connections = new HashSet<>();
+
+    public BaseTile(TileEntityType<?> type) {
+        super(type);
+    }
 
     public boolean isActive() {
         return this.active;
@@ -39,7 +44,7 @@ public abstract class BaseTile extends TileEntity implements IBaseTile, ITile {
     }
 
     public void updateConnectedBlocks() {
-        for (EnumFacing f : EnumFacing.values()) {
+        for (Direction f : Direction.values()) {
             world.notifyBlockUpdate(pos.offset(f), world.getBlockState(pos.offset(f)),
                     world.getBlockState(pos.offset(f)), 2);
         }
@@ -97,7 +102,6 @@ public abstract class BaseTile extends TileEntity implements IBaseTile, ITile {
         return false;
     }
 
-
     public void setConnectable(boolean value) {
         this.connectable = value;
         this.refresh();
@@ -108,7 +112,7 @@ public abstract class BaseTile extends TileEntity implements IBaseTile, ITile {
     }
 
     @Override
-    public boolean canConnectTo(IBlockAccess blockAccess, BlockPos pos, EnumFacing f) {
+    public boolean canConnectTo(IWorld blockAccess, BlockPos pos, Direction f) {
         if (connections.isEmpty())
             refresh();
         return isConnectable() && isActive() && connections.contains(pos.offset(f));
@@ -119,7 +123,7 @@ public abstract class BaseTile extends TileEntity implements IBaseTile, ITile {
     }
 
     @Override
-    public boolean canConnectToStrict(IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
+    public boolean canConnectToStrict(IWorld blockAccess, BlockPos pos, Direction side) {
         return canConnectTo(blockAccess, pos, side);
     }
 

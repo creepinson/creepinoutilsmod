@@ -1,13 +1,17 @@
 package me.creepinson.creepinoutils.base;
 
-import me.creepinson.creepinoutils.api.util.math.Vector;
-import me.creepinson.creepinoutils.util.VectorUtils;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Creepinson http://gitlab.com/creepinson
@@ -17,45 +21,44 @@ public abstract class EnergyNetworkTileEntity extends BaseTile {
 
     private IEnergyStorage energyStorage;
 
-    protected boolean connectable = true;
+    private LazyOptional<IEnergyStorage> lazyStorage;
 
     public IEnergyStorage getEnergyStorage() {
         return this.energyStorage;
     }
 
-    public EnergyNetworkTileEntity(int capacity) {
+    public EnergyNetworkTileEntity(TileEntityType<?> type, int capacity) {
+        super(type);
         this.energyStorage = new EnergyStorage(capacity);
+        this.lazyStorage = net.minecraftforge.common.util.LazyOptional.of(() -> this.energyStorage);
+
     }
 
-    protected void setEnergyStorage(IEnergyStorage energyStorage) {
-        this.energyStorage = energyStorage;
-    }
-
-    protected boolean active;
-
+    @Nonnull
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        if (capability == CapabilityEnergy.ENERGY) {
-            return connectable;
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        if (cap == CapabilityEnergy.ENERGY) {
+            return lazyStorage.cast();
         }
-        return super.hasCapability(capability, facing);
+
+        return super.getCapability(cap, side);
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-        if (capability == CapabilityEnergy.ENERGY) {
-            return (T) this.energyStorage;
-        }
-        return super.getCapability(capability, facing);
+    public void remove() {
+        super.remove();
+        lazyStorage.invalidate();
     }
 
-    public boolean canConnectTo(IBlockAccess blockAccess, Vector pos, EnumFacing f) {
+    @Override
+    public boolean canConnectTo(IWorld blockAccess, BlockPos pos, Direction f) {
         if (connections.isEmpty())
             refresh();
-        return isConnectable() && isActive() && connections.contains(VectorUtils.offset(getPosition(), f));
+        return isConnectable() && isActive() && connections.contains(pos.offset(f));
     }
 
-    public boolean canConnectToStrict(IBlockAccess blockAccess, Vector pos, EnumFacing side) {
+    @Override
+    public boolean canConnectToStrict(IWorld blockAccess, BlockPos pos, Direction side) {
         return canConnectTo(blockAccess, pos, side);
     }
 }

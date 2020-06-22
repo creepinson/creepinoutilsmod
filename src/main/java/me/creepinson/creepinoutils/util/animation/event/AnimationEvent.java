@@ -1,7 +1,7 @@
 package me.creepinson.creepinoutils.util.animation.event;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -49,7 +49,7 @@ public abstract class AnimationEvent implements Comparable<AnimationEvent> {
         }
     }
 
-    public static AnimationEvent loadFromNBT(NBTTagCompound nbt) {
+    public static AnimationEvent loadFromNBT(CompoundNBT nbt) {
         Class<? extends AnimationEvent> eventClass = getType(nbt.getString("id"));
         if (eventClass == null) {
             System.out.println("Found invalid AnimationEvent type '" + nbt.getString("id") + "'!");
@@ -57,7 +57,7 @@ public abstract class AnimationEvent implements Comparable<AnimationEvent> {
         }
 
         try {
-            AnimationEvent event = eventClass.getConstructor(int.class).newInstance(nbt.getInteger("tick"));
+            AnimationEvent event = eventClass.getConstructor(int.class).newInstance(nbt.getInt("tick"));
             event.activated = nbt.getBoolean("activated");
             event.read(nbt);
             return event;
@@ -89,17 +89,17 @@ public abstract class AnimationEvent implements Comparable<AnimationEvent> {
         return this.tick <= tick && !activated;
     }
 
-    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-        nbt.setString("id", getId(this.getClass()));
-        nbt.setInteger("tick", tick);
-        nbt.setBoolean("activated", activated);
+    public CompoundNBT writeToNBT(CompoundNBT nbt) {
+        nbt.putString("id", getId(this.getClass()));
+        nbt.putInt("tick", tick);
+        nbt.putBoolean("activated", activated);
         write(nbt);
         return nbt;
     }
 
-    protected abstract void write(NBTTagCompound nbt);
+    protected abstract void write(CompoundNBT nbt);
 
-    protected abstract void read(NBTTagCompound nbt);
+    protected abstract void read(CompoundNBT nbt);
 
     public boolean process(Entity controller) {
         if (run(controller)) {

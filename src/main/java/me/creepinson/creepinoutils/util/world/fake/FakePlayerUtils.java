@@ -2,7 +2,7 @@ package me.creepinson.creepinoutils.util.world.fake;
 
 import com.google.common.base.Predicates;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityXPOrb;
@@ -12,8 +12,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketUseEntity;
 import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
@@ -31,16 +31,16 @@ public class FakePlayerUtils {
      * @param direction The direction to use in.
      * @param toHold    The stack the player will be using.  Should probably come from an ItemStackHandler or similar.
      */
-    public static void setupFakePlayerForUse(FakeServerPlayer player, BlockPos pos, EnumFacing direction, ItemStack toHold, boolean sneaking) {
+    public static void setupFakePlayerForUse(FakeServerPlayer player, BlockPos pos, Direction direction, ItemStack toHold, boolean sneaking) {
         player.inventory.mainInventory.set(player.inventory.currentItem, toHold);
-        float pitch = direction == EnumFacing.UP ? -90 : direction == EnumFacing.DOWN ? 90 : 0;
-        float yaw = direction == EnumFacing.SOUTH ? 0 : direction == EnumFacing.WEST ? 90 : direction == EnumFacing.NORTH ? 180 : -90;
+        float pitch = direction == Direction.UP ? -90 : direction == Direction.DOWN ? 90 : 0;
+        float yaw = direction == Direction.SOUTH ? 0 : direction == Direction.WEST ? 90 : direction == Direction.NORTH ? 180 : -90;
         Vec3i sideVec = direction.getDirectionVec();
-        EnumFacing.Axis a = direction.getAxis();
-        EnumFacing.AxisDirection ad = direction.getAxisDirection();
-        double x = a == EnumFacing.Axis.X && ad == EnumFacing.AxisDirection.NEGATIVE ? -.5 : .5 + sideVec.getX() / 1.9D;
+        Direction.Axis a = direction.getAxis();
+        Direction.AxisDirection ad = direction.getAxisDirection();
+        double x = a == Direction.Axis.X && ad == Direction.AxisDirection.NEGATIVE ? -.5 : .5 + sideVec.getX() / 1.9D;
         double y = 0.5 + sideVec.getY() / 1.9D;
-        double z = a == EnumFacing.Axis.Z && ad == EnumFacing.AxisDirection.NEGATIVE ? -.5 : .5 + sideVec.getZ() / 1.9D;
+        double z = a == Direction.Axis.Z && ad == Direction.AxisDirection.NEGATIVE ? -.5 : .5 + sideVec.getZ() / 1.9D;
         player.setLocationAndAngles(pos.getX() + x, pos.getY() + y, pos.getZ() + z, yaw, pitch);
         if (!toHold.isEmpty())
             player.getAttributeMap().applyAttributeModifiers(toHold.getAttributeModifiers(EntityEquipmentSlot.MAINHAND));
@@ -73,7 +73,7 @@ public class FakePlayerUtils {
      * @param sourceState The state of the calling tile entity, so we don't click ourselves.
      * @return The remainder of whatever the player was holding.  This should be set back into the tile's stack handler or similar.
      */
-    public static ItemStack rightClickInDirection(FakeServerPlayer player, World world, BlockPos pos, EnumFacing side, IBlockState sourceState) {
+    public static ItemStack rightClickInDirection(FakeServerPlayer player, World world, BlockPos pos, Direction side, BlockState sourceState) {
         Vec3d base = new Vec3d(player.posX, player.posY, player.posZ);
         Vec3d look = player.getLookVec();
         Vec3d target = base.add(look.x * 5, look.y * 5, look.z * 5);
@@ -97,30 +97,30 @@ public class FakePlayerUtils {
                 return player.getHeldItemMainhand();
         } else if (toUse.typeOfHit == RayTraceResult.Type.BLOCK) {
             BlockPos blockpos = toUse.getBlockPos();
-            IBlockState state = world.getBlockState(blockpos);
+            BlockState state = world.getBlockState(blockpos);
             if (state != sourceState && state.getMaterial() != Material.AIR) {
                 float f = (float) (toUse.hitVec.x - pos.getX());
                 float f1 = (float) (toUse.hitVec.y - pos.getY());
                 float f2 = (float) (toUse.hitVec.z - pos.getZ());
-                EnumActionResult enumactionresult = player.interactionManager.processRightClickBlock(player, world, itemstack, EnumHand.MAIN_HAND, blockpos, toUse.sideHit, f, f1, f2);
+                EnumActionResult enumactionresult = player.interactionManager.processRightClickBlock(player, world, itemstack, Hand.MAIN_HAND, blockpos, toUse.sideHit, f, f1, f2);
                 if (enumactionresult == EnumActionResult.SUCCESS) return player.getHeldItemMainhand();
             }
         }
 
         if (toUse.typeOfHit == RayTraceResult.Type.MISS) {
             for (int i = 1; i <= 5; i++) {
-                IBlockState state = world.getBlockState(pos.offset(side, i));
+                BlockState state = world.getBlockState(pos.offset(side, i));
                 if (state != sourceState && state.getMaterial() != Material.AIR) {
-                    player.interactionManager.processRightClickBlock(player, world, itemstack, EnumHand.MAIN_HAND, pos.offset(side, i), toUse.sideHit, 0, 0, 0);
+                    player.interactionManager.processRightClickBlock(player, world, itemstack, Hand.MAIN_HAND, pos.offset(side, i), toUse.sideHit, 0, 0, 0);
                     return player.getHeldItemMainhand();
                 }
             }
         }
 
         if (itemstack.isEmpty() && toUse.typeOfHit == RayTraceResult.Type.MISS)
-            ForgeHooks.onEmptyClick(player, EnumHand.MAIN_HAND);
+            ForgeHooks.onEmptyClick(player, Hand.MAIN_HAND);
         if (!itemstack.isEmpty())
-            player.interactionManager.processRightClick(player, world, itemstack, EnumHand.MAIN_HAND);
+            player.interactionManager.processRightClick(player, world, itemstack, Hand.MAIN_HAND);
         return player.getHeldItemMainhand();
     }
 
@@ -134,7 +134,7 @@ public class FakePlayerUtils {
      * @param sourceState The state of the calling tile entity, so we don't click ourselves.
      * @return The remainder of whatever the player was holding.  This should be set back into the tile's stack handler or similar.
      */
-    public static ItemStack leftClickInDirection(FakeServerPlayer player, World world, BlockPos pos, EnumFacing side, IBlockState sourceState) {
+    public static ItemStack leftClickInDirection(FakeServerPlayer player, World world, BlockPos pos, Direction side, BlockState sourceState) {
         Vec3d base = new Vec3d(player.posX, player.posY, player.posZ);
         Vec3d look = player.getLookVec();
         Vec3d target = base.add(look.x * 5, look.y * 5, look.z * 5);
@@ -156,7 +156,7 @@ public class FakePlayerUtils {
                 return player.getHeldItemMainhand();
         } else if (toUse.typeOfHit == RayTraceResult.Type.BLOCK) {
             BlockPos blockpos = toUse.getBlockPos();
-            IBlockState state = world.getBlockState(blockpos);
+            BlockState state = world.getBlockState(blockpos);
             if (state != sourceState && state.getMaterial() != Material.AIR) {
                 player.interactionManager.onBlockClicked(blockpos, toUse.sideHit);
                 return player.getHeldItemMainhand();
@@ -165,7 +165,7 @@ public class FakePlayerUtils {
 
         if (toUse.typeOfHit == RayTraceResult.Type.MISS) {
             for (int i = 1; i <= 5; i++) {
-                IBlockState state = world.getBlockState(pos.offset(side, i));
+                BlockState state = world.getBlockState(pos.offset(side, i));
                 if (state != sourceState && state.getMaterial() != Material.AIR) {
                     player.interactionManager.onBlockClicked(pos.offset(side, i), side.getOpposite());
                     return player.getHeldItemMainhand();
@@ -254,11 +254,11 @@ public class FakePlayerUtils {
 
             if (player.getDistanceSq(entity) < d0) {
                 if (action == CPacketUseEntity.Action.INTERACT) {
-                    return player.interactOn(entity, EnumHand.MAIN_HAND) == EnumActionResult.SUCCESS;
+                    return player.interactOn(entity, Hand.MAIN_HAND) == EnumActionResult.SUCCESS;
                 } else if (action == CPacketUseEntity.Action.INTERACT_AT) {
-                    if (ForgeHooks.onInteractEntityAt(player, entity, result.hitVec, EnumHand.MAIN_HAND) != null)
+                    if (ForgeHooks.onInteractEntityAt(player, entity, result.hitVec, Hand.MAIN_HAND) != null)
                         return false;
-                    return entity.applyPlayerInteraction(player, result.hitVec, EnumHand.MAIN_HAND) == EnumActionResult.SUCCESS;
+                    return entity.applyPlayerInteraction(player, result.hitVec, Hand.MAIN_HAND) == EnumActionResult.SUCCESS;
                 } else if (action == CPacketUseEntity.Action.ATTACK) {
                     if (entity instanceof EntityItem || entity instanceof EntityXPOrb || entity instanceof EntityArrow || entity == player)
                         return false;

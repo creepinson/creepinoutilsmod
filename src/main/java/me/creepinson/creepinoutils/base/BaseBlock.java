@@ -1,63 +1,36 @@
 package me.creepinson.creepinoutils.base;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.util.ResourceLocation;
 
 public class BaseBlock extends Block {
-    public BaseBlock(Material mat, ResourceLocation name, CreativeTabs tab, float hardness, float resistance, int harvest,
-                     String tool) {
-        this(mat, name, tab);
-        setHardness(hardness);
-        setResistance(resistance);
-        setHarvestLevel(tool, harvest);
-    }
-
-    public BaseBlock(Material mat, ResourceLocation name, CreativeTabs tab, float hardness, float resistance) {
-        this(mat, name, tab);
-        setHardness(hardness);
-        setResistance(resistance);
-    }
-
-    public BaseBlock(Material mat, ResourceLocation name, CreativeTabs tab) {
-        this(mat, name);
-        setCreativeTab(tab);
-    }
-
-    public BaseBlock(Material mat, ResourceLocation name) {
-        super(mat);
+    public BaseBlock(ResourceLocation name, Properties properties) {
+        super(properties);
         setRegistryName(name);
-        setTranslationKey(name.getPath());
     }
 
-    public Item createItemBlock() {
-        Item item = new ItemBlock(this);
+    public BlockItem createItem(Item.Properties properties) {
+        BlockItem item = new BlockItem(this, properties);
         item.setRegistryName(this.getRegistryName());
         return item;
     }
 
-    public BaseBlock setCreativeTab(CreativeTabs tab) {
-        super.setCreativeTab(tab);
-        return this;
+
+    public BlockItem createItem(ItemGroup tab) {
+        return createItem(new Item.Properties().group(tab));
     }
 
-    public BaseBlock setSound(SoundType sound) {
-        this.setSoundType(sound);
-        return this;
+    public BlockItem createItem() {
+        return createItem(ItemGroup.MISC);
     }
 
     public static class Ore extends BaseBlock {
-        public Ore(ResourceLocation name, CreativeTabs tab, float hardness, float resistance, int harvest, String tool) {
-            super(Material.ROCK, name, tab, hardness, resistance, harvest, tool);
+        public Ore(ResourceLocation name) {
+            super(name, Block.Properties.create(Material.ROCK));
         }
-
-        public Ore(ResourceLocation name, CreativeTabs tab, float hardness, float resistance) {
-            super(Material.ROCK, name, tab, hardness, resistance, 1, "pickaxe");
-        }
-
     }
 }

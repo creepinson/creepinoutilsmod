@@ -1,12 +1,11 @@
 package me.creepinson.creepinoutils.util;
 
 import me.creepinson.creepinoutils.api.util.math.Vector;
-import net.minecraft.block.BlockAir;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityFallingBlock;
-import net.minecraft.init.Blocks;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.FallingBlockEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -29,16 +28,16 @@ public class CreepinoUtils {
         entity.fallDistance = 0f;
     }
 
-    public static EnumFacing getEntityDirection(EntityLivingBase entityLiving) {
-        int facing = MathHelper.floor(entityLiving.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
+    public static Direction getEntityDirection(LivingEntity livingEntity) {
+        int facing = MathHelper.floor(livingEntity.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
         // TODO: use switch statement
         if (facing == 0)
-            return EnumFacing.NORTH;
+            return Direction.NORTH;
         else if (facing == 1)
-            return EnumFacing.EAST;
+            return Direction.EAST;
         else if (facing == 2)
-            return EnumFacing.SOUTH;
-        else return EnumFacing.WEST;
+            return Direction.SOUTH;
+        else return Direction.WEST;
     }
 
     public static void moveEntityByRotation(Entity entity) {
@@ -50,24 +49,24 @@ public class CreepinoUtils {
 
     static double AXIS_MIN_MIN = 0, AXIS_MIN_MAX = 0.1, AXIS_MAX_MIN = 0.9, AXIS_MAX_MAX = 1, AXIS_FLOOR_MIN = -0.01, AXIS_FLOOR_MAX = 0;
 
-    public static AxisAlignedBB getCollisionBoxPart(int x, int y, int z, EnumFacing direction) {
-        if (direction == EnumFacing.EAST)
+    public static AxisAlignedBB getCollisionBoxPart(int x, int y, int z, Direction direction) {
+        if (direction == Direction.EAST)
             return new AxisAlignedBB(x + AXIS_MAX_MIN, y, z, x + AXIS_MAX_MAX, y + 1, z + 1);
-        else if (direction == EnumFacing.WEST)
+        else if (direction == Direction.WEST)
             return new AxisAlignedBB(x + AXIS_MIN_MIN, y, z, x + AXIS_MIN_MAX, y + 1, z + 1);
-        else if (direction == EnumFacing.SOUTH)
+        else if (direction == Direction.SOUTH)
             return new AxisAlignedBB(x, y, z + AXIS_MAX_MIN, x + 1, y + 1, z + AXIS_MAX_MAX);
-        else if (direction == EnumFacing.NORTH)
+        else if (direction == Direction.NORTH)
             return new AxisAlignedBB(x, y, z + AXIS_MIN_MIN, x + 1, y + 1, z + AXIS_MIN_MAX);
-        else if (direction == EnumFacing.UP)
+        else if (direction == Direction.UP)
             return new AxisAlignedBB(x, y + AXIS_MAX_MIN, z, x + 1, y + AXIS_MAX_MAX, z + 1);
-        else if (direction == EnumFacing.DOWN)
+        else if (direction == Direction.DOWN)
             return new AxisAlignedBB(x, y + AXIS_MIN_MIN, z, x + 1, y + AXIS_MIN_MAX, z + 1);
 
         return null;
     }
 
-    public static AxisAlignedBB getCollisionBoxPart(Vector pos, EnumFacing direction) {
+    public static AxisAlignedBB getCollisionBoxPart(Vector pos, Direction direction) {
         return getCollisionBoxPart(pos.intX(), pos.intY(), pos.intZ(), direction);
     }
 
@@ -80,7 +79,7 @@ public class CreepinoUtils {
         return new AxisAlignedBB(x, y + AXIS_FLOOR_MIN, z, x + 1, y + AXIS_FLOOR_MAX, z + 1);
     }
 
-    public static BlockPos getCoordinatesFromSide(Vector pos, EnumFacing s) {
+    public static BlockPos getCoordinatesFromSide(Vector pos, Direction s) {
         return getCoordinatesFromSide(pos.intX(), pos.intY(), pos.intZ(), s.ordinal());
     }
 
@@ -101,25 +100,25 @@ public class CreepinoUtils {
         return new BlockPos(x, y, z);
     }
 
-    public static EnumFacing getDirectionFromSide(Vector pos, int s) {
+    public static Direction getDirectionFromSide(Vector pos, int s) {
         return getDirectionFromSide(pos.intX(), pos.intY(), pos.intZ(), s);
     }
 
-    public static EnumFacing getDirectionFromSide(int x, int y, int z, int s) {
+    public static Direction getDirectionFromSide(int x, int y, int z, int s) {
         if (s == 0)
-            return EnumFacing.DOWN;
+            return Direction.DOWN;
         else if (s == 1)
-            return EnumFacing.UP;
+            return Direction.UP;
         else if (s == 2)
-            return EnumFacing.NORTH;
+            return Direction.NORTH;
         else if (s == 3)
-            return EnumFacing.SOUTH;
+            return Direction.SOUTH;
         else if (s == 4)
-            return EnumFacing.WEST;
+            return Direction.WEST;
         else if (s == 5)
-            return EnumFacing.EAST;
+            return Direction.EAST;
 
-        return EnumFacing.NORTH;
+        return Direction.NORTH;
     }
 
     public static <E> boolean containsInstance(Collection<E> list, Class<? extends E> clazz) {
@@ -142,11 +141,11 @@ public class CreepinoUtils {
             float x = (float) -0.5 + (float) (Math.random() * ((0.5 - -0.5) + 1));
             float y = (float) -1 + (float) (Math.random() * ((1 - -1) + 1));
             float z = (float) -0.5 + (float) (Math.random() * ((0.5 - -0.5) + 1));
-            EntityFallingBlock fallingBlock = new EntityFallingBlock(world, block.getX(), block.getY(), block.getZ(),
+            FallingBlockEntity fallingBlock = new FallingBlockEntity(world, block.getX(), block.getY(), block.getZ(),
                     world.getBlockState(block));
-            fallingBlock.setDropItemsWhenDead(false);
+            fallingBlock.shouldDropItem = false;
             fallingBlock.fallTime = 4;
-            world.spawnEntity(fallingBlock);
+            world.addEntity(fallingBlock);
             fallingBlock.setVelocity(x, y, z);
             world.setBlockState(block, Blocks.AIR.getDefaultState());
         }
@@ -156,7 +155,7 @@ public class CreepinoUtils {
         BlockPos blockpos;
 
         for (blockpos = new BlockPos(pos.getX(), world.getSeaLevel(),
-                pos.getZ()); !(world.getBlockState(blockpos.up()).getBlock() instanceof BlockAir); blockpos = blockpos
+                pos.getZ()); !(world.getBlockState(blockpos.up()).getBlock().getBlock() == Blocks.AIR); blockpos = blockpos
                 .up()) {
         }
         return blockpos;

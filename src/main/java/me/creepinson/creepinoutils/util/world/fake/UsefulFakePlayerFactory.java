@@ -2,8 +2,8 @@ package me.creepinson.creepinoutils.util.world.fake;
 
 import com.google.common.collect.Maps;
 import com.mojang.authlib.GameProfile;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.player.PlayerEntityMP;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -30,9 +30,9 @@ public class UsefulFakePlayerFactory {
         PLAYERS.entrySet().removeIf(entry -> entry.getValue().world == e.getWorld());
     }
 
-    public static FakeServerPlayer copyFrom(EntityPlayerMP original) {
+    public static FakeServerPlayer copyFrom(PlayerEntityMP original) {
         FakeServerPlayer fake = UsefulFakePlayerFactory.get(original.getServerWorld(), original.getGameProfile());
-        NBTTagCompound nbt = new NBTTagCompound();
+        CompoundNBT nbt = new CompoundNBT();
         original.writeEntityToNBT(nbt);
         // Copy data from original player
         fake.readEntityFromNBT(nbt);

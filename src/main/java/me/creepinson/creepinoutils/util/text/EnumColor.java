@@ -1,8 +1,8 @@
 package me.creepinson.creepinoutils.util.text;
 
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 
 /**
@@ -82,7 +82,7 @@ public enum EnumColor {// TODO: Maybe rename some of these or their lang keys
      * @return the color's name and color prefix
      */
     public ITextComponent getColoredName() {
-        return new TextComponentString(englishName).setStyle(new Style().setColor(textFormatting));
+        return new StringTextComponent(englishName).setStyle(new Style().setColor(textFormatting));
     }
 
     /**

@@ -3,7 +3,7 @@ package me.creepinson.creepinoutils.util.world.fake;
 import com.mojang.authlib.GameProfile;
 import me.creepinson.creepinoutils.util.Gamemode;
 import net.minecraft.entity.passive.AbstractHorse;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntityMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -24,7 +24,7 @@ import java.util.UUID;
  * This is a multiplayer fake player class for use in server-side mods.
  * Some credit goes to the forge team.
  */
-public class FakeServerPlayer extends EntityPlayerMP implements IFakePlayer {
+public class FakeServerPlayer extends PlayerEntityMP implements IFakePlayer {
     public FakeServerPlayer(WorldServer world) {
         this(world, new GameProfile(UUID.randomUUID(), RandomStringUtils.random(6)));
     }

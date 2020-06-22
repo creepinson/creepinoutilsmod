@@ -1,20 +1,25 @@
 package me.creepinson.creepinoutils.block;
 
+import me.creepinson.creepinoutils.CreepinoUtilsMod;
 import me.creepinson.creepinoutils.base.BaseBlockWithTile;
 import me.creepinson.creepinoutils.base.BaseTile;
 import me.creepinson.creepinoutils.tile.TileEntityAnimationTest;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -22,39 +27,41 @@ import javax.annotation.Nullable;
  **/
 public class BlockAnimationTest extends BaseBlockWithTile {
 
-    public BlockAnimationTest(Material mat, ResourceLocation name, CreativeTabs tab) {
-        super(mat, name, tab);
+    public BlockAnimationTest(String name, ItemGroup tab) {
+        super(new ResourceLocation(CreepinoUtilsMod.getInstance().modId, name), Block.Properties.create(Material.ROCK).hardnessAndResistance(1));
     }
 
+
+    @Nonnull
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand,
-                                    EnumFacing facing, float hitX, float hitY, float hitZ) {
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         if (!world.isRemote) {
             TileEntity te = world.getTileEntity(pos);
             if (te instanceof TileEntityAnimationTest) {
                 TileEntityAnimationTest tile = (TileEntityAnimationTest) te;
-                if (player.isSneaking() && player.getHeldItem(hand).isEmpty()) {
+                if (player.isCrouching() && player.getHeldItem(hand).isEmpty()) {
                     tile.setConnectable(!tile.isConnectable());
                 } else {
                     tile.onClick();
                 }
             }
         }
-        return true;
+        return ActionResultType.SUCCESS;
     }
 
     @Override
-    public void harvestBlock(World worldIn, EntityPlayer player, BlockPos pos, IBlockState state,
+    public void harvestBlock(World world, PlayerEntity player, BlockPos pos, BlockState state,
                              @Nullable TileEntity te, ItemStack stack) {
-        super.harvestBlock(worldIn, player, pos, state, te, stack);
+        super.harvestBlock(world, player, pos, state, te, stack);
         if (te != null) {
             ((BaseTile) te).refresh();
         }
     }
-
+/*
     @Nullable
     @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta) {
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
         return new TileEntityAnimationTest();
-    }
+    }*/
+
 }
