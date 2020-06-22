@@ -1,18 +1,18 @@
 package me.creepinson.creepinoutils.base;
 
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.Blocks;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 
-public class CreativeTab extends CreativeTabs {
+public class BaseItemGroup extends ItemGroup {
     ItemStack item;
 
-    public CreativeTab(String name, ItemStack item) {
+    public BaseItemGroup(String name, ItemStack item) {
         super(name);
         this.item = item;
     }
 
-    public CreativeTab(String name) {
+    public BaseItemGroup(String name) {
         super(name);
     }
 
@@ -26,7 +26,7 @@ public class CreativeTab extends CreativeTabs {
         return item == null ? new ItemStack(Blocks.FIRE) : item;
     }
 
-    public CreativeTab setItem(ItemStack stack) {
+    public BaseItemGroup setItem(ItemStack stack) {
         item = stack;
         return this;
     }
