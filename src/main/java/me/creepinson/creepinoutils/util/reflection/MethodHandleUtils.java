@@ -1,7 +1,4 @@
 package me.creepinson.creepinoutils.util.reflection;
-
-import net.minecraftforge.fml.relauncher.ReflectionHelper.UnableToFindMethodException;
-
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
@@ -35,7 +32,7 @@ public class MethodHandleUtils {
             }
         }
 
-        throw new UnableToFindMethodException(methodNames, failed);
+        throw new UnableToFindMethodHandleException(methodNames, failed);
     }
 
     public static class UnableToFindMethodHandleException extends RuntimeException {

@@ -1,19 +1,21 @@
 package me.creepinson.creepinoutils.util;
 
-import me.creepinson.creepinoutils.api.util.math.Vector;
+import dev.throwouterror.util.math.Tensor;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.INBTSerializable;
 
 public class BlockData implements INBTSerializable<CompoundNBT> {
     private BlockState state;
-    private Vector pos;
+    private Tensor pos;
     private World world;
 
-    public BlockData(World world, Vector pos, BlockState state) {
+    public BlockData(World world, Tensor pos, BlockState state) {
         this(pos, state);
         this.world = world;
     }
@@ -22,7 +24,7 @@ public class BlockData implements INBTSerializable<CompoundNBT> {
         setWorld(world);
     }
 
-    public BlockData(Vector pos, BlockState state) {
+    public BlockData(Tensor pos, BlockState state) {
         this.pos = pos;
         this.state = state;
     }
@@ -35,11 +37,11 @@ public class BlockData implements INBTSerializable<CompoundNBT> {
         this.state = state;
     }
 
-    public Vector getPosition() {
+    public Tensor getPosition() {
         return pos;
     }
 
-    public void setPosition(Vector pos) {
+    public void setPosition(Tensor pos) {
         this.pos = pos;
     }
 
@@ -61,17 +63,14 @@ public class BlockData implements INBTSerializable<CompoundNBT> {
     @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = new CompoundNBT();
-        nbt.putString("block", state.getBlock().getRegistryName().toString());
-        nbt.putInt("meta", state.getBlock().;
-        nbt.setTag("position", VectorUtils.toNBT(pos));
+        nbt.put("block", NBTUtil.writeBlockState(state));
+        nbt.put("position", TensorUtils.toNBT(pos));
         return nbt;
     }
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
-        Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(nbt.getString("block")));
-        this.state = block.getStateFromMeta(nbt.getInteger("meta"));
-        CompoundNBT posTag = nbt.getCompoundTag("position");
-        this.pos = VectorUtils.fromNBT(posTag);
+        this.state = NBTUtil.readBlockState(nbt.getCompound("block"));
+        this.pos = TensorUtils.fromNBT(nbt.getCompound("position"));
     }
 }

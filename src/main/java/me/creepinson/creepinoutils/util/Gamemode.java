@@ -1,7 +1,7 @@
 package me.creepinson.creepinoutils.util;
 
 /**
- * @author Creepinson http://gitlab.com/creepinson
+ * @author Theo Paris https://theoparis.com
  **/
 public enum Gamemode {
     CREATIVE, SURVIVAL;

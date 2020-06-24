@@ -1,16 +1,32 @@
 package me.creepinson.creepinoutils.serializer;
 
-import com.google.gson.annotations.Expose;
-import me.creepinson.creepinoutils.api.util.math.shape.Cuboid;
-import net.minecraft.block.*;
-
-import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
+import com.google.gson.annotations.Expose;
+
+import dev.throwouterror.util.math.shape.Cuboid;
+import net.minecraft.block.AirBlock;
+import net.minecraft.block.Block;
+import net.minecraft.block.ChestBlock;
+import net.minecraft.block.ChorusPlantBlock;
+import net.minecraft.block.DirectionalBlock;
+import net.minecraft.block.DoorBlock;
+import net.minecraft.block.FenceBlock;
+import net.minecraft.block.FenceGateBlock;
+import net.minecraft.block.HorizontalBlock;
+import net.minecraft.block.PaneBlock;
+import net.minecraft.block.RedstoneWireBlock;
+import net.minecraft.block.ShulkerBoxBlock;
+import net.minecraft.block.StairsBlock;
+import net.minecraft.block.VineBlock;
+import net.minecraft.block.WallBlock;
+
 /**
- * @author Creepinson http://gitlab.com/creepinson
+ * @author Theo Paris https://theoparis.com
  **/
 public class BlockInfoHolder {
     private static final String BLOCK_HARDNESS_FIELD = "field_149782_v"; // 1.12_stable39;

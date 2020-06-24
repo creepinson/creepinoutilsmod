@@ -1,9 +1,9 @@
 package me.creepinson.creepinoutils.util.animation;
 
 
-import me.creepinson.creepinoutils.api.util.Pair;
-import me.creepinson.creepinoutils.api.util.PairList;
-import me.creepinson.creepinoutils.api.util.math.interpolation.HermiteInterpolation;
+import dev.throwouterror.util.Pair;
+import dev.throwouterror.util.PairList;
+import dev.throwouterror.util.math.interpolation.HermiteInterpolation;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;

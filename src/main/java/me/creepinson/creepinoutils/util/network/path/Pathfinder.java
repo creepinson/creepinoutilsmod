@@ -1,6 +1,6 @@
 package me.creepinson.creepinoutils.util.network.path;
 
-import me.creepinson.creepinoutils.api.util.math.Vector;
+import dev.throwouterror.util.math.Tensor;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -20,12 +20,12 @@ public class Pathfinder {
     /**
      * A list of nodes that the pathfinder already went through.
      */
-    public Set<Vector> closedSet;
+    public Set<Tensor> closedSet;
 
     /**
      * The resulted path found by the pathfinder. Could be null if no path was found.
      */
-    public Set<Vector> results;
+    public Set<Tensor> results;
 
     public Pathfinder(IPathCallBack callBack) {
         this.callBackCheck = callBack;
@@ -35,14 +35,14 @@ public class Pathfinder {
     /**
      * @return True on success finding, false on failure.
      */
-    public boolean findNodes(Vector currentNode) {
+    public boolean findNodes(Tensor currentNode) {
         this.closedSet.add(currentNode);
 
         if (this.callBackCheck.onSearch(this, currentNode)) {
             return false;
         }
 
-        for (Vector node : this.callBackCheck.getConnectedNodes(this, currentNode)) {
+        for (Tensor node : this.callBackCheck.getConnectedNodes(this, currentNode)) {
             if (!this.closedSet.contains(node)) {
                 if (this.findNodes(node)) {
                     return true;
@@ -56,14 +56,14 @@ public class Pathfinder {
     /**
      * Called to execute the pathfinding operation.
      */
-    public Pathfinder init(Vector startNode) {
+    public Pathfinder init(Tensor startNode) {
         this.findNodes(startNode);
         return this;
     }
 
     public Pathfinder reset() {
-        this.closedSet = new HashSet<Vector>();
-        this.results = new HashSet<Vector>();
+        this.closedSet = new HashSet<Tensor>();
+        this.results = new HashSet<Tensor>();
         return this;
     }
 }

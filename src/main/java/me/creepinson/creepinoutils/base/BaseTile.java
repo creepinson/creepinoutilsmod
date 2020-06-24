@@ -1,16 +1,21 @@
 package me.creepinson.creepinoutils.base;
 
-import me.creepinson.creepinoutils.api.util.data.game.ITile;
-import me.creepinson.creepinoutils.api.util.math.Vector;
-import me.creepinson.creepinoutils.util.VectorUtils;
+import dev.throwouterror.util.ISerializable;
+import dev.throwouterror.util.data.game.ITile;
+import dev.throwouterror.util.math.Tensor;
+import me.creepinson.creepinoutils.util.TensorUtils;
 import me.creepinson.creepinoutils.util.network.IBaseTile;
 import me.creepinson.creepinoutils.util.upgrade.Upgrade;
 import me.creepinson.creepinoutils.util.upgrade.UpgradeInfo;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.IWorld;
 
 import java.util.ArrayList;
@@ -20,8 +25,8 @@ import java.util.Set;
 
 /**
  * @author Theo Paris (https://theoparis.com)
- */
-public abstract class BaseTile extends TileEntity implements IBaseTile, ITile {
+ */ 
+public abstract class BaseTile extends TileEntity implements IBaseTile, ISerializable<Block> {
     private boolean active;
     private boolean connectable;
     protected Set<BlockPos> connections = new HashSet<>();
@@ -71,8 +76,14 @@ public abstract class BaseTile extends TileEntity implements IBaseTile, ITile {
     }
 
     @Override
-    public String getName() {
+    public String toString() {
         return world != null ? world.getBlockState(pos).getBlock().getRegistryName().toString() : "minecraft:unknown";
+    }
+
+    
+    @Override
+    public Block fromString(String s) {
+        return Registry.BLOCK.getOrDefault(new ResourceLocation(s != null && !s.isEmpty() ? s : "minecraft:unknown"));
     }
 
     @Override
@@ -118,8 +129,8 @@ public abstract class BaseTile extends TileEntity implements IBaseTile, ITile {
         return isConnectable() && isActive() && connections.contains(pos.offset(f));
     }
 
-    public Vector getPosition() {
-        return VectorUtils.fromBlockPos(getPos());
+    public Tensor getPosition() {
+        return TensorUtils.fromBlockPos(getPos());
     }
 
     @Override
@@ -131,7 +142,7 @@ public abstract class BaseTile extends TileEntity implements IBaseTile, ITile {
         return connections;
     }
 
-    public void onNeighborChange(Vector Vector) {
+    public void onNeighborChange(Tensor pos) {
         refresh();
         updateConnectedBlocks();
     }

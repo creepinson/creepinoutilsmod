@@ -1,7 +1,6 @@
 package me.creepinson.creepinoutils.util.network;
 
-import me.creepinson.creepinoutils.api.util.math.Vector;
-import me.creepinson.creepinoutils.util.VectorUtils;
+import me.creepinson.creepinoutils.util.TensorUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -9,12 +8,14 @@ import net.minecraft.world.World;
 import java.util.HashSet;
 import java.util.Set;
 
+import dev.throwouterror.util.math.Tensor;
+
 /**
- * @author Creepinson http://gitlab.com/creepinson
+ * @author Theo Paris https://theoparis.com
  **/
 public class BaseNetwork<T> implements INetwork<T> {
     protected World world;
-    protected Set<Vector> connections;
+    protected Set<Tensor> connections;
 
     public BaseNetwork(World w) {
         this.world = w;
@@ -32,8 +33,8 @@ public class BaseNetwork<T> implements INetwork<T> {
 
     @Override
     public void refresh() {
-        for (Vector v : connections) {
-            TileEntity conn = world.getTileEntity(VectorUtils.toBlockPos(v));
+        for (Tensor v : connections) {
+            TileEntity conn = world.getTileEntity(TensorUtils.toBlockPos(v));
             if (conn instanceof IBaseTile) {
                 ((IBaseTile) conn).refresh();
             }
@@ -41,7 +42,7 @@ public class BaseNetwork<T> implements INetwork<T> {
     }
 
     @Override
-    public Set<Vector> getConnections() {
+    public Set<Tensor> getConnections() {
         return this.connections;
     }
 

@@ -6,7 +6,7 @@ import java.lang.reflect.*;
 import java.util.Objects;
 
 /**
- * @author Creepinson http://gitlab.com/creepinson
+ * @author Theo Paris https://theoparis.com
  **/
 public class ReflectionUtils {
     private ReflectionUtils() {

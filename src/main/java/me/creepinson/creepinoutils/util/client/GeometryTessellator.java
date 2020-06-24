@@ -6,6 +6,8 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.BlockPos;
 import org.lwjgl.opengl.GL11;
 
+import me.creepinson.creepinoutils.util.ReflectionUtils;
+
 public class GeometryTessellator extends Tessellator {
     private static GeometryTessellator instance = null;
 
@@ -29,7 +31,7 @@ public class GeometryTessellator extends Tessellator {
     }
 
     public void setTranslation(final double x, final double y, final double z) {
-        getBuffer().setTranslation(x, y, z);
+        getBuffer().pos(x, y, z);
     }
 
     public void beginQuads() {
@@ -69,12 +71,14 @@ public class GeometryTessellator extends Tessellator {
         drawCuboid(buffer, pos, pos, sides, argb);
     }
 
-    public static void drawCuboid(final BufferBuilder buffer, final BlockPos begin, final BlockPos end, final int sides, final int argb) {
+    public static void drawCuboid(final BufferBuilder buffer, final BlockPos begin, final BlockPos end, final int sides,
+            final int argb) {
         drawCuboid(buffer, begin, end, sides, argb, GeometryTessellator.deltaS);
     }
 
-    private static void drawCuboid(final BufferBuilder buffer, final BlockPos begin, final BlockPos end, final int sides, final int argb, final double delta) {
-        if (buffer.getDrawMode() == -1 || sides == 0) {
+    private static void drawCuboid(final BufferBuilder buffer, final BlockPos begin, final BlockPos end,
+            final int sides, final int argb, final double delta) {
+        if (getDrawMode(buffer) == -1 || sides == 0) {
             return;
         }
 
@@ -85,7 +89,7 @@ public class GeometryTessellator extends Tessellator {
         final double y1 = end.getY() + 1 + delta;
         final double z1 = end.getZ() + 1 + delta;
 
-        switch (buffer.getDrawMode()) {
+        switch (getDrawMode(buffer)) {
             case GL11.GL_QUADS:
                 drawQuads(buffer, x0, y0, z0, x1, y1, z1, sides, argb);
                 break;
@@ -99,7 +103,12 @@ public class GeometryTessellator extends Tessellator {
         }
     }
 
-    public static void drawQuads(final BufferBuilder buffer, final double x0, final double y0, final double z0, final double x1, final double y1, final double z1, final int sides, final int argb) {
+    public static int getDrawMode(BufferBuilder buffer) {
+        return (int) ReflectionUtils.getField("drawMode", buffer);
+    }
+
+    public static void drawQuads(final BufferBuilder buffer, final double x0, final double y0, final double z0,
+            final double x1, final double y1, final double z1, final int sides, final int argb) {
         final int a = (argb >>> 24) & 0xFF;
         final int r = (argb >>> 16) & 0xFF;
         final int g = (argb >>> 8) & 0xFF;
@@ -108,7 +117,9 @@ public class GeometryTessellator extends Tessellator {
         drawQuads(buffer, x0, y0, z0, x1, y1, z1, sides, a, r, g, b);
     }
 
-    public static void drawQuads(final BufferBuilder buffer, final double x0, final double y0, final double z0, final double x1, final double y1, final double z1, final int sides, final int a, final int r, final int g, final int b) {
+    public static void drawQuads(final BufferBuilder buffer, final double x0, final double y0, final double z0,
+            final double x1, final double y1, final double z1, final int sides, final int a, final int r, final int g,
+            final int b) {
         if ((sides & GeometryMasks.Quad.DOWN) != 0) {
             buffer.pos(x1, y0, z0).color(r, g, b, a).endVertex();
             buffer.pos(x1, y0, z1).color(r, g, b, a).endVertex();
@@ -152,7 +163,8 @@ public class GeometryTessellator extends Tessellator {
         }
     }
 
-    public static void drawLines(final BufferBuilder buffer, final double x0, final double y0, final double z0, final double x1, final double y1, final double z1, final int sides, final int argb) {
+    public static void drawLines(final BufferBuilder buffer, final double x0, final double y0, final double z0,
+            final double x1, final double y1, final double z1, final int sides, final int argb) {
         final int a = (argb >>> 24) & 0xFF;
         final int r = (argb >>> 16) & 0xFF;
         final int g = (argb >>> 8) & 0xFF;
@@ -161,7 +173,9 @@ public class GeometryTessellator extends Tessellator {
         drawLines(buffer, x0, y0, z0, x1, y1, z1, sides, a, r, g, b);
     }
 
-    public static void drawLines(final BufferBuilder buffer, final double x0, final double y0, final double z0, final double x1, final double y1, final double z1, final int sides, final int a, final int r, final int g, final int b) {
+    public static void drawLines(final BufferBuilder buffer, final double x0, final double y0, final double z0,
+            final double x1, final double y1, final double z1, final int sides, final int a, final int r, final int g,
+            final int b) {
         if ((sides & GeometryMasks.Line.DOWN_WEST) != 0) {
             buffer.pos(x0, y0, z0).color(r, g, b, a).endVertex();
             buffer.pos(x0, y0, z1).color(r, g, b, a).endVertex();

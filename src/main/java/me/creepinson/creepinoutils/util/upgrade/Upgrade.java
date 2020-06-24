@@ -40,12 +40,12 @@ public class Upgrade {
     public static Map<Upgrade, Integer> buildMap(@Nullable CompoundNBT nbtTags) {
         Map<Upgrade, Integer> upgrades = new HashMap<>();
         if (nbtTags != null) {
-            if (nbtTags.hasKey("upgrades")) {
-                ListNBT list = nbtTags.getTagList("upgrades", NBT.TAG_COMPOUND);
-                for (int tagCount = 0; tagCount < list.tagCount(); tagCount++) {
-                    CompoundNBT compound = list.getCompoundTagAt(tagCount);
-                    Upgrade upgrade = Upgrade.getUpgradesArray()[compound.getInteger("type")];
-                    upgrades.put(upgrade, compound.getInteger("amount"));
+            if (nbtTags.contains("upgrades")) {
+                ListNBT list = nbtTags.getList("upgrades", NBT.TAG_COMPOUND);
+                for (int size = 0; size < list.size(); size++) {
+                    CompoundNBT compound = list.getCompound(size);
+                    Upgrade upgrade = Upgrade.getUpgradesArray()[compound.getInt("type")];
+                    upgrades.put(upgrade, compound.getInt("amount"));
                 }
             }
         }
@@ -59,15 +59,15 @@ public class Upgrade {
     public static void saveMap(Map<Upgrade, Integer> upgrades, CompoundNBT nbtTags) {
         ListNBT list = new ListNBT();
         for (Entry<Upgrade, Integer> entry : upgrades.entrySet()) {
-            list.appendTag(getTagFor(entry.getKey(), entry.getValue()));
+            list.add(getTagFor(entry.getKey(), entry.getValue()));
         }
-        nbtTags.setTag("upgrades", list);
+        nbtTags.put("upgrades", list);
     }
 
     public static CompoundNBT getTagFor(Upgrade upgrade, int amount) {
         CompoundNBT compound = new CompoundNBT();
-        compound.setString("type", upgrade.name);
-        compound.setInteger("amount", amount);
+        compound.putString("type", upgrade.name);
+        compound.putInt("amount", amount);
         return compound;
     }
 

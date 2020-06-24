@@ -1,7 +1,7 @@
 package me.creepinson.creepinoutils.util.network;
 
 /**
- * @author Creepinson http://gitlab.com/creepinson
+ * @author Theo Paris https://theoparis.com
  **/
 public interface INetworkTile<T> extends IBaseTile {
     INetwork<T> getNetwork();

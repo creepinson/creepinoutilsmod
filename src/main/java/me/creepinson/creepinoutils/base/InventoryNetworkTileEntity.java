@@ -13,7 +13,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * @author Creepinson http://gitlab.com/creepinson
+ * @author Theo Paris https://theoparis.com
  * A base tile entity that can be used to make your own tile entity have an inventory and to be able connect with other blocks.
  **/
 

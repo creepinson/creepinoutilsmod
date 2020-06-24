@@ -1,12 +1,13 @@
 package me.creepinson.creepinoutils.util.animation;
 
-import me.creepinson.creepinoutils.api.util.Pair;
-import me.creepinson.creepinoutils.api.util.PairList;
-import me.creepinson.creepinoutils.api.util.math.Rotation;
-import me.creepinson.creepinoutils.api.util.math.Vector;
 import net.minecraft.nbt.CompoundNBT;
 
 import java.util.Set;
+
+import dev.throwouterror.util.Pair;
+import dev.throwouterror.util.PairList;
+import dev.throwouterror.util.math.Rotation;
+import dev.throwouterror.util.math.Tensor;
 
 public class AnimationState {
 
@@ -45,12 +46,12 @@ public class AnimationState {
 
     }
 
-    public Vector getRotation() {
-        return new Vector((float) get(AnimationKey.rotX), (float) get(AnimationKey.rotY), (float) get(AnimationKey.rotZ));
+    public Tensor getRotation() {
+        return new Tensor((float) get(AnimationKey.rotX), (float) get(AnimationKey.rotY), (float) get(AnimationKey.rotZ));
     }
 
-    public Vector getOffset() {
-        return new Vector((float) get(AnimationKey.offX), (float) get(AnimationKey.offY), (float) get(AnimationKey.offZ));
+    public Tensor getOffset() {
+        return new Tensor((float) get(AnimationKey.offX), (float) get(AnimationKey.offY), (float) get(AnimationKey.offZ));
     }
 
     public void clear() {

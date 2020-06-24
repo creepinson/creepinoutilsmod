@@ -1,10 +1,10 @@
 package me.creepinson.creepinoutils.util.animation;
 
-import me.creepinson.creepinoutils.api.util.Pair;
-import me.creepinson.creepinoutils.api.util.PairList;
-import me.creepinson.creepinoutils.api.util.math.Facing.Axis;
-import me.creepinson.creepinoutils.api.util.math.Rotation;
-import me.creepinson.creepinoutils.api.util.math.Transformation;
+import dev.throwouterror.util.Pair;
+import dev.throwouterror.util.PairList;
+import dev.throwouterror.util.math.Facing.Axis;
+import dev.throwouterror.util.math.Rotation;
+import dev.throwouterror.util.math.Transformation;
 
 import java.util.Collection;
 import java.util.HashMap;

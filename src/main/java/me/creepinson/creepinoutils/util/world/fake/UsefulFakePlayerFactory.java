@@ -2,12 +2,13 @@ package me.creepinson.creepinoutils.util.world.fake;
 
 import com.google.common.collect.Maps;
 import com.mojang.authlib.GameProfile;
-import net.minecraft.entity.player.PlayerEntityMP;
+
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.Map;
 
@@ -30,12 +31,11 @@ public class UsefulFakePlayerFactory {
         PLAYERS.entrySet().removeIf(entry -> entry.getValue().world == e.getWorld());
     }
 
-    public static FakeServerPlayer copyFrom(PlayerEntityMP original) {
+    public static FakeServerPlayer copyFrom(ServerPlayerEntity original) {
         FakeServerPlayer fake = UsefulFakePlayerFactory.get(original.getServerWorld(), original.getGameProfile());
-        CompoundNBT nbt = new CompoundNBT();
-        original.writeEntityToNBT(nbt);
+        CompoundNBT nbt = original.serializeNBT();
         // Copy data from original player
-        fake.readEntityFromNBT(nbt);
+        fake.deserializeNBT(nbt);
         return fake;
     }
 
@@ -45,7 +45,7 @@ public class UsefulFakePlayerFactory {
      * Mods should either hold weak references to the return value, or listen for a
      * WorldEvent.Unload and kill all references to prevent worlds staying in memory.
      */
-    public static FakeServerPlayer get(WorldServer world, GameProfile username) {
+    public static FakeServerPlayer get(ServerWorld world, GameProfile username) {
         if (!PLAYERS.containsKey(username)) {
             FakeServerPlayer fakePlayer = new FakeServerPlayer(world, username);
             PLAYERS.put(username, fakePlayer);
@@ -54,7 +54,7 @@ public class UsefulFakePlayerFactory {
         return PLAYERS.get(username);
     }
 
-    public static void unloadWorld(WorldServer world) {
+    public static void unloadWorld(ServerWorld world) {
         PLAYERS.entrySet().removeIf(entry -> entry.getValue().world == world);
     }
 }

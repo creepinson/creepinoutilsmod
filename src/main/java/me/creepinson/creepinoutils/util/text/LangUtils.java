@@ -1,9 +1,9 @@
 package me.creepinson.creepinoutils.util.text;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.IllegalFormatException;
@@ -26,9 +26,9 @@ public final class LangUtils {
         return LangUtils.localize("gui." + (b ? "output" : "input"));
     }
 
-    public static String localizeFluidStack(FluidStack fluidStack) {
-        return fluidStack == null ? null : fluidStack.getFluid().getLocalizedName(fluidStack);
-    }
+/*     public static String localizeFluidStack(FluidStack fluidStack) {
+        return fluidStack == null ? null : fluidStack.getFluid().getloc(fluidStack);
+    } */
 
     /**
      * Localizes the defined string.
@@ -37,11 +37,11 @@ public final class LangUtils {
      * @return localized string
      */
     public static String localize(String s) {
-        return I18n.translateToLocal(s);
+        return I18n.format(s);
     }
 
     public static boolean canLocalize(String s) {
-        return I18n.canTranslate(s);
+        return I18n.hasKey(s);
     }
 
     public static String localizeWithFormat(String key, Object... format) {
@@ -53,8 +53,8 @@ public final class LangUtils {
         }
     }
 
-    public static TextComponentTranslation translationWithColour(String langKey, TextFormatting color) {
-        TextComponentTranslation translation = new TextComponentTranslation(langKey);
+    public static TranslationTextComponent translationWithColour(String langKey, TextFormatting color) {
+        TranslationTextComponent translation = new TranslationTextComponent(langKey);
         translation.getStyle().setColor(color);
         return translation;
     }
@@ -64,8 +64,8 @@ public final class LangUtils {
         return component;
     }
 
-    public static TextComponentTranslation onOffColoured(boolean isOn) {
-        TextComponentTranslation translation = new TextComponentTranslation(transOnOffKey(isOn));
+    public static TranslationTextComponent onOffColoured(boolean isOn) {
+        TranslationTextComponent translation = new TranslationTextComponent(transOnOffKey(isOn));
         translation.getStyle().setColor(isOn ? TextFormatting.DARK_GREEN : TextFormatting.DARK_RED);
         return translation;
     }

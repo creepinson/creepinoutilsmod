@@ -3,7 +3,7 @@ package me.creepinson.creepinoutils.util.upgrade;
 import net.minecraft.item.ItemStack;
 
 /**
- * @author Creepinson http://gitlab.com/creepinson
+ * @author Theo Paris https://theoparis.com
  * Project creepinoutils
  **/
 public class UpgradeInfo {

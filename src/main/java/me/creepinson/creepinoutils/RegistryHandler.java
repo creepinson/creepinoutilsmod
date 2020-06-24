@@ -1,7 +1,7 @@
 package me.creepinson.creepinoutils;
 
 import me.creepinson.creepinoutils.base.BaseBlock;
-import me.creepinson.creepinoutils.block.BlockAnimationTest;
+import me.creepinson.creepinoutils.block.AnimationTestBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.ItemGroup;
@@ -17,7 +17,7 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = CreepinoUtilsMod.MOD_ID)
 public class RegistryHandler {
-    public static final BaseBlock BLOCK_TEST = new BlockAnimationTest("test_block", ItemGroup.MISC);
+    public static final BaseBlock BLOCK_TEST = new AnimationTestBlock("test_block", ItemGroup.MISC);
 
     @SubscribeEvent
     public static void onBlockRegister(RegistryEvent.Register<Block> event) {

@@ -1,6 +1,6 @@
 package me.creepinson.creepinoutils.util.network;
 
-import me.creepinson.creepinoutils.api.util.math.Vector;
+import dev.throwouterror.util.math.Tensor;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -13,7 +13,7 @@ public interface INetwork<T> extends INBTSerializable<CompoundNBT>, Serializable
 
     void refresh();
 
-    Set<Vector> getConnections();
+    Set<Tensor> getConnections();
 
     void merge(INetwork<T> net);
 

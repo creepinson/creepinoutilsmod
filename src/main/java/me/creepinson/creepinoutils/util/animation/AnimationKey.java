@@ -1,11 +1,11 @@
 package me.creepinson.creepinoutils.util.animation;
 
-import me.creepinson.creepinoutils.api.util.Pair;
-import me.creepinson.creepinoutils.api.util.math.Facing.Axis;
-import me.creepinson.creepinoutils.api.util.math.Rotation;
-
 import java.util.Collection;
 import java.util.HashMap;
+
+import dev.throwouterror.util.Pair;
+import dev.throwouterror.util.math.Facing.Axis;
+import dev.throwouterror.util.math.Rotation;
 
 public abstract class AnimationKey {
 

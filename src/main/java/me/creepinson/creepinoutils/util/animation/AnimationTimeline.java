@@ -1,9 +1,9 @@
 package me.creepinson.creepinoutils.util.animation;
 
-import me.creepinson.creepinoutils.api.util.Pair;
-import me.creepinson.creepinoutils.api.util.PairList;
-import me.creepinson.creepinoutils.api.util.PairListUtils;
-import me.creepinson.creepinoutils.api.util.math.Rotation;
+import dev.throwouterror.util.Pair;
+import dev.throwouterror.util.PairList;
+import dev.throwouterror.util.PairListUtils;
+import dev.throwouterror.util.math.Rotation;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 

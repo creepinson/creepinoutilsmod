@@ -24,7 +24,7 @@ public class BlockTileData extends BlockData {
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = super.serializeNBT();
         if (tileEntity != null && !tileEntity.isRemoved()) {
-            nbt.setTag("tile", tileEntity.serializeNBT());
+            nbt.put("tile", tileEntity.serializeNBT());
         }
         return nbt;
     }
@@ -32,8 +32,8 @@ public class BlockTileData extends BlockData {
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
         super.deserializeNBT(nbt);
-        if (nbt.hasKey("tile")) {
-            this.tileEntity = TileEntity.create(getWorld(), nbt.getCompoundTag("tile"));
+        if (nbt.contains("tile")) {
+            this.tileEntity = TileEntity.create(nbt.getCompound("tile"));
         }
     }
 }

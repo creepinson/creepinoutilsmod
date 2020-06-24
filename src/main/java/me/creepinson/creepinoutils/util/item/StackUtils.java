@@ -1,7 +1,7 @@
 package me.creepinson.creepinoutils.util.item;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
@@ -11,34 +11,13 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
 public final class StackUtils {
-
-    //ignores count
-    public static boolean equalsWildcard(ItemStack wild, ItemStack check) {
-        if (wild.isEmpty() && check.isEmpty()) {
-            return true;
-        }
-        return wild.getItem() == check.getItem() && (wild.getItemDamage() == OreDictionary.WILDCARD_VALUE || check.getItemDamage() == OreDictionary.WILDCARD_VALUE ||
-                wild.getItemDamage() == check.getItemDamage());
-    }
-
-    //ignores count
-    public static boolean equalsWildcardWithNBT(ItemStack wild, ItemStack check) {
-        boolean wildcard = equalsWildcard(wild, check);
-        if (wild.isEmpty() || check.isEmpty()) {
-            return wildcard;
-        }
-        return wildcard && (!wild.hasTagCompound() ? !check.hasTagCompound() : (wild.getTagCompound() == check.getTagCompound() ||
-                wild.getTagCompound().equals(check.getTagCompound())));
-    }
-
-    //assumes stacks same
+    // assumes stacks same
     public static ItemStack subtract(ItemStack stack1, ItemStack stack2) {
         if (stack1.isEmpty()) {
             return ItemStack.EMPTY;
@@ -102,15 +81,6 @@ public final class StackUtils {
         return size(orig, newSize);
     }
 
-    public static int hashItemStack(ItemStack stack) {
-        if (stack.isEmpty()) {
-            return -1;
-        }
-        ResourceLocation registryName = stack.getItem().getRegistryName();
-        int nameHash = registryName == null ? 0 : registryName.hashCode();
-        return nameHash << 8 | stack.getMetadata();
-    }
-
     /**
      * Get state for placement for a generic item, with our fake player
      *
@@ -118,12 +88,12 @@ public final class StackUtils {
      * @param world  which universe
      * @param pos    where
      * @param player our fake player, usually
-     * @return the result of {@link Block#getStateForPlacement(net.minecraft.world.World, net.minecraft.util.math.BlockPos, net.minecraft.util.Direction, float, float,
-     * float, int, net.minecraft.entity.LivingEntity, net.minecraft.util.Hand)}
+     * @return the result of
+     *         {@link Block#getStateForPlacement(net.minecraft.world.World, net.minecraft.util.math.BlockPos, net.minecraft.util.Direction, float, float, float, int, net.minecraft.entity.LivingEntity, net.minecraft.util.Hand)}
      */
-    @Nonnull
+/*     @Nonnull
     public static BlockState getStateForPlacement(ItemStack stack, World world, BlockPos pos, PlayerEntity player) {
         Block blockFromItem = Block.getBlockFromItem(stack.getItem());
-        return blockFromItem.getStateForPlacement(world, pos, Direction.UP, 0, 0, 0, stack.getMetadata(), player, Hand.MAIN_HAND);
-    }
+        return blockFromItem.getStateForPlacement(blockFromItem.getDefaultState(), world, pos, Direction.UP);
+    } */
 }

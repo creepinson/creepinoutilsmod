@@ -1,16 +1,16 @@
 package me.creepinson.creepinoutils.util;
 
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nonnull;
 
 /**
  * Created by Thiakil on 8/11/2017.
  */
-public class TextComponentGroup extends TextComponentString {
+public class TextComponentGroup extends StringTextComponent {
 
     public TextComponentGroup() {
         super("");
@@ -29,46 +29,46 @@ public class TextComponentGroup extends TextComponentString {
 
     @Nonnull
     @Override
-    public TextComponentGroup createCopy() {
-        TextComponentGroup textcomponentstring = new TextComponentGroup();
-        textcomponentstring.setStyle(this.getStyle().createShallowCopy());
+    public TextComponentGroup shallowCopy() {
+        TextComponentGroup StringTextComponent = new TextComponentGroup();
+        StringTextComponent.setStyle(this.getStyle().createShallowCopy());
         for (ITextComponent itextcomponent : this.getSiblings()) {
-            textcomponentstring.appendSibling(itextcomponent.createCopy());
+            StringTextComponent.appendSibling(itextcomponent.shallowCopy());
         }
-        return textcomponentstring;
+        return StringTextComponent;
     }
 
     public TextComponentGroup string(String s) {
-        this.appendSibling(new TextComponentString(s));
+        this.appendSibling(new StringTextComponent(s));
         return this;
     }
 
     public TextComponentGroup string(String s, TextFormatting color) {
-        ITextComponent t = new TextComponentString(s);
+        ITextComponent t = new StringTextComponent(s);
         t.getStyle().setColor(color);
         this.appendSibling(t);
         return this;
     }
 
     public TextComponentGroup translation(String key) {
-        this.appendSibling(new TextComponentTranslation(key));
+        this.appendSibling(new TranslationTextComponent(key));
         return this;
     }
 
     public TextComponentGroup translation(String key, Object... args) {
-        this.appendSibling(new TextComponentTranslation(key, args));
+        this.appendSibling(new TranslationTextComponent(key, args));
         return this;
     }
 
     public TextComponentGroup translation(String key, TextFormatting color) {
-        ITextComponent t = new TextComponentTranslation(key);
+        ITextComponent t = new TranslationTextComponent(key);
         t.getStyle().setColor(color);
         this.appendSibling(t);
         return this;
     }
 
     public TextComponentGroup translation(String key, TextFormatting color, Object... args) {
-        ITextComponent t = new TextComponentTranslation(key, args);
+        ITextComponent t = new TranslationTextComponent(key, args);
         t.getStyle().setColor(color);
         this.appendSibling(t);
         return this;

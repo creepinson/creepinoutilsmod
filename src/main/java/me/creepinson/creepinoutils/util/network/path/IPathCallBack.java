@@ -1,6 +1,6 @@
 package me.creepinson.creepinoutils.util.network.path;
 
-import me.creepinson.creepinoutils.api.util.math.Vector;
+import dev.throwouterror.util.math.Tensor;
 
 import java.util.Set;
 
@@ -11,7 +11,7 @@ public interface IPathCallBack {
      * @return A set of nodes connected to the currentNode. Essentially one should return a set of
      * neighboring nodes.
      */
-    Set<Vector> getConnectedNodes(Pathfinder finder, Vector currentNode);
+    Set<Tensor> getConnectedNodes(Pathfinder finder, Tensor currentNode);
 
     /**
      * Called when looping through nodes.
@@ -20,5 +20,5 @@ public interface IPathCallBack {
      * @param node   - The node being searched.
      * @return True to stop the path finding operation.
      */
-    boolean onSearch(Pathfinder finder, Vector node);
+    boolean onSearch(Pathfinder finder, Tensor node);
 }

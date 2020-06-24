@@ -1,7 +1,7 @@
 package me.creepinson.creepinoutils.util;
 
-import me.creepinson.creepinoutils.api.util.math.Facing;
-import me.creepinson.creepinoutils.api.util.math.Vector;
+import dev.throwouterror.util.math.Facing;
+import dev.throwouterror.util.math.Tensor;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.MathHelper;
@@ -17,7 +17,7 @@ public class VelocityUtil {
         accelerate(entity, Facing.values()[v.ordinal()]);
     }
 
-    public static void accelerate(Entity entity, Vector v) {
+    public static void accelerate(Entity entity, Tensor v) {
         accelerate(entity, v, MIN_SPEED);
     }
 
@@ -29,8 +29,8 @@ public class VelocityUtil {
         accelerate(entity, Facing.values()[v.ordinal()], speed);
     }
 
-    public static void accelerate(Entity entity, Vector vector, double speed) {
-        Vector v = vector.clone().mul((float) speed);
+    public static void accelerate(Entity entity, Tensor Tensor, double speed) {
+        Tensor v = Tensor.clone().mul((float) speed);
         entity.addVelocity(v.x(), v.y(), v.z());
     }
 
@@ -38,7 +38,7 @@ public class VelocityUtil {
         entity.setMotion(MathHelper.clamp(entity.getMotion().x, -limit, limit), MathHelper.clamp(entity.getMotion().y, -limit, limit), MathHelper.clamp(entity.getMotion().z, -limit, limit));
     }
 
-    public static Vector calculateParabolicVelocity(Vector from, Vector to, int heightGain) {
+    public static Tensor calculateParabolicVelocity(Tensor from, Tensor to, int heightGain) {
         // Gravity of a potion
         double gravity = 0.115;
 
@@ -74,10 +74,10 @@ public class VelocityUtil {
         double vx = vh * dirx;
         double vz = vh * dirz;
 
-        return new Vector(vx, vy, vz);
+        return new Tensor(vx, vy, vz);
     }
 
-    private static double distanceSquared(Vector from, Vector to) {
+    private static double distanceSquared(Tensor from, Tensor to) {
         double dx = to.x() - from.x();
         double dz = to.z() - from.z();
 

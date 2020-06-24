@@ -1,6 +1,6 @@
 package me.creepinson.creepinoutils.base;
 
-import me.creepinson.creepinoutils.util.VectorUtils;
+import me.creepinson.creepinoutils.util.TensorUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -10,7 +10,7 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 /**
- * @author Creepinson http://gitlab.com/creepinson
+ * @author Theo Paris https://theoparis.com
  * Project creepinoutils
  **/
 public abstract class BaseBlockWithTile extends BaseBlock {
@@ -23,7 +23,7 @@ public abstract class BaseBlockWithTile extends BaseBlock {
     public void onNeighborChange(BlockState state, IWorldReader world, BlockPos pos, BlockPos neighbor) {
         TileEntity te = world.getTileEntity(pos);
         if (te instanceof BaseTile) {
-            ((BaseTile) te).onNeighborChange(VectorUtils.fromBlockPos(pos));
+            ((BaseTile) te).onNeighborChange(TensorUtils.fromBlockPos(pos));
         }
     }
 

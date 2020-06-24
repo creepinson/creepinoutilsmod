@@ -1,7 +1,7 @@
 package me.creepinson.creepinoutils.util.network.path;
 
-import me.creepinson.creepinoutils.api.util.math.Facing;
-import me.creepinson.creepinoutils.api.util.math.Vector;
+import dev.throwouterror.util.math.Facing;
+import dev.throwouterror.util.math.Tensor;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,43 +23,43 @@ public class PathfinderAStar extends Pathfinder {
     /**
      * The set of tentative nodes to be evaluated, initially containing the start node
      */
-    public Set<Vector> openSet;
+    public Set<Tensor> openSet;
 
     /**
      * The map of navigated nodes storing the data of which position came from which in the format
      * of: X came from Y.
      */
-    public HashMap<Vector, Vector> navigationMap;
+    public HashMap<Tensor, Tensor> navigationMap;
 
     /**
      * Score values, used to determine the score for a path to evaluate how optimal the path is.
      * G-Score is the cost along the best known path while F-Score is the total cost.
      */
-    public HashMap<Vector, Double> gScore, fScore;
+    public HashMap<Tensor, Double> gScore, fScore;
 
     /**
      * The node in which the pathfinder is trying to reach.
      */
-    public Vector goal;
+    public Tensor goal;
 
-    public PathfinderAStar(IPathCallBack callBack, Vector goal) {
+    public PathfinderAStar(IPathCallBack callBack, Tensor goal) {
         super(callBack);
         this.goal = goal;
     }
 
     @Override
-    public boolean findNodes(Vector start) {
+    public boolean findNodes(Tensor start) {
         this.openSet.add(start);
         this.gScore.put(start, 0d);
         this.fScore.put(start, this.gScore.get(start) + getHeuristicEstimatedCost(start, this.goal));
 
         while (!this.openSet.isEmpty()) {
             // Current is the node in openset having the lowest f_score[] value
-            Vector currentNode = null;
+            Tensor currentNode = null;
 
             double lowestFScore = 0;
 
-            for (Vector node : this.openSet) {
+            for (Tensor node : this.openSet) {
                 if (currentNode == null || this.fScore.get(node) < lowestFScore) {
                     currentNode = node;
                     lowestFScore = this.fScore.get(node);
@@ -82,7 +82,7 @@ public class PathfinderAStar extends Pathfinder {
             this.openSet.remove(currentNode);
             this.closedSet.add(currentNode);
 
-            for (Vector neighbor : getNeighborNodes(currentNode)) {
+            for (Tensor neighbor : getNeighborNodes(currentNode)) {
                 double tentativeGScore = this.gScore.get(currentNode) + currentNode.distanceTo(neighbor);
 
                 if (this.closedSet.contains(neighbor)) {
@@ -113,8 +113,8 @@ public class PathfinderAStar extends Pathfinder {
     /**
      * A recursive function to back track and find the path in which we have analyzed.
      */
-    public Set<Vector> reconstructPath(HashMap<Vector, Vector> nagivationMap, Vector current_node) {
-        Set<Vector> path = new HashSet<>();
+    public Set<Tensor> reconstructPath(HashMap<Tensor, Tensor> nagivationMap, Tensor current_node) {
+        Set<Tensor> path = new HashSet<>();
         path.add(current_node);
 
         if (nagivationMap.containsKey(current_node)) {
@@ -128,21 +128,21 @@ public class PathfinderAStar extends Pathfinder {
     /**
      * @return An estimated cost between two points.
      */
-    public double getHeuristicEstimatedCost(Vector start, Vector goal) {
+    public double getHeuristicEstimatedCost(Tensor start, Tensor goal) {
         return start.distanceTo(goal);
     }
 
     /**
-     * @return A Set of neighboring Vector positions.
+     * @return A Set of neighboring Tensor positions.
      */
-    public Set<Vector> getNeighborNodes(Vector vector) {
+    public Set<Tensor> getNeighborNodes(Tensor Tensor) {
         if (this.callBackCheck != null) {
-            return this.callBackCheck.getConnectedNodes(this, vector);
+            return this.callBackCheck.getConnectedNodes(this, Tensor);
         } else {
-            Set<Vector> neighbors = new HashSet<>();
+            Set<Tensor> neighbors = new HashSet<>();
 
             for (int i = 0; i < 6; i++) {
-                neighbors.add(vector.clone().modifyPositionFromSide(Facing.byIndex(i)));
+                neighbors.add(Tensor.clone().offset(Facing.byIndex(i)));
             }
 
             return neighbors;

@@ -1,36 +1,35 @@
 package me.creepinson.creepinoutils.util.world.fake;
 
-import com.mojang.authlib.GameProfile;
-import me.creepinson.creepinoutils.util.Gamemode;
-import net.minecraft.entity.passive.AbstractHorse;
-import net.minecraft.entity.player.PlayerEntityMP;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.management.PlayerInteractionManager;
-import net.minecraft.stats.StatBase;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.IInteractionObject;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import java.util.UUID;
+
 import org.apache.commons.lang3.RandomStringUtils;
 
-import java.util.UUID;
+import com.mojang.authlib.GameProfile;
+
+import me.creepinson.creepinoutils.util.Gamemode;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.item.ItemStack;
+import net.minecraft.server.management.PlayerInteractionManager;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 /**
  * This is a multiplayer fake player class for use in server-side mods.
  * Some credit goes to the forge team.
  */
-public class FakeServerPlayer extends PlayerEntityMP implements IFakePlayer {
-    public FakeServerPlayer(WorldServer world) {
+public class FakeServerPlayer extends ServerPlayerEntity implements IFakePlayer {
+    public FakeServerPlayer(ServerWorld world) {
         this(world, new GameProfile(UUID.randomUUID(), RandomStringUtils.random(6)));
     }
 
-    public FakeServerPlayer(WorldServer world, GameProfile name) {
-        super(FMLCommonHandler.instance().getMinecraftServerInstance(), world, name, new PlayerInteractionManager(world));
+    public FakeServerPlayer(ServerWorld world, GameProfile name) {
+        super(world.getServer(), world, name, new PlayerInteractionManager(world));
     }
 
     @Override
@@ -40,8 +39,8 @@ public class FakeServerPlayer extends PlayerEntityMP implements IFakePlayer {
 
     // Allows for the position of the player to be the exact source when raytracing.
     @Override
-    public float getEyeHeight() {
-        return 0;
+    public double getPosYEye() {
+    	return this.getPosY();
     }
 
     @Override
@@ -55,7 +54,8 @@ public class FakeServerPlayer extends PlayerEntityMP implements IFakePlayer {
     }
 
     @Override
-    public void addStat(StatBase par1StatBase, int par2) {
+    public void addStat(ResourceLocation p_195067_1_, int p_195067_2_) {
+    	super.addStat(p_195067_1_, p_195067_2_);
     }
 
     @Override
@@ -63,35 +63,5 @@ public class FakeServerPlayer extends PlayerEntityMP implements IFakePlayer {
         // Does not do anything atm, but this can be used in other fake player implementations
     }
 
-    @Override
-    public void onUpdate() {
-    }
-
-    @Override
-    public Gamemode getGamemode() {
-        return Gamemode.fromBool(this.capabilities.isCreativeMode);
-    }
-
-    @Override
-    public void setGamemode(Gamemode g) {
-        this.capabilities.isCreativeMode = g == Gamemode.CREATIVE;
-    }
-
     // We don't need to respond to any gui invocations
-
-    @Override
-    public void openGui(Object mod, int modGuiId, World world, int x, int y, int z) {
-    }
-
-    @Override
-    public void displayGUIChest(IInventory par1IInventory) {
-    }
-
-    @Override
-    public void openGuiHorseInventory(AbstractHorse horse, IInventory inventoryIn) {
-    }
-
-    @Override
-    public void displayGui(IInteractionObject guiOwner) {
-    }
 }

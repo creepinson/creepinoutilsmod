@@ -1,19 +1,17 @@
 package me.creepinson.creepinoutils.util;
 
-import me.creepinson.creepinoutils.api.util.math.Vector;
+import dev.throwouterror.util.math.Tensor;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockAir;
-import net.minecraft.block.state.BlockState;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.AirBlock;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ChunkCache;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.common.capabilities.Capability;
 
 import javax.annotation.Nullable;
@@ -23,51 +21,6 @@ import java.util.List;
 import java.util.Set;
 
 public class BlockUtils {
-
-    public static boolean silentSetBlock(Chunk chunk, BlockPos pos, Block block, int meta) {
-        int dx = pos.getX() & 15;
-        int dz = pos.getZ() & 15;
-        int y = pos.getY();
-
-        int i1 = dz << 4 | dx;
-
-        int[] precMap = (int[]) ReflectionUtils.getField("precipitationHeightMap", chunk);
-        if (y >= precMap[i1] - 1) {
-            precMap[i1] = -999;
-        }
-        // if (y >= chunk.precipitationHeightMap[i1] - 1) {
-        // chunk.precipitationHeightMap[i1] = -999;
-        // }
-
-        BlockState state1 = chunk.getBlockState(dx, y, dz);
-        Block block1 = state1.getBlock();
-        int k1 = block1.getMetaFromState(state1);
-
-        if (block1 == block && k1 == meta) {
-            return false;
-        } else {
-            ExtendedBlockStorage extendedblockstorage = chunk.getBlockStorageArray()[y >> 4];
-
-            if (extendedblockstorage == Chunk.NULL_BLOCK_STORAGE) {
-                if (block == Blocks.AIR) {
-                    return false;
-                }
-
-                extendedblockstorage = chunk.getBlockStorageArray()[y >> 4] = new ExtendedBlockStorage(y >> 4 << 4,
-                        !chunk.getWorld().provider.isNether());
-            }
-
-            extendedblockstorage.set(dx, y & 15, dz, block.getStateFromMeta(meta));
-            chunk.setModified(true);
-            return true;
-        }
-
-    }
-
-    public static void silentClear(Chunk chunk, BlockPos pos) {
-        silentSetBlock(chunk, pos, Blocks.AIR, 0);
-    }
-
     public static void breakBlockWithDrop(World world, BlockPos pos) {
         BlockState BlockState = world.getBlockState(pos);
         if (BlockState.getMaterial().isLiquid()) {
@@ -78,12 +31,11 @@ public class BlockUtils {
     }
 
     public static boolean isValid(World world, BlockPos pos) {
-        return world.isBlockLoaded(pos);
+        return world.isAreaLoaded(pos, 1);
     }
 
     public static boolean canReplace(World world, BlockPos pos) {
-        return isValid(world, pos)
-                && (world.isAirBlock(pos) || world.getBlockState(pos).getBlock().isReplaceable(world, pos));
+        return isValid(world, pos) && (world.isAirBlock(pos) || world.getBlockState(pos).getMaterial().isReplaceable());
     }
 
     public static void markBlockForUpdate(World world, BlockPos pos) {
@@ -91,34 +43,16 @@ public class BlockUtils {
         world.notifyBlockUpdate(pos, state, state, 0);
     }
 
-    @Nullable
-    public static <T extends TileEntity> T getTileEntitySafely(IWorld world, BlockPos pos, Class<T> tileClass) {
-        TileEntity te;
-
-        if (world instanceof ChunkCache) {
-            ChunkCache chunkCache = (ChunkCache) world;
-            te = chunkCache.getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK);
-        } else {
-            te = world.getTileEntity(pos);
-        }
-
-        if (tileClass.isInstance(te)) {
-            return tileClass.cast(te);
-        } else {
-            return null;
-        }
-    }
-
-    public static boolean isDirect(Vector p, Vector t) {
+    public static boolean isDirect(Tensor p, Tensor t) {
         return ((p.x() == t.x() + 1 || p.x() == t.x() - 1) && !(p.y() == t.y() + 1 || p.y() == t.y() - 1)
                 && !(p.z() == t.z() + 1 || p.z() == t.z() - 1))
                 || (!(p.x() == t.x() + 1 || p.x() == t.x() - 1) && (p.y() == t.y() + 1 || p.y() == t.y() - 1)
-                && !(p.z() == t.z() + 1 || p.z() == t.z() - 1))
+                        && !(p.z() == t.z() + 1 || p.z() == t.z() - 1))
                 || (!(p.x() == t.x() + 1 || p.x() == t.x() - 1) && !(p.y() == t.y() + 1 || p.y() == t.y() - 1)
-                && (p.z() == t.z() + 1 || p.z() == t.z() - 1));
+                        && (p.z() == t.z() + 1 || p.z() == t.z() - 1));
     }
 
-    public static boolean isIndirect(Vector p, Vector t) {
+    public static boolean isIndirect(Tensor p, Tensor t) {
         return !isDirect(p, t);
     }
 
@@ -133,7 +67,7 @@ public class BlockUtils {
     }
 
     public static void getTilesWithCapabilityRecursive(Set<BlockPos> done, World world, BlockPos start, Direction from,
-                                                       Capability... search) {
+            Capability... search) {
         for (Direction side : Direction.values()) {
             if (side == from)
                 continue;
@@ -163,7 +97,7 @@ public class BlockUtils {
     }
 
     public static void getTilesRecursive(Set<BlockPos> done, World world, BlockPos start, Direction from,
-                                         Class... search) {
+            Class... search) {
         for (Direction side : Direction.values()) {
             if (side == from)
                 continue;
@@ -193,7 +127,7 @@ public class BlockUtils {
     }
 
     public static void getBlocksRecursive(Set<BlockPos> done, World world, BlockPos start, Direction from,
-                                          Class... search) {
+            Class... search) {
         for (Direction side : Direction.values()) {
             if (side == from)
                 continue;
@@ -231,8 +165,8 @@ public class BlockUtils {
      * @param pos    The starting position
      * @param radius The radius to expand from
      * @return A list that contains each block STATE within the radius. Compared to
-     * the other getNearbyBlocks method, this one returns a list of
-     * blockstates to make it easier to get each block's information.
+     *         the other getNearbyBlocks method, this one returns a list of
+     *         blockstates to make it easier to get each block's information.
      */
     public static List<BlockState> getNearbyBlocks(World world, BlockPos pos, int radius) {
         List<BlockState> scanResult = new ArrayList<BlockState>();
@@ -247,28 +181,16 @@ public class BlockUtils {
      * @param pos    The starting position
      * @param radius The radius to expand from
      * @return A list that contains each block STATE within the radius. Compared to
-     * the other getNearbyBlocks method, this one returns a list of
-     * blockstates to make it easier to get each block's information.
+     *         the other getNearbyBlocks method, this one returns a list of
+     *         blockstates to make it easier to get each block's information.
      */
-    public static List<BlockState> getNearbyBlocks(World world, Vector pos, int radius) {
+    public static List<BlockState> getNearbyBlocks(World world, Tensor pos, int radius) {
         List<BlockState> scanResult = new ArrayList<BlockState>();
-        List<BlockPos> scans = getNearbyBlocks(VectorUtils.toBlockPos(pos), radius);
+        List<BlockPos> scans = getNearbyBlocks(TensorUtils.toBlockPos(pos), radius);
         for (BlockPos scanPos : scans) {
             scanResult.add(world.getBlockState(scanPos));
         }
         return scanResult;
-    }
-
-    public static int getBlockMetadata(IWorld blockAccess, Vector v) {
-        return getBlockMetadata(blockAccess, v.intX(), v.intY(), v.intZ());
-    }
-
-    public static int getBlockMetadata(IWorld blockAccess, int x, int y, int z) {
-        return getBlockMetadata(blockAccess, new BlockPos(x, y, z));
-    }
-
-    public static int getBlockMetadata(IWorld blockAccess, BlockPos pos) {
-        return blockAccess.getBlockState(pos).getBlock().getMetaFromState(blockAccess.getBlockState(pos));
     }
 
     public static Direction getNeighborDirection(BlockPos pos, BlockPos neighbor) {
@@ -298,17 +220,8 @@ public class BlockUtils {
 
     public static BlockState getState(ItemStack stack) {
         Block block = Block.getBlockFromItem(stack.getItem());
-        if (!(block instanceof BlockAir))
-            return getState(block, stack.getMetadata());
+        if (!(block instanceof AirBlock))
+            return block.getDefaultState();
         return Blocks.AIR.getDefaultState();
     }
-
-    public static BlockState getState(Block block, int meta) {
-        try {
-            return block.getStateFromMeta(meta);
-        } catch (Exception e) {
-            return block.getDefaultState();
-        }
-    }
-
 }

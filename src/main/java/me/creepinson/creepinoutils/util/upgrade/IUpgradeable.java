@@ -5,7 +5,7 @@ import net.minecraft.item.ItemStack;
 import java.util.List;
 
 /**
- * @author Creepinson http://gitlab.com/creepinson
+ * @author Theo Paris https://theoparis.com
  * Project creepinoutils
  **/
 public interface IUpgradeable {

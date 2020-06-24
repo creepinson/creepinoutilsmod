@@ -3,8 +3,10 @@ package me.creepinson.creepinoutils.util.item;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.ModContainer;
+import net.minecraft.util.registry.Registry;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
+
 import org.apache.commons.lang3.text.WordUtils;
 
 import java.util.HashMap;
@@ -12,16 +14,15 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * @author Creepinson http://gitlab.com/creepinson
- * Project creepinoutils
+ * @author Theo Paris https://theoparis.com Project creepinoutils
  **/
 public final class ItemRegistryUtils {
 
     private static final Map<String, String> modIDMap = new HashMap<>();
 
     private static void populateMap() {
-        for (Map.Entry<String, ModContainer> entry : Loader.instance().getIndexedModList().entrySet()) {
-            modIDMap.put(entry.getKey().toLowerCase(Locale.ROOT), entry.getValue().getName());
+        for (ModInfo entry : ModList.get().getMods()) {
+            modIDMap.put(entry.getModId().toLowerCase(Locale.ROOT), entry.getDisplayName());
         }
     }
 
@@ -42,7 +43,7 @@ public final class ItemRegistryUtils {
             populateMap();
         }
 
-        ResourceLocation itemResourceLocation = Item.REGISTRY.getNameForObject(stack.getItem());
+        ResourceLocation itemResourceLocation = Registry.ITEM.getKey(stack.getItem());
 
         if (itemResourceLocation == null) {
             return "null";

@@ -1,14 +1,13 @@
 package me.creepinson.creepinoutils.util.network.path;
 
-import me.creepinson.creepinoutils.api.util.math.Facing;
-import me.creepinson.creepinoutils.api.util.math.Vector;
+import dev.throwouterror.util.math.Facing;
+import dev.throwouterror.util.math.Tensor;
 import me.creepinson.creepinoutils.base.BaseTile;
-import me.creepinson.creepinoutils.util.VectorUtils;
+import me.creepinson.creepinoutils.util.TensorUtils;
 import net.minecraft.world.World;
 
 import java.util.HashSet;
 import java.util.Set;
-
 
 /**
  * Check if a conductor connects with another.
@@ -16,15 +15,15 @@ import java.util.Set;
  * @author Calclavia
  */
 public class PathfinderChecker extends Pathfinder {
-    public PathfinderChecker(final World world, final Class[] targets, final BaseTile... ignoreConnector) {
+    public PathfinderChecker(final World world, final Class<?>[] targets, final BaseTile... ignoreConnector) {
         super(new IPathCallBack() {
             @Override
-            public Set<Vector> getConnectedNodes(Pathfinder finder, Vector currentNode) {
-                Set<Vector> neighbors = new HashSet<>();
+            public Set<Tensor> getConnectedNodes(Pathfinder finder, Tensor currentNode) {
+                Set<Tensor> neighbors = new HashSet<>();
 
                 for (int i = 0; i < 6; i++) {
                     Facing direction = Facing.byIndex(i);
-                    Vector position = currentNode.clone().modifyPositionFromSide(direction);
+                    Tensor position = currentNode.clone().offset(direction);
                     neighbors.add(position);
                 }
 
@@ -32,9 +31,9 @@ public class PathfinderChecker extends Pathfinder {
             }
 
             @Override
-            public boolean onSearch(Pathfinder finder, Vector node) {
-                for (Class c : targets) {
-                    if (c.isInstance(VectorUtils.getTile(world, node))) {
+            public boolean onSearch(Pathfinder finder, Tensor node) {
+                for (Class<?> c : targets) {
+                    if (c.isInstance(TensorUtils.getTile(world, node))) {
                         finder.results.add(node);
 
                         return true;

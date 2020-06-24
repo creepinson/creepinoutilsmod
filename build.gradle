@@ -36,7 +36,7 @@ repositories {
 }
 
 dependencies {
-    shade 'com.github.creepinson:throw-out-utils-java:master-SNAPSHOT'
+    shade 'com.github.creepinson:throw-out-utils-java:-SNAPSHOT'
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 }
 
@@ -57,7 +57,7 @@ sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = co
 shadowJar {
     classifier = ''
     configurations = [project.configurations.shade]
-    relocate "me.creepinson.creepinoutils.api.util", "me.creepinson.creepinoutils.api.creepinoutilscore"
+    relocate "dev.throwouterror.util", "me.creepinson.creepinoutils.api.creepinoutilscore"
 }
 
 

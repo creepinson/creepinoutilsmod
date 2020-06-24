@@ -2,8 +2,8 @@ package me.creepinson.creepinoutils.base;
 
 import com.google.gson.JsonObject;
 
-import me.creepinson.creepinoutils.api.util.data.JsonConfiguration;
-import me.creepinson.creepinoutils.api.util.data.JsonUtils;
+import dev.throwouterror.util.data.JsonConfiguration;
+import dev.throwouterror.util.data.JsonUtils;
 import me.creepinson.creepinoutils.util.ItemGroupCallback;
 import net.minecraft.item.ItemGroup;
 import net.minecraftforge.common.MinecraftForge;

@@ -1,6 +1,5 @@
 package me.creepinson.creepinoutils.util;
 
-import me.creepinson.creepinoutils.api.util.math.Vector;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -17,6 +16,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
+
+import dev.throwouterror.util.math.Tensor;
 
 /**
  * @author creepinson
@@ -66,11 +67,11 @@ public class CreepinoUtils {
         return null;
     }
 
-    public static AxisAlignedBB getCollisionBoxPart(Vector pos, Direction direction) {
+    public static AxisAlignedBB getCollisionBoxPart(Tensor pos, Direction direction) {
         return getCollisionBoxPart(pos.intX(), pos.intY(), pos.intZ(), direction);
     }
 
-    public static AxisAlignedBB getCollisionBoxPartFloor(Vector pos) {
+    public static AxisAlignedBB getCollisionBoxPartFloor(Tensor pos) {
         return getCollisionBoxPartFloor(pos.intX(), pos.intY(), pos.intZ());
     }
 
@@ -79,7 +80,7 @@ public class CreepinoUtils {
         return new AxisAlignedBB(x, y + AXIS_FLOOR_MIN, z, x + 1, y + AXIS_FLOOR_MAX, z + 1);
     }
 
-    public static BlockPos getCoordinatesFromSide(Vector pos, Direction s) {
+    public static BlockPos getCoordinatesFromSide(Tensor pos, Direction s) {
         return getCoordinatesFromSide(pos.intX(), pos.intY(), pos.intZ(), s.ordinal());
     }
 
@@ -100,7 +101,7 @@ public class CreepinoUtils {
         return new BlockPos(x, y, z);
     }
 
-    public static Direction getDirectionFromSide(Vector pos, int s) {
+    public static Direction getDirectionFromSide(Tensor pos, int s) {
         return getDirectionFromSide(pos.intX(), pos.intY(), pos.intZ(), s);
     }
 

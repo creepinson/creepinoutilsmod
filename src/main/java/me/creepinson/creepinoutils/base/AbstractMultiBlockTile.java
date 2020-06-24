@@ -1,9 +1,9 @@
 package me.creepinson.creepinoutils.base;
 
 import me.creepinson.creepinoutils.CreepinoUtilsMod;
-import me.creepinson.creepinoutils.api.util.math.Vector;
+import dev.throwouterror.util.math.Tensor;
 import me.creepinson.creepinoutils.util.BlockUtils;
-import me.creepinson.creepinoutils.util.VectorUtils;
+import me.creepinson.creepinoutils.util.TensorUtils;
 import me.creepinson.creepinoutils.util.upgrade.Upgrade;
 import me.creepinson.creepinoutils.util.upgrade.UpgradeInfo;
 import net.minecraft.item.ItemStack;
@@ -42,7 +42,7 @@ public abstract class AbstractMultiBlockTile extends BaseTile implements IMultiB
     }
 
     @Override
-    public void onNeighborChange(Vector v) {
+    public void onNeighborChange(Tensor v) {
         refresh();
     }
 
@@ -137,7 +137,7 @@ public abstract class AbstractMultiBlockTile extends BaseTile implements IMultiB
                 }
                 connections.add(tile.getPos());
                 for (Direction facing : Direction.values()) {
-                    TileEntity te = VectorUtils.getTileOffset(world, tile.getPosition(), facing);
+                    TileEntity te = TensorUtils.getTileOffset(world, tile.getPosition(), facing);
                     if (te instanceof AbstractMultiBlockTile && !connections.contains(te.getPos())
                             && canConnectToMultiBlock(facing, te)) {
                         traversing.add((AbstractMultiBlockTile) te);
@@ -184,7 +184,7 @@ public abstract class AbstractMultiBlockTile extends BaseTile implements IMultiB
         boolean wasMaster = isMaster;
         isMaster = master == this;
         if (isMaster) {
-            CreepinoUtilsMod.getInstance().debug("Master set to " + master.getName());
+            CreepinoUtilsMod.getInstance().debug("Master set to " + master.toString());
         }
     }
 
