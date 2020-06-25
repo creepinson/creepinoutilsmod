@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.DoubleNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -112,5 +113,21 @@ public class TensorUtils {
 
 	public static Tensor fromVector4(Vector4f pos) {
 		return new Tensor(pos.getX(), pos.getY(), pos.getZ(), pos.getW());
+	}
+
+	public static Tensor fromBytes(PacketBuffer buf) {
+		int size = buf.readInt();
+		double[] data = new double[size];
+		for (int i = 0; i < size; i++) {
+			data[i] = buf.readDouble();
+		}
+		return new Tensor(data);
+	}
+
+	public static void toBytes(PacketBuffer buf, Tensor t) {
+		buf.writeInt(t.getData().size());
+		for (double d : t.getData()) {
+			buf.writeDouble(d);
+		}
 	}
 }
