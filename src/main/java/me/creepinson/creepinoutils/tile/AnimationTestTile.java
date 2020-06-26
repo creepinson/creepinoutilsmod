@@ -1,7 +1,5 @@
 package me.creepinson.creepinoutils.tile;
 
-import dev.throwouterror.util.ISerializable;
-import dev.throwouterror.util.math.Tensor;
 import me.creepinson.creepinoutils.CreepinoUtilsMod;
 import me.creepinson.creepinoutils.base.InventoryNetworkTileEntity;
 import me.creepinson.creepinoutils.util.upgrade.UpgradeInfo;
@@ -32,8 +30,8 @@ public class AnimationTestTile extends InventoryNetworkTileEntity {
     @Override
     public void setActive(boolean value) {
         super.setActive(value);
-        if (world != null && CreepinoUtilsMod.getInstance().isDebug() && !world.isRemote) {
-            CreepinoUtilsMod.getInstance().getLogger().info("New Active Value: " + this.isActive());
+        if (world != null && !world.isRemote) {
+            CreepinoUtilsMod.LOGGER.info("New Active Value: " + this.isActive());
         }
     }
 

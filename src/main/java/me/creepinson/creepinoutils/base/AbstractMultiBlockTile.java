@@ -1,7 +1,7 @@
 package me.creepinson.creepinoutils.base;
 
-import me.creepinson.creepinoutils.CreepinoUtilsMod;
 import dev.throwouterror.util.math.Tensor;
+import me.creepinson.creepinoutils.CreepinoUtilsMod;
 import me.creepinson.creepinoutils.util.BlockUtils;
 import me.creepinson.creepinoutils.util.TensorUtils;
 import me.creepinson.creepinoutils.util.upgrade.Upgrade;
@@ -144,7 +144,7 @@ public abstract class AbstractMultiBlockTile extends BaseTile implements IMultiB
                     }
                 }
             }
-            CreepinoUtilsMod.getInstance().debug(
+            CreepinoUtilsMod.LOGGER.info(
                     "Setting master to " + master.getPosition().toString() + " for " + connections.size() + " blocks");
             for (BlockPos tilePos : connections) {
                 TileEntity tile = world.getTileEntity(tilePos);
@@ -184,7 +184,7 @@ public abstract class AbstractMultiBlockTile extends BaseTile implements IMultiB
         boolean wasMaster = isMaster;
         isMaster = master == this;
         if (isMaster) {
-            CreepinoUtilsMod.getInstance().debug("Master set to " + master.toString());
+            CreepinoUtilsMod.LOGGER.info("Master set to " + master.toString());
         }
     }
 

@@ -1,31 +1,21 @@
 package me.creepinson.creepinoutils;
 
-import me.creepinson.creepinoutils.base.BaseMod;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Theo Paris (https://theoparis.com)
  */
 
 @Mod(CreepinoUtilsMod.MOD_ID)
-public class CreepinoUtilsMod extends BaseMod {
-    protected static final String MOD_ID = "creepinoutils", MOD_NAME = "Creepino Utilities", MOD_VERSION = "1.0.0";
+public class CreepinoUtilsMod {
+    public static final String MOD_ID = "creepinoutils", MOD_NAME = "Creepino Utilities", MOD_VERSION = "1.0.0";
 
-    private static CreepinoUtilsMod INSTANCE;
-
-    public static CreepinoUtilsMod getInstance() {
-        return INSTANCE;
-    }
+    public static final Logger LOGGER = LogManager.getLogger();
 
     public CreepinoUtilsMod() {
-        super(MOD_ID, MOD_VERSION, null);
-        INSTANCE = this;
-    }
-
-    @Override
-    public void setup(FMLCommonSetupEvent event) {
-        super.setup(event);
-        CreepinoUtilsMod.getInstance().debug("Mod loading...");
+/*        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);*/
     }
 }

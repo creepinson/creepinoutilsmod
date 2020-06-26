@@ -16,7 +16,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -28,7 +27,7 @@ import javax.annotation.Nullable;
 public class AnimationTestBlock extends BaseBlockWithTile {
 
     public AnimationTestBlock(String name, ItemGroup tab) {
-        super(new ResourceLocation(CreepinoUtilsMod.getInstance().modId, name),
+        super(new ResourceLocation(CreepinoUtilsMod.MOD_ID, name),
                 Block.Properties.create(Material.ROCK).hardnessAndResistance(1));
     }
 
