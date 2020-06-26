@@ -1,10 +1,10 @@
 package me.creepinson.creepinoutils.base;
 
 import me.creepinson.creepinoutils.util.TensorUtils;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
@@ -13,10 +13,10 @@ import net.minecraft.world.World;
  * @author Theo Paris https://theoparis.com
  * Project creepinoutils
  **/
-public abstract class BaseBlockWithTile extends BaseBlock {
+public abstract class BaseBlockWithTile extends Block {
 
-    public BaseBlockWithTile(ResourceLocation name, Properties properties) {
-        super(name, properties);
+    public BaseBlockWithTile(Properties properties) {
+        super(properties);
     }
 
     @Override

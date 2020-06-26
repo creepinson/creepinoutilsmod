@@ -1,6 +1,5 @@
 package me.creepinson.creepinoutils.block;
 
-import me.creepinson.creepinoutils.CreepinoUtilsMod;
 import me.creepinson.creepinoutils.base.BaseBlockWithTile;
 import me.creepinson.creepinoutils.base.BaseTile;
 import me.creepinson.creepinoutils.tile.AnimationTestTile;
@@ -8,12 +7,10 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
@@ -26,9 +23,8 @@ import javax.annotation.Nullable;
  **/
 public class AnimationTestBlock extends BaseBlockWithTile {
 
-    public AnimationTestBlock(String name, ItemGroup tab) {
-        super(new ResourceLocation(CreepinoUtilsMod.MOD_ID, name),
-                Block.Properties.create(Material.ROCK).hardnessAndResistance(1));
+    public AnimationTestBlock() {
+        super(Block.Properties.create(Material.ROCK).hardnessAndResistance(1));
     }
 
     @Nonnull
