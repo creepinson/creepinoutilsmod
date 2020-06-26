@@ -5,12 +5,10 @@ import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.util.ResourceLocation;
 
 public class BaseBlock extends Block {
-    public BaseBlock(ResourceLocation name, Properties properties) {
+    public BaseBlock(Properties properties) {
         super(properties);
-        setRegistryName(name);
     }
 
     public BlockItem createItem(Item.Properties properties) {
@@ -29,8 +27,8 @@ public class BaseBlock extends Block {
     }
 
     public static class Ore extends BaseBlock {
-        public Ore(ResourceLocation name) {
-            super(name, Block.Properties.create(Material.ROCK));
+        public Ore() {
+            super(Block.Properties.create(Material.ROCK));
         }
     }
 }

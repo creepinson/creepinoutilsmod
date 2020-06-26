@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Logger;
 
 @Mod(CreepinoUtilsMod.MOD_ID)
 public class CreepinoUtilsMod {
-    public static final String MOD_ID = "creepinoutils", MOD_NAME = "Creepino Utilities", MOD_VERSION = "1.0.0";
+    public static final String MOD_ID = "creepinoutils";
 
     public static final Logger LOGGER = LogManager.getLogger();
 
