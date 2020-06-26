@@ -10,12 +10,35 @@ buildscript {
 }
 
 plugins {
-    id 'java'
+    id 'java-library'
+    id 'maven-publish'
     id "com.wynprice.cursemaven" version "2.1.1"
     id 'com.github.johnrengelman.shadow' version '4.0.4'
 }
 
 apply plugin: 'net.minecraftforge.gradle'
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+tasks.withType(Javadoc) {
+    failOnError false
+    options.addStringOption('Xdoclint:none', '-quiet')
+    options.addStringOption('encoding', 'UTF-8')
+    options.addStringOption('charSet', 'UTF-8')
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
 
 configurations {
     // Configuration that holds JARs to shade inside the mod JAR
@@ -59,7 +82,6 @@ shadowJar {
     configurations = [project.configurations.shade]
     relocate "dev.throwouterror.util", "me.creepinson.creepinoutils.api.creepinoutilscore"
 }
-
 
 minecraft {
     // The mappings can be changed at any time, and must be in the following format.
@@ -124,6 +146,22 @@ minecraft {
                     source sourceSets.main
                 }
             }
+        }
+    }
+}
+
+jar.finalizedBy("reobfJar")
+
+task sourceJar(type: Jar) {
+    classifier 'sources'
+    from sourceSets.main.allJava
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifact tasks.sourceJar
         }
     }
 }

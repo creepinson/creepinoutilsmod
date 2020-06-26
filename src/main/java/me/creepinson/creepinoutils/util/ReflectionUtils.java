@@ -60,7 +60,6 @@ public class ReflectionUtils {
      *
      * @param clazz
      * @param methodName
-     * @return
      */
     public static Method getMethod(Class clazz, String methodName) {
         final Method[] methods = clazz.getMethods();
@@ -423,7 +422,6 @@ public class ReflectionUtils {
      *
      * @param clazz
      * @param fieldName
-     * @return
      */
     public static Field getField(Class clazz, String fieldName) {
         try {

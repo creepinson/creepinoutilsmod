@@ -1,17 +1,8 @@
 package me.creepinson.creepinoutils.util.world.fake;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Consumer;
-
-import javax.annotation.Nullable;
-
 import com.google.common.base.Predicates;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.command.arguments.EntitySelector;
-import net.minecraft.command.arguments.EntitySelectorParser;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.entity.item.ItemEntity;
@@ -20,23 +11,19 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPlayerDiggingPacket.Action;
 import net.minecraft.network.play.client.CUseEntityPacket;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceContext;
+import net.minecraft.util.math.*;
 import net.minecraft.util.math.RayTraceContext.BlockMode;
 import net.minecraft.util.math.RayTraceContext.FluidMode;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.command.EntitySelectorManager;
+
+import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Consumer;
 
 public class FakePlayerUtils {
 	/**
@@ -322,7 +309,7 @@ public class FakePlayerUtils {
 	}
 
 	/**
-	 * A copy-paste of the SideOnly {@link Entity#rayTrace(double, float)}
+	 * A copy-paste of the SideOnly rayTrace method.
 	 */
 	public static RayTraceResult rayTrace(FakeServerPlayer player, World world, double reachDist, float partialTicks) {
 		Vec3d vec3d = player.getEyePosition(partialTicks);
