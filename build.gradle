@@ -23,6 +23,11 @@ task sourcesJar(type: Jar, dependsOn: classes) {
     from sourceSets.main.allSource
 }
 
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'deobf'
+}
+
 tasks.withType(Javadoc) {
     failOnError false
     options.addStringOption('Xdoclint:none', '-quiet')
@@ -35,10 +40,7 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     from javadoc.destinationDir
 }
 
-artifacts {
-    archives sourcesJar
-    archives javadocJar
-}
+tasks.build.dependsOn("sourcesJar", "javadocJar", "deobfJar")
 
 configurations {
     // Configuration that holds JARs to shade inside the mod JAR
