@@ -47,9 +47,11 @@ public class CreepinoUtils {
         entity.addVelocity(motionX, motionY, motionZ);
     }
 
-    static double AXIS_MIN_MIN = 0, AXIS_MIN_MAX = 0.1, AXIS_MAX_MIN = 0.9, AXIS_MAX_MAX = 1, AXIS_FLOOR_MIN = -0.01, AXIS_FLOOR_MAX = 0;
-
     public static AxisAlignedBB getCollisionBoxPart(int x, int y, int z, Direction direction) {
+        double AXIS_MIN_MIN = 0;
+        double AXIS_MAX_MAX = 1;
+        double AXIS_MAX_MIN = 0.9;
+        double AXIS_MIN_MAX = 0.1;
         if (direction == Direction.EAST)
             return new AxisAlignedBB(x + AXIS_MAX_MIN, y, z, x + AXIS_MAX_MAX, y + 1, z + 1);
         else if (direction == Direction.WEST)
@@ -76,6 +78,8 @@ public class CreepinoUtils {
 
 
     public static AxisAlignedBB getCollisionBoxPartFloor(int x, int y, int z) {
+        double AXIS_FLOOR_MAX = 0;
+        double AXIS_FLOOR_MIN = -0.01;
         return new AxisAlignedBB(x, y + AXIS_FLOOR_MIN, z, x + 1, y + AXIS_FLOOR_MAX, z + 1);
     }
 
@@ -137,7 +141,6 @@ public class CreepinoUtils {
 
     public static void createBlockExplosion(World world, List<BlockPos> blocksToDestroy) {
         for (BlockPos block : blocksToDestroy) {
-
             float x = (float) -0.5 + (float) (Math.random() * ((0.5 - -0.5) + 1));
             float y = (float) -1 + (float) (Math.random() * ((1 - -1) + 1));
             float z = (float) -0.5 + (float) (Math.random() * ((0.5 - -0.5) + 1));
@@ -150,15 +153,4 @@ public class CreepinoUtils {
             world.setBlockState(block, Blocks.AIR.getDefaultState());
         }
     }
-
-    public static BlockPos getGround(World world, BlockPos pos) {
-        BlockPos blockpos;
-
-        for (blockpos = new BlockPos(pos.getX(), world.getSeaLevel(),
-                pos.getZ()); !(world.getBlockState(blockpos.up()).getBlock().getBlock() == Blocks.AIR); blockpos = blockpos
-                .up()) {
-        }
-        return blockpos;
-    }
-
 }

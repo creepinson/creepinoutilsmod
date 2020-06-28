@@ -316,7 +316,6 @@ public class AnimatedOBJModel implements IMultipartModelGeometry<AnimatedOBJMode
             abs.sub(a);
             Tensor acs = ac.clone();
             acs.sub(a);
-            // TODO: make it abs.cross(acs)
             abs = abs.cross(acs);
             abs.normalize();
             faceNormal = abs;
