@@ -1,13 +1,12 @@
 package me.creepinson.creepinoutils.util.animation;
 
-import net.minecraft.nbt.CompoundNBT;
-
-import java.util.Set;
-
 import dev.throwouterror.util.Pair;
 import dev.throwouterror.util.PairList;
 import dev.throwouterror.util.math.Rotation;
 import dev.throwouterror.util.math.Tensor;
+import net.minecraft.nbt.CompoundNBT;
+
+import java.util.Set;
 
 public class AnimationState {
 

@@ -2,7 +2,6 @@ package me.creepinson.creepinoutils.util.world.fake;
 
 import com.google.common.collect.Maps;
 import com.mojang.authlib.GameProfile;
-
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.server.ServerWorld;

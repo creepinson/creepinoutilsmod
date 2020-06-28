@@ -1,5 +1,6 @@
 package me.creepinson.creepinoutils.util.network;
 
+import dev.throwouterror.util.math.Tensor;
 import me.creepinson.creepinoutils.util.TensorUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -7,8 +8,6 @@ import net.minecraft.world.World;
 
 import java.util.HashSet;
 import java.util.Set;
-
-import dev.throwouterror.util.math.Tensor;
 
 /**
  * @author Theo Paris https://theoparis.com

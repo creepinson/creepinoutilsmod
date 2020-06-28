@@ -3,8 +3,6 @@ package me.creepinson.creepinoutils.util.client.gl.animation;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-
-import me.creepinson.creepinoutils.util.client.gl.animation.AnimatedOBJModel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.IResource;
 import net.minecraft.resources.IResourceManager;
@@ -16,10 +14,9 @@ import net.minecraftforge.client.model.obj.MaterialLibrary;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.util.*;
+import java.util.Map;
 
-public class AnimatedOBJLoader implements IModelLoader<AnimatedOBJModel>
-{
+public class AnimatedOBJLoader implements IModelLoader<AnimatedOBJModel> {
     public static AnimatedOBJLoader INSTANCE = new AnimatedOBJLoader();
 
     private final Map<AnimatedOBJModel.ModelSettings, AnimatedOBJModel> modelCache = Maps.newHashMap();
@@ -28,16 +25,14 @@ public class AnimatedOBJLoader implements IModelLoader<AnimatedOBJModel>
     private IResourceManager manager = Minecraft.getInstance().getResourceManager();
 
     @Override
-    public void onResourceManagerReload(IResourceManager resourceManager)
-    {
+    public void onResourceManagerReload(IResourceManager resourceManager) {
         modelCache.clear();
         materialCache.clear();
         manager = resourceManager;
     }
 
     @Override
-    public AnimatedOBJModel read(JsonDeserializationContext deserializationContext, JsonObject modelContents)
-    {
+    public AnimatedOBJModel read(JsonDeserializationContext deserializationContext, JsonObject modelContents) {
         if (!modelContents.has("model"))
             throw new RuntimeException("OBJ Loader requires a 'model' key that points to a valid .OBJ model.");
 
@@ -53,49 +48,35 @@ public class AnimatedOBJLoader implements IModelLoader<AnimatedOBJModel>
         return loadModel(new AnimatedOBJModel.ModelSettings(new ResourceLocation(modelLocation), detectCullableFaces, diffuseLighting, flipV, ambientToFullbright, materialLibraryOverrideLocation));
     }
 
-    public AnimatedOBJModel loadModel(AnimatedOBJModel.ModelSettings settings)
-    {
+    public AnimatedOBJModel loadModel(AnimatedOBJModel.ModelSettings settings) {
         return modelCache.computeIfAbsent(settings, (data) -> {
             IResource resource;
-            try
-            {
+            try {
                 resource = manager.getResource(settings.modelLocation);
-            }
-            catch (IOException e)
-            {
+            } catch (IOException e) {
                 throw new RuntimeException("Could not find OBJ model", e);
             }
 
-            try(LineReader rdr = new LineReader(resource))
-            {
+            try (LineReader rdr = new LineReader(resource)) {
                 return new AnimatedOBJModel(rdr, settings);
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 throw new RuntimeException("Could not read OBJ model", e);
             }
         });
     }
 
-    public MaterialLibrary loadMaterialLibrary(ResourceLocation materialLocation)
-    {
+    public MaterialLibrary loadMaterialLibrary(ResourceLocation materialLocation) {
         return materialCache.computeIfAbsent(materialLocation, (location) -> {
             IResource resource;
-            try
-            {
+            try {
                 resource = manager.getResource(location);
-            }
-            catch (IOException e)
-            {
+            } catch (IOException e) {
                 throw new RuntimeException("Could not find OBJ material library", e);
             }
 
-            try(LineReader rdr = new LineReader(resource))
-            {
+            try (LineReader rdr = new LineReader(resource)) {
                 return new MaterialLibrary(rdr);
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 throw new RuntimeException("Could not read OBJ material library", e);
             }
         });

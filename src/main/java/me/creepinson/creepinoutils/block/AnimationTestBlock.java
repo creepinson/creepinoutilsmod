@@ -30,7 +30,7 @@ public class AnimationTestBlock extends BaseBlockWithTile {
     @Nonnull
     @Override
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player,
-            Hand hand, BlockRayTraceResult hit) {
+                                             Hand hand, BlockRayTraceResult hit) {
         if (!world.isRemote) {
             TileEntity te = world.getTileEntity(pos);
             if (te instanceof AnimationTestTile) {
@@ -47,7 +47,7 @@ public class AnimationTestBlock extends BaseBlockWithTile {
 
     @Override
     public void harvestBlock(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable TileEntity te,
-            ItemStack stack) {
+                             ItemStack stack) {
         super.harvestBlock(world, player, pos, state, te, stack);
         if (te != null) {
             ((BaseTile) te).refresh();
@@ -55,7 +55,7 @@ public class AnimationTestBlock extends BaseBlockWithTile {
     }
     /*
      * @Nullable
-     * 
+     *
      * @Override public TileEntity createTileEntity(BlockState state, IBlockReader
      * world) { return new TileEntityAnimationTest(); }
      */

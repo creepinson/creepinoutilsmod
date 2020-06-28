@@ -1,8 +1,8 @@
 package me.creepinson.creepinoutils.util;
 
 import dev.throwouterror.util.math.Tensor;
-import net.minecraft.block.Block;
 import net.minecraft.block.AirBlock;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
@@ -11,10 +11,9 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -30,6 +29,25 @@ public class BlockUtils {
         }
     }
 
+    /**
+     * Safely checks if the tile entity exists.
+     *
+     * @return a LazyOptional that you can use to check whether the tile is present.
+     */
+    public static LazyOptional<? extends TileEntity> getTile(IWorld world, BlockPos pos) {
+        TileEntity tile = world.getTileEntity(pos);
+        return LazyOptional.of(tile != null && !tile.isRemoved() ? () -> tile : null);
+    }
+
+    /**
+     * Safely checks if the tile entity exists.
+     *
+     * @return a LazyOptional that you can use to check whether the tile is present.
+     */
+    public static LazyOptional<? extends TileEntity> getTile(IWorld world, Tensor pos) {
+        return getTile(world, TensorUtils.toBlockPos(pos));
+    }
+
     public static boolean isValid(World world, BlockPos pos) {
         return world.isAreaLoaded(pos, 1);
     }
@@ -38,18 +56,13 @@ public class BlockUtils {
         return isValid(world, pos) && (world.isAirBlock(pos) || world.getBlockState(pos).getMaterial().isReplaceable());
     }
 
-    public static void markBlockForUpdate(World world, BlockPos pos) {
-        BlockState state = world.getBlockState(pos);
-        world.notifyBlockUpdate(pos, state, state, 0);
-    }
-
     public static boolean isDirect(Tensor p, Tensor t) {
         return ((p.x() == t.x() + 1 || p.x() == t.x() - 1) && !(p.y() == t.y() + 1 || p.y() == t.y() - 1)
                 && !(p.z() == t.z() + 1 || p.z() == t.z() - 1))
                 || (!(p.x() == t.x() + 1 || p.x() == t.x() - 1) && (p.y() == t.y() + 1 || p.y() == t.y() - 1)
-                        && !(p.z() == t.z() + 1 || p.z() == t.z() - 1))
+                && !(p.z() == t.z() + 1 || p.z() == t.z() - 1))
                 || (!(p.x() == t.x() + 1 || p.x() == t.x() - 1) && !(p.y() == t.y() + 1 || p.y() == t.y() - 1)
-                        && (p.z() == t.z() + 1 || p.z() == t.z() - 1));
+                && (p.z() == t.z() + 1 || p.z() == t.z() - 1));
     }
 
     public static boolean isIndirect(Tensor p, Tensor t) {
@@ -60,29 +73,25 @@ public class BlockUtils {
      * Returns a set containing the positions of each tile entity that is found to
      * be connected to the starting position.
      */
-    public static Set<BlockPos> getTilesWithCapability(World world, BlockPos startingPosition, Capability... search) {
+    public static Set<BlockPos> getTilesWithCapability(World world, BlockPos startingPosition, Capability<?>... search) {
         Set<BlockPos> set = new HashSet<>();
         getTilesWithCapabilityRecursive(set, world, startingPosition, null, search);
         return set;
     }
 
     public static void getTilesWithCapabilityRecursive(Set<BlockPos> done, World world, BlockPos start, Direction from,
-            Capability... search) {
+                                                       Capability<?>... search) {
         for (Direction side : Direction.values()) {
             if (side == from)
                 continue;
-            TileEntity tile = world.getTileEntity(start);
-            if (tile != null && !tile.isRemoved()) {
-                for (Capability c : search) {
-                    if (tile.getCapability(c, from) != null) {
+            getTile(world, start).ifPresent(tile -> {
+                for (Capability<?> c : search)
+                    if (tile.getCapability(c, from).isPresent())
                         done.add(start);
-                    }
-                }
 
-                if (done.contains(start.offset(side))) {
+                if (done.contains(start.offset(side)))
                     getTilesWithCapabilityRecursive(done, world, start.offset(side), side.getOpposite(), search);
-                }
-            }
+            });
         }
     }
 
@@ -90,29 +99,24 @@ public class BlockUtils {
      * Returns a set containing the positions of each tile entity that is found to
      * be connected to the starting position.
      */
-    public static Set<BlockPos> getTiles(World world, BlockPos startingPosition, Class... search) {
+    public static Set<BlockPos> getTiles(World world, BlockPos startingPosition, Class<?>... search) {
         Set<BlockPos> set = new HashSet<>();
         getTilesRecursive(set, world, startingPosition, null, search);
         return set;
     }
 
     public static void getTilesRecursive(Set<BlockPos> done, World world, BlockPos start, Direction from,
-            Class... search) {
+                                         Class<?>... search) {
         for (Direction side : Direction.values()) {
             if (side == from)
                 continue;
-            TileEntity tile = world.getTileEntity(start);
-            if (tile != null && !tile.isRemoved()) {
-                for (Class c : search) {
-                    if (tile != null && !tile.isRemoved()) {
-                        done.add(start);
-                    }
-                }
+            getTile(world, start).ifPresent(tile -> {
+                for (Class<?> c : search)
+                    if (c.isInstance(tile)) done.add(start);
 
-                if (done.contains(start.offset(side))) {
+                if (done.contains(start.offset(side)))
                     getTilesRecursive(done, world, start.offset(side), side.getOpposite(), search);
-                }
-            }
+            });
         }
     }
 
@@ -120,27 +124,24 @@ public class BlockUtils {
      * Returns a set containing the positions of each tile entity that is found to
      * be connected to the starting position.
      */
-    public static Set<BlockPos> getBlocks(World world, BlockPos startingPosition, Class... search) {
+    public static Set<BlockPos> getBlocks(World world, BlockPos startingPosition, Class<?>... search) {
         Set<BlockPos> set = new HashSet<>();
         getBlocksRecursive(set, world, startingPosition, null, search);
         return set;
     }
 
     public static void getBlocksRecursive(Set<BlockPos> done, World world, BlockPos start, Direction from,
-            Class... search) {
+                                          Class<?>... search) {
         for (Direction side : Direction.values()) {
             if (side == from)
                 continue;
             Block b = world.getBlockState(start).getBlock();
-            for (Class c : search) {
-                if (c.isInstance(b)) {
+            for (Class<?> c : search)
+                if (c.isInstance(b))
                     done.add(start);
-                }
-            }
 
-            if (done.contains(start.offset(side))) {
+            if (done.contains(start.offset(side)))
                 getBlocksRecursive(done, world, start.offset(side), side.getOpposite(), search);
-            }
         }
     }
 
@@ -151,13 +152,11 @@ public class BlockUtils {
      */
     public static List<BlockPos> getNearbyBlocks(BlockPos pos, int radius) {
         List<BlockPos> scanResult = new ArrayList<BlockPos>();
-        for (int x = pos.getX() - radius; x <= pos.getX() + radius; x++) {
-            for (int y = pos.getY() - radius; y <= pos.getY() + radius; y++) {
-                for (int z = pos.getZ() - radius; z <= pos.getZ() + radius; z++) {
+        for (int x = pos.getX() - radius; x <= pos.getX() + radius; x++)
+            for (int y = pos.getY() - radius; y <= pos.getY() + radius; y++)
+                for (int z = pos.getZ() - radius; z <= pos.getZ() + radius; z++)
                     scanResult.add(new BlockPos(x, y, z));
-                }
-            }
-        }
+
         return scanResult;
     }
 
@@ -165,15 +164,15 @@ public class BlockUtils {
      * @param pos    The starting position
      * @param radius The radius to expand from
      * @return A list that contains each block STATE within the radius. Compared to
-     *         the other getNearbyBlocks method, this one returns a list of
-     *         blockstates to make it easier to get each block's information.
+     * the other getNearbyBlocks method, this one returns a list of
+     * blockstates to make it easier to get each block's information.
      */
     public static List<BlockState> getNearbyBlocks(World world, BlockPos pos, int radius) {
         List<BlockState> scanResult = new ArrayList<BlockState>();
         List<BlockPos> scans = getNearbyBlocks(pos, radius);
-        for (BlockPos scanPos : scans) {
+        for (BlockPos scanPos : scans)
             scanResult.add(world.getBlockState(scanPos));
-        }
+
         return scanResult;
     }
 
@@ -181,41 +180,37 @@ public class BlockUtils {
      * @param pos    The starting position
      * @param radius The radius to expand from
      * @return A list that contains each block STATE within the radius. Compared to
-     *         the other getNearbyBlocks method, this one returns a list of
-     *         blockstates to make it easier to get each block's information.
+     * the other getNearbyBlocks method, this one returns a list of
+     * blockstates to make it easier to get each block's information.
      */
     public static List<BlockState> getNearbyBlocks(World world, Tensor pos, int radius) {
         List<BlockState> scanResult = new ArrayList<BlockState>();
         List<BlockPos> scans = getNearbyBlocks(TensorUtils.toBlockPos(pos), radius);
-        for (BlockPos scanPos : scans) {
+        for (BlockPos scanPos : scans)
             scanResult.add(world.getBlockState(scanPos));
-        }
+
         return scanResult;
     }
 
     public static Direction getNeighborDirection(BlockPos pos, BlockPos neighbor) {
-
         int dx = pos.getX() - neighbor.getX();
 
         if (dx == 0) {
             int dz = pos.getZ() - neighbor.getZ();
             if (dz == 0) {
                 int dy = pos.getY() - neighbor.getY();
-                if (dy >= 1) {
+                if (dy >= 1)
                     return Direction.DOWN;
-                } else {
+                else
                     return Direction.UP;
-                }
-            } else if (dz >= 1) {
+            } else if (dz >= 1)
                 return Direction.NORTH;
-            } else {
+            else
                 return Direction.SOUTH;
-            }
-        } else if (dx >= 1) {
+        } else if (dx >= 1)
             return Direction.WEST;
-        } else {
+        else
             return Direction.EAST;
-        }
     }
 
     public static BlockState getState(ItemStack stack) {

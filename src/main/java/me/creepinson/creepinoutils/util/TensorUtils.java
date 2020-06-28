@@ -23,111 +23,111 @@ import net.minecraft.world.World;
  * @author Theo Paris https://theoparis.com
  **/
 public class TensorUtils {
-	public static boolean exists(Tensor v, World world) {
-		return world.chunkExists(v.intX(), v.intZ());
-	}
+    public static boolean exists(Tensor v, World world) {
+        return world.chunkExists(v.intX(), v.intZ());
+    }
 
-	/**
-	 * Helper method to turn a Tensor into a Minecraft block position.
-	 */
-	public static BlockPos toBlockPos(Tensor v) {
-		return new BlockPos(v.x(), v.y(), v.z());
-	}
+    /**
+     * Helper method to turn a Tensor into a Minecraft block position.
+     */
+    public static BlockPos toBlockPos(Tensor v) {
+        return new BlockPos(v.x(), v.y(), v.z());
+    }
 
-	public static Tensor fromBlockPos(BlockPos pos) {
-		return new Tensor(pos.getX(), pos.getY(), pos.getZ());
-	}
-	
-	public static Vec3i toVec3i(Tensor v) {
-		return new Vec3i(v.x(), v.y(), v.z());
-	}
+    public static Tensor fromBlockPos(BlockPos pos) {
+        return new Tensor(pos.getX(), pos.getY(), pos.getZ());
+    }
 
-	public static Tensor fromVec3i(Vec3i pos) {
-		return new Tensor(pos.getX(), pos.getY(), pos.getZ());
-	}
+    public static Vec3i toVec3i(Tensor v) {
+        return new Vec3i(v.x(), v.y(), v.z());
+    }
 
-	public static Vec3d toVec(Tensor v) {
-		return new Vec3d(v.x(), v.y(), v.z());
-	}
-	
-	public static Tensor fromVec(Vec3d pos) {
-		return new Tensor(pos.getX(), pos.getY(), pos.getZ());
-	}
-	
-	public static CompoundNBT toNBT(Tensor v) {
-		CompoundNBT tag = new CompoundNBT();
-		ListNBT list = new ListNBT();
-		for (double f : v) {
-			list.add(DoubleNBT.valueOf(f));
-		}
-		tag.put("data", list);
-		return tag;
-	}
+    public static Tensor fromVec3i(Vec3i pos) {
+        return new Tensor(pos.getX(), pos.getY(), pos.getZ());
+    }
 
-	public static Tensor fromNBT(CompoundNBT tag) {
-		ListNBT list = tag.getList("data", 5);
-		double[] data = new double[list.size()];
+    public static Vec3d toVec(Tensor v) {
+        return new Vec3d(v.x(), v.y(), v.z());
+    }
 
-		for (int i = 0; i < list.size(); i++) {
-			data[i] = list.getDouble(i);
-		}
+    public static Tensor fromVec(Vec3d pos) {
+        return new Tensor(pos.getX(), pos.getY(), pos.getZ());
+    }
 
-		return new Tensor(data);
-	}
+    public static CompoundNBT toNBT(Tensor v) {
+        CompoundNBT tag = new CompoundNBT();
+        ListNBT list = new ListNBT();
+        for (double f : v) {
+            list.add(DoubleNBT.valueOf(f));
+        }
+        tag.put("data", list);
+        return tag;
+    }
 
-	public static Tensor fromTile(TileEntity tile) {
-		return fromBlockPos(tile.getPos());
-	}
+    public static Tensor fromNBT(CompoundNBT tag) {
+        ListNBT list = tag.getList("data", 5);
+        double[] data = new double[list.size()];
 
-	public static TileEntity getTile(World w, Tensor v) {
-		return w.getTileEntity(toBlockPos(v));
-	}
+        for (int i = 0; i < list.size(); i++) {
+            data[i] = list.getDouble(i);
+        }
 
-	public static Tensor offset(Tensor origin, Direction side) {
-		return origin.offset(Facing.byIndex(side.getIndex()));
-	}
+        return new Tensor(data);
+    }
 
-	public static Block getBlock(World world, Tensor pos) {
-		return world.getBlockState(toBlockPos(pos)).getBlock();
-	}
+    public static Tensor fromTile(TileEntity tile) {
+        return fromBlockPos(tile.getPos());
+    }
 
-	public static BlockState getBlockState(World world, Tensor pos) {
-		return world.getBlockState(toBlockPos(pos));
-	}
+    public static TileEntity getTile(World w, Tensor v) {
+        return w.getTileEntity(toBlockPos(v));
+    }
 
-	public static TileEntity getTileOffset(World world, Tensor position, Direction facing) {
-		return getTile(world, offset(position, facing));
-	}
+    public static Tensor offset(Tensor origin, Direction side) {
+        return origin.offset(Facing.byIndex(side.getIndex()));
+    }
 
-	public static Vector3f toVector(Tensor pos) {
-		return new Vector3f(pos.floatX(), pos.floatY(), pos.floatZ());
-	}
+    public static Block getBlock(World world, Tensor pos) {
+        return world.getBlockState(toBlockPos(pos)).getBlock();
+    }
 
-	public static Vector4f toVector4(Tensor pos) {
-		return new Vector4f(pos.floatX(), pos.floatY(), pos.floatZ(), pos.floatW());
-	}
+    public static BlockState getBlockState(World world, Tensor pos) {
+        return world.getBlockState(toBlockPos(pos));
+    }
 
-	public static Tensor fromVector(Vector3f pos) {
-		return new Tensor(pos.getX(), pos.getY(), pos.getZ());
-	}
+    public static TileEntity getTileOffset(World world, Tensor position, Direction facing) {
+        return getTile(world, offset(position, facing));
+    }
 
-	public static Tensor fromVector4(Vector4f pos) {
-		return new Tensor(pos.getX(), pos.getY(), pos.getZ(), pos.getW());
-	}
+    public static Vector3f toVector(Tensor pos) {
+        return new Vector3f(pos.floatX(), pos.floatY(), pos.floatZ());
+    }
 
-	public static Tensor fromBytes(PacketBuffer buf) {
-		int size = buf.readInt();
-		double[] data = new double[size];
-		for (int i = 0; i < size; i++) {
-			data[i] = buf.readDouble();
-		}
-		return new Tensor(data);
-	}
+    public static Vector4f toVector4(Tensor pos) {
+        return new Vector4f(pos.floatX(), pos.floatY(), pos.floatZ(), pos.floatW());
+    }
 
-	public static void toBytes(PacketBuffer buf, Tensor t) {
-		buf.writeInt(t.getData().size());
-		for (double d : t.getData()) {
-			buf.writeDouble(d);
-		}
-	}
+    public static Tensor fromVector(Vector3f pos) {
+        return new Tensor(pos.getX(), pos.getY(), pos.getZ());
+    }
+
+    public static Tensor fromVector4(Vector4f pos) {
+        return new Tensor(pos.getX(), pos.getY(), pos.getZ(), pos.getW());
+    }
+
+    public static Tensor fromBytes(PacketBuffer buf) {
+        int size = buf.readInt();
+        double[] data = new double[size];
+        for (int i = 0; i < size; i++) {
+            data[i] = buf.readDouble();
+        }
+        return new Tensor(data);
+    }
+
+    public static void toBytes(PacketBuffer buf, Tensor t) {
+        buf.writeInt(t.getData().size());
+        for (double d : t.getData()) {
+            buf.writeDouble(d);
+        }
+    }
 }

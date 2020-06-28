@@ -61,7 +61,7 @@ repositories {
 }
 
 dependencies {
-    shade 'com.github.creepinson:throw-out-utils-java:-SNAPSHOT'
+    shade 'com.github.creepinson:throw-out-utils-java:master-SNAPSHOT'
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 }
 

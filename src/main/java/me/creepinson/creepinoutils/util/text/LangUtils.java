@@ -2,9 +2,8 @@ package me.creepinson.creepinoutils.util.text;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fluids.FluidStack;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.IllegalFormatException;
 

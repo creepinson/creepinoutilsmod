@@ -1,14 +1,7 @@
 package me.creepinson.creepinoutils.util.world.fake;
 
-import java.util.UUID;
-
-import org.apache.commons.lang3.RandomStringUtils;
-
 import com.mojang.authlib.GameProfile;
-
-import me.creepinson.creepinoutils.util.Gamemode;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.management.PlayerInteractionManager;
@@ -16,8 +9,10 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import org.apache.commons.lang3.RandomStringUtils;
+
+import java.util.UUID;
 
 /**
  * This is a multiplayer fake player class for use in server-side mods.
@@ -40,7 +35,7 @@ public class FakeServerPlayer extends ServerPlayerEntity implements IFakePlayer 
     // Allows for the position of the player to be the exact source when raytracing.
     @Override
     public double getPosYEye() {
-    	return this.getPosY();
+        return this.getPosY();
     }
 
     @Override
@@ -55,7 +50,7 @@ public class FakeServerPlayer extends ServerPlayerEntity implements IFakePlayer 
 
     @Override
     public void addStat(ResourceLocation p_195067_1_, int p_195067_2_) {
-    	super.addStat(p_195067_1_, p_195067_2_);
+        super.addStat(p_195067_1_, p_195067_2_);
     }
 
     @Override

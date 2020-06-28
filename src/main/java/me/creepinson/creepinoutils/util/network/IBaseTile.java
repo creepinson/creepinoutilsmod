@@ -4,7 +4,6 @@ import dev.throwouterror.util.math.Tensor;
 import me.creepinson.creepinoutils.util.IConnectable;
 import me.creepinson.creepinoutils.util.upgrade.IUpgradeable;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.math.BlockPos;
 
 /**
  * @author Theo Paris https://theoparis.com

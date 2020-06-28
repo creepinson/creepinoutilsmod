@@ -1,5 +1,6 @@
 package me.creepinson.creepinoutils.util;
 
+import dev.throwouterror.util.math.Tensor;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -16,8 +17,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
-
-import dev.throwouterror.util.math.Tensor;
 
 /**
  * @author creepinson

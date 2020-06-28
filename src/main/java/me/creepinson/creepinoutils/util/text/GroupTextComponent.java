@@ -1,4 +1,8 @@
-package me.creepinson.creepinoutils.util;
+/*
+ * Copyright (c) Creepinson
+ */
+
+package me.creepinson.creepinoutils.util.text;
 
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -10,6 +14,7 @@ import javax.annotation.Nonnull;
 /**
  * Originally created by Thiakil.
  * This is a utility class to make text components fluent.
+ *
  * @author Theo Paris
  */
 public class GroupTextComponent extends StringTextComponent {
