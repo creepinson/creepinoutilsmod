@@ -1,3 +1,5 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
+
 buildscript {
     repositories {
         maven { url = 'https://files.minecraftforge.net/maven' }
@@ -8,16 +10,19 @@ buildscript {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
         // Make sure this version matches the one included in Kotlin for Forge
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.10"
+        classpath 'com.github.jengelman.gradle.plugins:shadow:5.2.0'
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'kotlin'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 version = '1.0.0'
-group = 'example.examplemod'
-archivesBaseName = 'examplemod'
+group = 'com.theoparis.creepinoutils'
+archivesBaseName = 'creepinoutils'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+
 
 minecraft {
     // Change to your preferred mappings
@@ -32,7 +37,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                examplemod {
+                creepinoutils {
                     source sourceSets.main
                 }
             }
@@ -44,7 +49,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                examplemod {
+                creepinoutils {
                     source sourceSets.main
                 }
             }
@@ -55,10 +60,10 @@ minecraft {
 
             property 'forge.logging.console.level', 'debug'
 
-            args '--mod', 'examplemod', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources')
+            args '--mod', 'creepinoutils', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources')
 
             mods {
-                examplemod {
+                creepinoutils {
                     source sourceSets.main
                 }
             }
@@ -71,6 +76,7 @@ repositories {
         name = 'Kotlin for Forge'
         url = 'https://thedarkcolour.github.io/KotlinForForge/'
     }
+    maven { url = 'https://jitpack.io' }
 }
 
 dependencies {
@@ -79,7 +85,14 @@ dependencies {
 
     // Use the latest version of KotlinForForge
     fg.deobf(implementation('thedarkcolour:kotlinforforge:1.6.2'))
+    shadow "com.github.throw-out-error:toe-utils:-SNAPSHOT"
 }
+
+task relocateShadowJar(type: ConfigureShadowRelocation) {
+    target = tasks.shadowJar
+}
+
+tasks.shadowJar.dependsOn tasks.relocateShadowJar
 
 compileKotlin {
     kotlinOptions {
@@ -97,12 +110,12 @@ sourceSets.main.resources {
 jar {
     manifest {
         attributes([
-                "Specification-Title": "examplemod",
-                "Specification-Vendor": "examplemodsareus",
-                "Specification-Version": "1", // We are version 1 of ourselves
-                "Implementation-Title": project.name,
-                "Implementation-Version": "${version}",
-                "Implementation-Vendor" :"examplemodsareus",
+                "Specification-Title"     : "creepinoutils",
+                "Specification-Vendor"    : "creepinoutilssareus",
+                "Specification-Version"   : "1", // We are version 1 of ourselves
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : "${version}",
+                "Implementation-Vendor"   : "creepinoutilssareus",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }

@@ -1,6 +1,5 @@
-package example.examplemod
+package com.theoparis.creepinoutils
 
-import example.examplemod.block.ModBlocks
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent
@@ -17,10 +16,10 @@ import thedarkcolour.kotlinforforge.forge.MOD_BUS
  *
  * An example for blocks is in the `blocks` package of this mod.
  */
-@Mod(ExampleMod.ID)
-object ExampleMod {
+@Mod(CreepinoUtilsMod.ID)
+object CreepinoUtilsMod {
     // the modid of our mod
-    const val ID: String = "examplemod"
+    const val ID: String = "creepinoutils"
 
     // the logger for our mod
     val LOGGER: Logger = LogManager.getLogger()
@@ -28,12 +27,9 @@ object ExampleMod {
     init {
         LOGGER.log(Level.INFO, "Hello world!")
 
-        // Register the KDeferredRegister to the mod-specific event bus
-        ModBlocks.REGISTRY.register(MOD_BUS)
-
         // usage of the KotlinEventBus
-        MOD_BUS.addListener(::onClientSetup)
-        FORGE_BUS.addListener(::onServerAboutToStart)
+        MOD_BUS.addListener(CreepinoUtilsMod::onClientSetup)
+        FORGE_BUS.addListener(CreepinoUtilsMod::onServerAboutToStart)
     }
 
     /**
