@@ -1,5 +1,6 @@
 package com.theoparis.creepinoutils
 
+import com.theoparis.creepinoutils.util.lighting.Albedo
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent
@@ -26,6 +27,8 @@ object CreepinoUtilsMod {
 
     init {
         LOGGER.log(Level.INFO, "Hello world!")
+
+        Albedo()
 
         // usage of the KotlinEventBus
         MOD_BUS.addListener(CreepinoUtilsMod::onClientSetup)
