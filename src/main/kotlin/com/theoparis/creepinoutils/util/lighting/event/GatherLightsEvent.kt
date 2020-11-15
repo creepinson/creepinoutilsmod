@@ -22,7 +22,8 @@ class GatherLightsEvent(
     val lightList: ImmutableList<Light>
         get() = ImmutableList.copyOf(lights)
 
-    fun add(light: Light) {
+    fun add(light: Light?) {
+        if (light == null) return
         val radius = light.radius()
         if (cameraPosition != null) {
             val dist = MathHelper.sqrt(

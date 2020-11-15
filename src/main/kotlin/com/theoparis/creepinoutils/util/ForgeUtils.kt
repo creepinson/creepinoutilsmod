@@ -7,23 +7,25 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
 // TODO: move to creepinoutils
-/**
- * Some kotlin forge utilities such as World#dropBlock & World#dropItem
- */
-object ForgeUtils {
-    fun World.dropItem(item: ItemStack, pos: BlockPos?) {
-        if (!this.isRemote)
-            this.addEntity(
-                ItemEntity(
-                    this,
-                    pos?.x?.toDouble() ?: 0.0,
-                    pos?.y?.toDouble() ?: 0.0,
-                    pos?.z?.toDouble() ?: 0.0,
-                    item
-                )
-            )
-    }
 
-    fun World.dropBlock(block: Block, pos: BlockPos?) =
-        this.dropItem(ItemStack(block.asItem()), pos)
+/**
+ * Utility method to drop an itemstack in the world
+ */
+fun World.dropItem(item: ItemStack, pos: BlockPos?) {
+    if (!this.isRemote)
+        this.addEntity(
+            ItemEntity(
+                this,
+                pos?.x?.toDouble() ?: 0.0,
+                pos?.y?.toDouble() ?: 0.0,
+                pos?.z?.toDouble() ?: 0.0,
+                item
+            )
+        )
 }
+
+/**
+ * Utility method to drop an block in the world
+ */
+fun World.dropBlock(block: Block, pos: BlockPos?) =
+    this.dropItem(ItemStack(block.asItem()), pos)
