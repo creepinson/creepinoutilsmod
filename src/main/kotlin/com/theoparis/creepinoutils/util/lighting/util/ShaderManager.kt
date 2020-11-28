@@ -2,6 +2,9 @@ package com.theoparis.creepinoutils.util.lighting.util
 
 import net.minecraft.resources.IResourceManager
 import net.minecraft.util.ResourceLocation
+import net.minecraft.util.math.vector.Vector2f
+import net.minecraft.util.math.vector.Vector3f
+import net.minecraft.util.math.vector.Vector4f
 import org.lwjgl.opengl.GL20
 
 class ShaderManager(shader: ResourceLocation, resourceManager: IResourceManager) {
@@ -37,33 +40,21 @@ class ShaderManager(shader: ResourceLocation, resourceManager: IResourceManager)
         }
     }
 
-    fun setUniform(uniform: String, v1: Int, v2: Int) {
+    fun setUniform(uniform: String, v: Vector2f) {
         if (isCurrentShader(this)) {
-            GL20.glUniform2i(GL20.glGetUniformLocation(currentProgram, uniform), v1, v2)
+            GL20.glUniform2f(GL20.glGetUniformLocation(currentProgram, uniform), v.x, v.y)
         }
     }
 
-    fun setUniform(uniform: String, v1: Int, v2: Int, v3: Int) {
+    fun setUniform(uniform: String, v: Vector3f) {
         if (isCurrentShader(this)) {
-            GL20.glUniform3i(GL20.glGetUniformLocation(currentProgram, uniform), v1, v2, v3)
+            GL20.glUniform3f(GL20.glGetUniformLocation(currentProgram, uniform), v.x, v.y, v.z)
         }
     }
 
-    fun setUniform(uniform: String, v1: Float, v2: Float) {
+    fun setUniform(uniform: String, v: Vector4f) {
         if (isCurrentShader(this)) {
-            GL20.glUniform2f(GL20.glGetUniformLocation(currentProgram, uniform), v1, v2)
-        }
-    }
-
-    fun setUniform(uniform: String, v1: Float, v2: Float, v3: Float) {
-        if (isCurrentShader(this)) {
-            GL20.glUniform3f(GL20.glGetUniformLocation(currentProgram, uniform), v1, v2, v3)
-        }
-    }
-
-    fun setUniform(uniform: String, v1: Float, v2: Float, v3: Float, v4: Float) {
-        if (isCurrentShader(this)) {
-            GL20.glUniform4f(GL20.glGetUniformLocation(currentProgram, uniform), v1, v2, v3, v4)
+            GL20.glUniform4f(GL20.glGetUniformLocation(currentProgram, uniform), v.x, v.y, v.z, v.w)
         }
     }
 

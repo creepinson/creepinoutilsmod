@@ -18,6 +18,7 @@ class GroupTextComponent : StringTextComponent {
         style.color = Color.fromTextFormatting(color)
     }
 
+
     @Nonnull
     override fun getUnformattedComponentText(): String {
         return ""
@@ -36,6 +37,7 @@ class GroupTextComponent : StringTextComponent {
         this.append(StringTextComponent(s))
         return this
     }
+
 
     fun string(s: String, color: TextFormatting): GroupTextComponent {
         val t: ITextComponent = StringTextComponent(s)

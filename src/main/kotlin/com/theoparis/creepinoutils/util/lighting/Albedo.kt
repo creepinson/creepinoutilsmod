@@ -1,5 +1,6 @@
 package com.theoparis.creepinoutils.util.lighting
 
+import com.theoparis.creepinoutils.ConfigManager
 import com.theoparis.creepinoutils.util.TriConsumer
 import com.theoparis.creepinoutils.util.lighting.event.GatherLightsEvent
 import com.theoparis.creepinoutils.util.lighting.lighting.DefaultLightProvider
@@ -15,7 +16,6 @@ import net.minecraft.nbt.INBT
 import net.minecraft.resources.IReloadableResourceManager
 import net.minecraft.util.Direction
 import net.minecraft.util.math.BlockPos
-import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.common.capabilities.Capability.IStorage
 import net.minecraftforge.common.capabilities.CapabilityInject
@@ -26,12 +26,11 @@ import net.minecraftforge.fml.config.ModConfig
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext
 import thedarkcolour.kotlinforforge.forge.MOD_BUS
 import java.util.*
 
 class Albedo {
-    private fun commonSetup(event: FMLCommonSetupEvent?) {
+    private fun commonSetup(event: FMLCommonSetupEvent) {
         CapabilityManager.INSTANCE.register(ILightProvider::class.java, object : IStorage<ILightProvider?> {
             override fun writeNBT(
                 capability: Capability<ILightProvider?>,
@@ -51,7 +50,7 @@ class Albedo {
         }) { DefaultLightProvider() }
     }
 
-    private fun loadComplete(event: FMLLoadCompleteEvent?) {
+    private fun loadComplete(event: FMLLoadCompleteEvent) {
         DeferredWorkQueue.runLater {
             (Minecraft.getInstance().resourceManager as IReloadableResourceManager).addReloadListener(
                 ShaderUtil()
@@ -63,9 +62,8 @@ class Albedo {
         MAP[block] = consumer
     }
 
-    private fun clientSetup(event: FMLClientSetupEvent?) {
-        MinecraftForge.EVENT_BUS.register(EventManager())
-        MinecraftForge.EVENT_BUS.register(ConfigManager())
+    private fun clientSetup(event: FMLClientSetupEvent) {
+        MOD_BUS.register(EventManager())
         registerBlockHandler(Blocks.REDSTONE_TORCH) { pos: BlockPos, state: BlockState, evt: GatherLightsEvent ->
             if (state.get(RedstoneTorchBlock.LIT)) {
                 evt.add(
@@ -87,9 +85,8 @@ class Albedo {
     }
 
     init {
-        MOD_BUS.addListener { event: FMLLoadCompleteEvent? -> loadComplete(event) }
-        MOD_BUS.addListener { event: FMLCommonSetupEvent? -> commonSetup(event) }
-        MOD_BUS.addListener { event: FMLClientSetupEvent? -> clientSetup(event) }
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ConfigManager.spec)
+        MOD_BUS.addListener { event: FMLLoadCompleteEvent -> loadComplete(event) }
+        MOD_BUS.addListener { event: FMLCommonSetupEvent -> commonSetup(event) }
+        MOD_BUS.addListener { event: FMLClientSetupEvent -> clientSetup(event) }
     }
 }

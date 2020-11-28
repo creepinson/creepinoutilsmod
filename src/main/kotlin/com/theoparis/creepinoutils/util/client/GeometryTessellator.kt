@@ -42,6 +42,7 @@ class GeometryTessellator @JvmOverloads constructor(size: Int = 0x200000) : Tess
         drawCuboid(buffer, begin, end, sides, argb, delta)
     }
 
+
     companion object {
         var instance: GeometryTessellator? = null
             get() {

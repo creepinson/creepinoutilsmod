@@ -1,35 +1,28 @@
 package com.theoparis.creepinoutils.util
 
-import dev.throwouterror.util.math.Direction
-import dev.throwouterror.util.math.Tensor
 import net.minecraft.entity.Entity
+import net.minecraft.util.Direction
+import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.MathHelper
+import net.minecraft.util.math.vector.Vector3d
+import net.minecraft.util.math.vector.Vector3i
+import kotlin.math.max
+import kotlin.math.sqrt
 
 object VelocityUtil {
     const val MIN_SPEED = 0.1
-    fun accelerate(entity: Entity, v: Direction) {
-        accelerate(entity, v.directionVec)
-    }
 
-    fun accelerate(entity: Entity, v: net.minecraft.util.Direction) {
-        accelerate(entity, Direction.values()[v.ordinal])
-    }
-
-    fun accelerate(entity: Entity, v: Tensor) {
-        accelerate(entity, v, MIN_SPEED)
+    fun accelerate(entity: Entity, v: BlockPos) {
+        accelerate(entity, v.toVector3d(), MIN_SPEED)
     }
 
     fun accelerate(entity: Entity, v: Direction, speed: Double) {
-        accelerate(entity, v.directionVec, speed)
+        accelerate(entity, v.directionVec.toVector3d(), speed)
     }
 
-    fun accelerate(entity: Entity, v: net.minecraft.util.Direction, speed: Double) {
-        accelerate(entity, Direction.values()[v.ordinal], speed)
-    }
-
-    fun accelerate(entity: Entity, Tensor: Tensor, speed: Double) {
-        val v = Tensor.clone().mul(speed.toFloat())
-        entity.addVelocity(v.x(), v.y(), v.z())
+    fun accelerate(entity: Entity, pos: Vector3d, speed: Double) {
+        val v = pos.mul(speed, speed, speed)
+        entity.addVelocity(v.x, v.y, v.z)
     }
 
     fun limitEntitySpeed(entity: Entity, limit: Double) {
@@ -40,44 +33,44 @@ object VelocityUtil {
         )
     }
 
-    fun calculateParabolicVelocity(from: Tensor, to: Tensor, heightGain: Int): Tensor {
+    fun calculateParabolicVelocity(from: Vector3d, to: Vector3d, heightGain: Int): Vector3d {
         // Gravity of a potion
         val gravity = 0.115
 
         // Block locations
-        val endGain = (to.y() - from.y()).toInt()
-        val horizDist = Math.sqrt(distanceSquared(from, to))
+        val endGain = (to.y - from.y).toInt()
+        val horizDist = sqrt(distanceSquared(from, to))
 
         // Height gain
-        val maxGain = Math.max(heightGain, endGain + heightGain).toDouble()
+        val maxGain = max(heightGain, endGain + heightGain).toDouble()
 
         // Solve quadratic equation for velocity
         val a = -horizDist * horizDist / (4 * maxGain)
         val c = -endGain.toDouble()
-        val slope = -horizDist / (2 * a) - Math.sqrt(horizDist * horizDist - 4 * a * c) / (2 * a)
+        val slope = -horizDist / (2 * a) - sqrt(horizDist * horizDist - 4 * a * c) / (2 * a)
 
         // Vertical velocity
-        val vy = Math.sqrt(maxGain * gravity)
+        val vy = sqrt(maxGain * gravity)
 
         // Horizontal velocity
         val vh = vy / slope
 
         // Calculate horizontal direction
-        val dx = (to.x() - from.x()).toInt()
-        val dz = (to.z() - from.z()).toInt()
-        val mag = Math.sqrt(dx * dx + dz * dz.toDouble())
+        val dx = (to.x - from.x).toInt()
+        val dz = (to.z - from.z).toInt()
+        val mag = sqrt(dx * dx + dz * dz.toDouble())
         val dirx = dx / mag
         val dirz = dz / mag
 
         // Horizontal velocity components
         val vx = vh * dirx
         val vz = vh * dirz
-        return Tensor(vx, vy, vz)
+        return Vector3d(vx, vy, vz)
     }
 
-    private fun distanceSquared(from: Tensor, to: Tensor): Double {
-        val dx = to.x() - from.x()
-        val dz = to.z() - from.z()
+    private fun distanceSquared(from: Vector3d, to: Vector3d): Double {
+        val dx = to.x - from.x
+        val dz = to.z - from.z
         return dx * dx + dz * dz
     }
 }

@@ -1,28 +1,28 @@
 # Make sure this is set to "kotlinforforge"
-modLoader="kotlinforforge"
+modLoader = "kotlinforforge"
 # Make sure this is set to the appropriate version range
-loaderVersion="[1.6,)" # Require at least 1.6.x
+loaderVersion = "[1.6,)" # Require at least 1.6.x
 # License is REQUIRED after 1.16
-license='LGPL'
+license = 'LGPL'
 
 [[mods]]
-modId="creepinoutils"
-version="${file.jarVersion}"
-displayName="CreepinoUtils"
-credits=""
-authors="Theo Paris"
-description='''
+modId = "creepinoutils"
+version = "${file.jarVersion}"
+displayName = "CreepinoUtils"
+credits = ""
+authors = "Theo Paris"
+description = '''
 Utility mod that uses Kotlin for Forge.
 '''
 [[dependencies.creepinoutils]]
-    modId="forge"
-    mandatory=true
-    versionRange="[31.2,)"
-    ordering="NONE"
-    side="BOTH"
+modId = "forge"
+mandatory = true
+versionRange = "[31.2,)"
+ordering = "NONE"
+side = "BOTH"
 [[dependencies.creepinoutils]]
-    modId="minecraft"
-    mandatory=true
-    versionRange="[1.16.3]"
-    ordering="NONE"
-    side="BOTH"
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.16.3]"
+ordering = "NONE"
+side = "BOTH"

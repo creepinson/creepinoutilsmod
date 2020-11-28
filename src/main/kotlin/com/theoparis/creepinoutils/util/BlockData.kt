@@ -1,22 +1,21 @@
 package com.theoparis.creepinoutils.util
 
-import com.theoparis.creepinoutils.util.TensorUtils.fromNBT
-import com.theoparis.creepinoutils.util.TensorUtils.toNBT
-import dev.throwouterror.util.math.Tensor
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
 import net.minecraft.nbt.CompoundNBT
 import net.minecraft.nbt.NBTUtil
+import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.vector.Vector3f
 import net.minecraft.world.World
 import net.minecraftforge.common.util.INBTSerializable
 
 open class BlockData : INBTSerializable<CompoundNBT> {
     var state: BlockState = Blocks.AIR.defaultState
-    var position: Tensor = Tensor.VECTOR_ZERO
+    var position: BlockPos = BlockPos.ZERO
     var world: World? = null
 
-    constructor(world: World, pos: Tensor, state: BlockState) : this(pos, state) {
+    constructor(world: World, pos: BlockPos, state: BlockState) : this(pos, state) {
         this.world = world
     }
 
@@ -24,7 +23,7 @@ open class BlockData : INBTSerializable<CompoundNBT> {
         this.world = world
     }
 
-    constructor(pos: Tensor, state: BlockState) {
+    constructor(pos: BlockPos, state: BlockState) {
         position = pos
         this.state = state
     }
@@ -38,12 +37,12 @@ open class BlockData : INBTSerializable<CompoundNBT> {
     override fun serializeNBT(): CompoundNBT {
         val nbt = CompoundNBT()
         nbt.put("block", NBTUtil.writeBlockState(state))
-        nbt.put("position", toNBT(position))
+        nbt.put("position", NBTUtil.writeBlockPos(position))
         return nbt
     }
 
     override fun deserializeNBT(nbt: CompoundNBT) {
         state = NBTUtil.readBlockState(nbt.getCompound("block"))
-        position = fromNBT(nbt.getCompound("position"))
+        position = NBTUtil.readBlockPos(nbt.getCompound("position"))
     }
 }

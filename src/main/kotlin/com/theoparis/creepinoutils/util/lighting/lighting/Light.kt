@@ -3,61 +3,32 @@ package com.theoparis.creepinoutils.util.lighting.lighting
 import net.minecraft.entity.Entity
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.vector.Vector3d
+import net.minecraft.util.math.vector.Vector3f
+import net.minecraft.util.math.vector.Vector4f
+import kotlin.math.sqrt
 
 class Light {
-    var x: Float
-    var y: Float
-    var z: Float
-    var r: Float
-    var g: Float
-    var b: Float
-    var a: Float
-    var rx: Float
-    var ry: Float
-    var rz: Float
+    var pos: Vector3f = Vector3f()
+    var color: Vector4f = Vector4f(1f, 1f, 1f, 1f)
+    var radius: Vector3f = Vector3f()
     var angle = 0f
 
-    constructor(x: Float, y: Float, z: Float, r: Float, g: Float, b: Float, a: Float, radius: Float) {
-        this.x = x
-        this.y = y
-        this.z = z
-        this.r = r
-        this.g = g
-        this.b = b
-        this.a = a
-        rx = 0f
-        ry = radius
-        rz = 0f
-    }
+    constructor(pos: Vector3f, color: Vector4f, radius: Vector3f) : this(pos, color, radius, 0f)
 
     constructor(
-        x: Float,
-        y: Float,
-        z: Float,
-        r: Float,
-        g: Float,
-        b: Float,
-        a: Float,
-        rx: Float,
-        ry: Float,
-        rz: Float,
+        pos: Vector3f,
+        color: Vector4f,
+        radius: Vector3f,
         angle: Float
     ) {
-        this.x = x
-        this.y = y
-        this.z = z
-        this.r = r
-        this.g = g
-        this.b = b
-        this.a = a
-        this.rx = rx
-        this.ry = ry
-        this.rz = rz
+        this.pos = pos
+        this.color = color
+        this.radius = radius
         this.angle = angle
     }
 
     fun radius(): Float {
-        return Math.sqrt(rx * rx + ry * ry + (rz * rz).toDouble()).toFloat()
+        return sqrt(radius.x * radius.x + radius.y * radius.y + (radius.z * radius.z))
     }
 
     class Builder {
@@ -145,7 +116,7 @@ class Light {
                     angle
                 )
             ) {
-                Light(x, y, z, r, g, b, a, rx, ry, rz, angle)
+                Light(Vector3f(x, y, z), Vector4f(r, g, b, a), Vector3f(rx, ry, rz), angle)
             } else {
                 throw IllegalArgumentException("Position, color, and radius must be set, and cannot be infinite")
             }

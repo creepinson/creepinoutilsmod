@@ -1,6 +1,6 @@
 package com.theoparis.creepinoutils.util.lighting.util
 
-import com.theoparis.creepinoutils.util.lighting.ConfigManager.Companion.isLightingEnabled
+import com.theoparis.creepinoutils.ConfigManager.Companion.isLightingEnabled
 import com.theoparis.creepinoutils.util.lighting.EventManager.Companion.isGui
 import com.theoparis.creepinoutils.util.lighting.event.RenderChunkUniformsEvent
 import net.minecraft.client.renderer.chunk.ChunkRenderDispatcher.ChunkRender

@@ -3,10 +3,7 @@ package com.theoparis.creepinoutils.util.client.gl.animation
 import com.google.common.collect.Lists
 import com.google.common.collect.Maps
 import com.google.common.collect.Sets
-import com.theoparis.creepinoutils.util.TensorUtils.fromVector4
-import com.theoparis.creepinoutils.util.TensorUtils.toVector
-import com.theoparis.creepinoutils.util.TensorUtils.toVector4
-import dev.throwouterror.util.math.Tensor
+import com.theoparis.creepinoutils.util.toVector4f
 import joptsimple.internal.Strings
 import net.minecraft.client.renderer.model.*
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
@@ -16,6 +13,7 @@ import net.minecraft.util.ResourceLocation
 import net.minecraft.util.math.MathHelper
 import net.minecraft.util.math.vector.TransformationMatrix
 import net.minecraft.util.math.vector.Vector2f
+import net.minecraft.util.math.vector.Vector3f
 import net.minecraft.util.math.vector.Vector4f
 import net.minecraftforge.client.model.IModelBuilder
 import net.minecraftforge.client.model.IModelConfiguration
@@ -31,13 +29,14 @@ import java.util.*
 import java.util.function.Function
 import java.util.stream.Collectors
 import javax.annotation.Nonnull
+import kotlin.math.min
 
 class AnimatedOBJModel(reader: LineReader, settings: ModelSettings) : IMultipartModelGeometry<AnimatedOBJModel?> {
     private val parts: MutableMap<String, ModelGroup> = Maps.newHashMap()
-    private val positions: MutableList<Tensor> = Lists.newArrayList()
+    private val positions: MutableList<Vector3f> = Lists.newArrayList()
     private val texCoords: MutableList<Vector2f> = Lists.newArrayList()
-    private val normals: MutableList<Tensor> = Lists.newArrayList()
-    private val colors: MutableList<Tensor> = Lists.newArrayList()
+    private val normals: MutableList<Vector3f> = Lists.newArrayList()
+    private val colors: MutableList<Vector4f> = Lists.newArrayList()
     val detectCullableFaces: Boolean
     val diffuseLighting: Boolean
     val flipV: Boolean
@@ -55,30 +54,30 @@ class AnimatedOBJModel(reader: LineReader, settings: ModelSettings) : IMultipart
     private fun makeQuad(
         indices: Array<IntArray?>,
         tintIndex: Int,
-        colorTint: Tensor,
+        colorTint: Vector4f,
         ambientColor: Vector4f,
         texture: TextureAtlasSprite,
         transform: TransformationMatrix
-    ): Pair<BakedQuad, Direction?> {
+    ): Pair<BakedQuad, Direction> {
         var needsNormalRecalculation = false
         for (ints in indices) {
             needsNormalRecalculation = needsNormalRecalculation or (ints!!.size < 3)
         }
-        var faceNormal: Tensor? = Tensor(0, 0, 0)
+        var faceNormal: Vector3f? = Vector3f(0f, 0f, 0f)
         if (needsNormalRecalculation) {
             val a = positions[indices[0]!![0]]
             val ab = positions[indices[1]!![0]]
             val ac = positions[indices[2]!![0]]
-            var abs = ab.clone()
+            val abs = ab.copy()
             abs.sub(a)
-            val acs = ac.clone()
+            val acs = ac.copy()
             acs.sub(a)
-            abs = abs.cross(acs)
+            abs.cross(acs)
             abs.normalize()
             faceNormal = abs
         }
-        val pos = arrayOfNulls<Tensor>(4)
-        val norm = arrayOfNulls<Tensor>(4)
+        val pos = arrayOfNulls<Vector3f>(4)
+        val norm = arrayOfNulls<Vector3f>(4)
         val builder = BakedQuadBuilder(texture)
         builder.setQuadTint(tintIndex)
         var uv2 = Vector2f(0f, 0f)
@@ -93,75 +92,75 @@ class AnimatedOBJModel(reader: LineReader, settings: ModelSettings) : IMultipart
         // The incoming transform is referenced on the center of the block, but our coords are referenced on the corner
         val transformation = if (hasTransform) transform.blockCenterToCorner() else transform
         for (i in 0..3) {
-            val index = indices[Math.min(i, indices.size - 1)]
+            val index = indices[i.coerceAtMost(indices.size - 1)]
             val pos0 = positions[index!![0]]
-            val position = pos0.clone()
+            val position = pos0.copy()
             val texCoord = if (index.size >= 2 && texCoords.size > 0) texCoords[index[1]] else DEFAULT_COORDS[i]
             val norm0 =
                 if (!needsNormalRecalculation && index.size >= 3 && normals.size > 0) normals[index[2]] else faceNormal!!
             var normal = norm0
             val color = if (index.size >= 4 && colors.size > 0) colors[index[3]] else COLOR_WHITE
             if (hasTransform) {
-                normal = norm0.clone()
-                transformation.transformPosition(toVector4(position))
-                transformation.transformNormal(toVector(normal))
+                normal = norm0.copy()
+                transformation.transformPosition(position.toVector4f())
+                transformation.transformNormal(normal)
             }
-            val tintedColor = Tensor(
-                color.x() * colorTint.x(),
-                color.y() * colorTint.y(),
-                color.z() * colorTint.z(),
-                color.w() * colorTint.w()
+            val tintedColor = Vector4f(
+                color.x * colorTint.x,
+                color.y * colorTint.y,
+                color.z * colorTint.z,
+                color.w * colorTint.w
             )
-            putVertexData(builder, position, texCoord, normal, tintedColor, uv2, texture)
+            putVertexData(builder, position.toVector4f(), texCoord, normal, tintedColor, uv2, texture)
             pos[i] = position
             norm[i] = normal
         }
         builder.setQuadOrientation(
             Direction.getFacingFromVector(
-                norm[0]!!.x(), norm[0]!!.y(), norm[0]!!.z()
+                norm[0]!!.x, norm[0]!!.y, norm[0]!!.z
             )
         )
         var cull: Direction? = null
         if (detectCullableFaces) {
-            if (MathHelper.epsilonEquals(pos[0]!!.x(), 0.0) &&  // vertex.position.x
-                MathHelper.epsilonEquals(pos[1]!!.x(), 0.0) &&
-                MathHelper.epsilonEquals(pos[2]!!.x(), 0.0) &&
-                MathHelper.epsilonEquals(pos[3]!!.x(), 0.0) && norm[0]!!.x() < 0
+            if (MathHelper.epsilonEquals(pos[0]!!.x.toDouble(), 0.0) &&  // vertex.position.x
+                MathHelper.epsilonEquals(pos[1]!!.x.toDouble(), 0.0) &&
+                MathHelper.epsilonEquals(pos[2]!!.x.toDouble(), 0.0) &&
+                MathHelper.epsilonEquals(pos[3]!!.x.toDouble(), 0.0) && norm[0]!!.x < 0
             ) // vertex.normal.x
             {
                 cull = Direction.WEST
-            } else if (MathHelper.epsilonEquals(pos[0]!!.x(), 1.0) &&  // vertex.position.x
-                MathHelper.epsilonEquals(pos[1]!!.x(), 1.0) &&
-                MathHelper.epsilonEquals(pos[2]!!.x(), 1.0) &&
-                MathHelper.epsilonEquals(pos[3]!!.x(), 1.0) && norm[0]!!.x() > 0
+            } else if (MathHelper.epsilonEquals(pos[0]!!.x.toDouble(), 1.0) &&  // vertex.position.x
+                MathHelper.epsilonEquals(pos[1]!!.x.toDouble(), 1.0) &&
+                MathHelper.epsilonEquals(pos[2]!!.x.toDouble(), 1.0) &&
+                MathHelper.epsilonEquals(pos[3]!!.x.toDouble(), 1.0) && norm[0]!!.x > 0
             ) // vertex.normal.x
             {
                 cull = Direction.EAST
-            } else if (MathHelper.epsilonEquals(pos[0]!!.z(), 0.0) &&  // vertex.position.z
-                MathHelper.epsilonEquals(pos[1]!!.z(), 0.0) &&
-                MathHelper.epsilonEquals(pos[2]!!.z(), 0.0) &&
-                MathHelper.epsilonEquals(pos[3]!!.z(), 0.0) && norm[0]!!.z() < 0
+            } else if (MathHelper.epsilonEquals(pos[0]!!.z.toDouble(), 0.0) &&  // vertex.position.z
+                MathHelper.epsilonEquals(pos[1]!!.z.toDouble(), 0.0) &&
+                MathHelper.epsilonEquals(pos[2]!!.z.toDouble(), 0.0) &&
+                MathHelper.epsilonEquals(pos[3]!!.z.toDouble(), 0.0) && norm[0]!!.z < 0
             ) // vertex.normal.z
             {
                 cull = Direction.NORTH // can never remember
-            } else if (MathHelper.epsilonEquals(pos[0]!!.z(), 1.0) &&  // vertex.position.z
-                MathHelper.epsilonEquals(pos[1]!!.z(), 1.0) &&
-                MathHelper.epsilonEquals(pos[2]!!.z(), 1.0) &&
-                MathHelper.epsilonEquals(pos[3]!!.z(), 1.0) && norm[0]!!.z() > 0
+            } else if (MathHelper.epsilonEquals(pos[0]!!.z.toDouble(), 1.0) &&  // vertex.position.z
+                MathHelper.epsilonEquals(pos[1]!!.z.toDouble(), 1.0) &&
+                MathHelper.epsilonEquals(pos[2]!!.z.toDouble(), 1.0) &&
+                MathHelper.epsilonEquals(pos[3]!!.z.toDouble(), 1.0) && norm[0]!!.z > 0
             ) // vertex.normal.z
             {
                 cull = Direction.SOUTH
-            } else if (MathHelper.epsilonEquals(pos[0]!!.y(), 0.0) &&  // vertex.position.y
-                MathHelper.epsilonEquals(pos[1]!!.y(), 0.0) &&
-                MathHelper.epsilonEquals(pos[2]!!.y(), 0.0) &&
-                MathHelper.epsilonEquals(pos[3]!!.y(), 0.0) && norm[0]!!.y() < 0
+            } else if (MathHelper.epsilonEquals(pos[0]!!.y.toDouble(), 0.0) &&  // vertex.position.y
+                MathHelper.epsilonEquals(pos[1]!!.y.toDouble(), 0.0) &&
+                MathHelper.epsilonEquals(pos[2]!!.y.toDouble(), 0.0) &&
+                MathHelper.epsilonEquals(pos[3]!!.y.toDouble(), 0.0) && norm[0]!!.y < 0
             ) // vertex.normal.z
             {
                 cull = Direction.DOWN // can never remember
-            } else if (MathHelper.epsilonEquals(pos[0]!!.y(), 1.0) &&  // vertex.position.y
-                MathHelper.epsilonEquals(pos[1]!!.y(), 1.0) &&
-                MathHelper.epsilonEquals(pos[2]!!.y(), 1.0) &&
-                MathHelper.epsilonEquals(pos[3]!!.y(), 1.0) && norm[0]!!.y() > 0
+            } else if (MathHelper.epsilonEquals(pos[0]!!.y.toDouble(), 1.0) &&  // vertex.position.y
+                MathHelper.epsilonEquals(pos[1]!!.y.toDouble(), 1.0) &&
+                MathHelper.epsilonEquals(pos[2]!!.y.toDouble(), 1.0) &&
+                MathHelper.epsilonEquals(pos[3]!!.y.toDouble(), 1.0) && norm[0]!!.y > 0
             ) // vertex.normal.y
             {
                 cull = Direction.UP
@@ -172,10 +171,10 @@ class AnimatedOBJModel(reader: LineReader, settings: ModelSettings) : IMultipart
 
     private fun putVertexData(
         consumer: IVertexConsumer,
-        position0: Tensor,
+        position0: Vector4f,
         texCoord0: Vector2f,
-        normal0: Tensor,
-        color0: Tensor,
+        normal0: Vector3f,
+        color0: Vector4f,
         uv2: Vector2f,
         texture: TextureAtlasSprite
     ) {
@@ -185,17 +184,17 @@ class AnimatedOBJModel(reader: LineReader, settings: ModelSettings) : IMultipart
             when (e.usage) {
                 VertexFormatElement.Usage.POSITION -> consumer.put(
                     j,
-                    position0.floatX(),
-                    position0.floatY(),
-                    position0.floatZ(),
-                    position0.floatW()
+                    position0.x,
+                    position0.x,
+                    position0.x,
+                    position0.w
                 )
                 VertexFormatElement.Usage.COLOR -> consumer.put(
                     j,
-                    color0.floatX(),
-                    color0.floatY(),
-                    color0.floatZ(),
-                    color0.floatW()
+                    color0.x,
+                    color0.y,
+                    color0.z,
+                    color0.w
                 )
                 VertexFormatElement.Usage.UV -> when (e.index) {
                     0 -> consumer.put(
@@ -208,9 +207,9 @@ class AnimatedOBJModel(reader: LineReader, settings: ModelSettings) : IMultipart
                 }
                 VertexFormatElement.Usage.NORMAL -> consumer.put(
                     j,
-                    normal0.floatX(),
-                    normal0.floatY(),
-                    normal0.floatZ()
+                    normal0.x,
+                    normal0.y,
+                    normal0.z
                 )
                 else -> consumer.put(j)
             }
@@ -235,7 +234,7 @@ class AnimatedOBJModel(reader: LineReader, settings: ModelSettings) : IMultipart
                 val mat = mesh!!.mat ?: continue
                 val texture = spriteGetter.apply(ModelLoaderRegistry.resolveTexture(mat.diffuseColorMap, owner))
                 val tintIndex = mat.diffuseTintIndex
-                val colorTint = fromVector4(mat.diffuseColor)
+                val colorTint = mat.diffuseColor
                 for (face in mesh.faces) {
                     val quad = makeQuad(face, tintIndex, colorTint, mat.ambientColor, texture, modelTransform.rotation)
                     if (quad.right == null) modelBuilder.addGeneralQuad(quad.left) else modelBuilder.addFaceQuad(
@@ -336,7 +335,7 @@ class AnimatedOBJModel(reader: LineReader, settings: ModelSettings) : IMultipart
     }
 
     companion object {
-        private val COLOR_WHITE = Tensor(1, 1, 1, 1)
+        private val COLOR_WHITE = Vector4f(1f, 1f, 1f, 1f)
         private val DEFAULT_COORDS = arrayOf(
             Vector2f(0f, 0f),
             Vector2f(0f, 1f),
@@ -344,18 +343,18 @@ class AnimatedOBJModel(reader: LineReader, settings: ModelSettings) : IMultipart
             Vector2f(1f, 0f)
         )
 
-        fun parseVector4To3(line: Array<String>): Tensor {
+        fun parseVector4To3(line: Array<String>): Vector3f {
             return when (line.size) {
-                1 -> Tensor(0, 0, 0)
-                2 -> Tensor(line[1].toFloat(), 0f, 0f)
-                3 -> Tensor(line[1].toFloat(), line[2].toFloat(), 0f)
-                4 -> Tensor(line[1].toFloat(), line[2].toFloat(), line[3].toFloat())
+                1 -> Vector3f(0f, 0f, 0f)
+                2 -> Vector3f(line[1].toFloat(), 0f, 0f)
+                3 -> Vector3f(line[1].toFloat(), line[2].toFloat(), 0f)
+                4 -> Vector3f(line[1].toFloat(), line[2].toFloat(), line[3].toFloat())
                 else -> {
                     val vec4 = parseVector4(line)
-                    Tensor(
-                        vec4.x() / vec4.w(),
-                        vec4.y() / vec4.w(),
-                        vec4.z() / vec4.w()
+                    Vector3f(
+                        vec4.x / vec4.w,
+                        vec4.y / vec4.w,
+                        vec4.z / vec4.w
                     )
                 }
             }
@@ -369,22 +368,22 @@ class AnimatedOBJModel(reader: LineReader, settings: ModelSettings) : IMultipart
             }
         }
 
-        fun parseVector3(line: Array<String>): Tensor {
+        fun parseVector3(line: Array<String>): Vector3f {
             return when (line.size) {
-                1 -> Tensor(0, 0, 0)
-                2 -> Tensor(line[1].toFloat(), 0f, 0f)
-                3 -> Tensor(line[1].toFloat(), line[2].toFloat(), 0f)
-                else -> Tensor(line[1].toFloat(), line[2].toFloat(), line[3].toFloat())
+                1 -> Vector3f(0f, 0f, 0f)
+                2 -> Vector3f(line[1].toFloat(), 0f, 0f)
+                3 -> Vector3f(line[1].toFloat(), line[2].toFloat(), 0f)
+                else -> Vector3f(line[1].toFloat(), line[2].toFloat(), line[3].toFloat())
             }
         }
 
-        fun parseVector4(line: Array<String>): Tensor {
+        fun parseVector4(line: Array<String>): Vector4f {
             return when (line.size) {
-                1 -> Tensor(0, 0, 0, 1)
-                2 -> Tensor(line[1].toFloat(), 0f, 0f, 1f)
-                3 -> Tensor(line[1].toFloat(), line[2].toFloat(), 0f, 1f)
-                4 -> Tensor(line[1].toFloat(), line[2].toFloat(), line[3].toFloat(), 1f)
-                else -> Tensor(line[1].toFloat(), line[2].toFloat(), line[3].toFloat(), line[4].toFloat())
+                1 -> Vector4f(0f, 0f, 0f, 1f)
+                2 -> Vector4f(line[1].toFloat(), 0f, 0f, 1f)
+                3 -> Vector4f(line[1].toFloat(), line[2].toFloat(), 0f, 1f)
+                4 -> Vector4f(line[1].toFloat(), line[2].toFloat(), line[3].toFloat(), 1f)
+                else -> Vector4f(line[1].toFloat(), line[2].toFloat(), line[3].toFloat(), line[4].toFloat())
             }
         }
     }
@@ -418,7 +417,7 @@ class AnimatedOBJModel(reader: LineReader, settings: ModelSettings) : IMultipart
                 )
         }
         var line: Array<String>
-        while (reader.readAndSplitLine(true).also { line = it!! } != null) {
+        while (reader.readAndSplitLine(true).also { line = it ?: arrayOf() } != null) {
             when (line[0]) {
                 "mtllib" -> {
                     if (materialLibraryOverrideLocation != null) break

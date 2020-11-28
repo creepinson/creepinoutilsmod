@@ -1,7 +1,5 @@
 package com.theoparis.creepinoutils.util
 
-import com.theoparis.creepinoutils.util.TensorUtils.toBlockPos
-import dev.throwouterror.util.math.Tensor
 import net.minecraft.block.AirBlock
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
@@ -32,39 +30,26 @@ object BlockUtils {
      *
      * @return a LazyOptional that you can use to check whether the tile is present.
      */
-    fun getTile(world: IWorld, pos: BlockPos?): LazyOptional<out TileEntity> {
+    fun getTile(world: World, pos: BlockPos): LazyOptional<out TileEntity> {
         val tile = world.getTileEntity(pos)
         return LazyOptional.of(if (tile != null && !tile.isRemoved) NonNullSupplier { tile } else null)
     }
 
-    /**
-     * Safely checks if the tile entity exists.
-     *
-     * @return a LazyOptional that you can use to check whether the tile is present.
-     */
-    fun getTile(world: IWorld, pos: Tensor?): LazyOptional<out TileEntity> {
-        return getTile(world, toBlockPos(pos!!))
-    }
-
-    fun isValid(world: World, pos: BlockPos?): Boolean {
+    fun isValid(world: World, pos: BlockPos): Boolean {
         return world.isAreaLoaded(pos, 1)
     }
 
-    fun canReplace(world: World, pos: BlockPos?): Boolean {
+    fun canReplace(world: World, pos: BlockPos): Boolean {
         return isValid(world, pos) && (world.isAirBlock(pos) || world.getBlockState(pos).material.isReplaceable)
     }
 
-    fun isDirect(p: Tensor, t: Tensor): Boolean {
-        return (((p.x() == t.x() + 1 || p.x() == t.x() - 1) && !(p.y() == t.y() + 1 || p.y() == t.y() - 1)
-                && !(p.z() == t.z() + 1 || p.z() == t.z() - 1))
-                || (!(p.x() == t.x() + 1 || p.x() == t.x() - 1) && (p.y() == t.y() + 1 || p.y() == t.y() - 1)
-                && !(p.z() == t.z() + 1 || p.z() == t.z() - 1))
-                || (!(p.x() == t.x() + 1 || p.x() == t.x() - 1) && !(p.y() == t.y() + 1 || p.y() == t.y() - 1)
-                && (p.z() == t.z() + 1 || p.z() == t.z() - 1)))
-    }
-
-    fun isIndirect(p: Tensor, t: Tensor): Boolean {
-        return !isDirect(p, t)
+    fun isDirect(p: BlockPos, t: BlockPos): Boolean {
+        return (((p.x == t.x + 1 || p.x == t.x - 1) && !(p.y == t.y + 1 || p.y == t.y - 1)
+                && !(p.z == t.z + 1 || p.z == t.z - 1))
+                || (!(p.x == t.x + 1 || p.x == t.x - 1) && (p.y == t.y + 1 || p.y == t.y - 1)
+                && !(p.z == t.z + 1 || p.z == t.z - 1))
+                || (!(p.x == t.x + 1 || p.x == t.x - 1) && !(p.y == t.y + 1 || p.y == t.y - 1)
+                && (p.z == t.z + 1 || p.z == t.z - 1)))
     }
 
     /**
@@ -171,25 +156,11 @@ object BlockUtils {
      * @param radius The radius to expand from
      * @return A list that contains each block STATE within the radius. Compared to
      * the other getNearbyBlocks method, this one returns a list of
-     * blockstates to make it easier to get each block's information.
+     * block states to make it easier to get each block's information.
      */
     fun getNearbyBlocks(world: World, pos: BlockPos, radius: Int): List<BlockState> {
         val scanResult: MutableList<BlockState> = ArrayList()
         val scans = getNearbyBlocks(pos, radius)
-        for (scanPos in scans) scanResult.add(world.getBlockState(scanPos))
-        return scanResult
-    }
-
-    /**
-     * @param pos    The starting position
-     * @param radius The radius to expand from
-     * @return A list that contains each block STATE within the radius. Compared to
-     * the other getNearbyBlocks method, this one returns a list of
-     * blockstates to make it easier to get each block's information.
-     */
-    fun getNearbyBlocks(world: World, pos: Tensor?, radius: Int): List<BlockState> {
-        val scanResult: MutableList<BlockState> = ArrayList()
-        val scans = getNearbyBlocks(toBlockPos(pos!!), radius)
         for (scanPos in scans) scanResult.add(world.getBlockState(scanPos))
         return scanResult
     }

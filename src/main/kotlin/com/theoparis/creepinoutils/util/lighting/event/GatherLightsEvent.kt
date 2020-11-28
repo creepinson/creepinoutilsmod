@@ -28,9 +28,9 @@ class GatherLightsEvent(
         if (cameraPosition != null) {
             val dist = MathHelper.sqrt(
                 cameraPosition.squareDistanceTo(
-                    light.x.toDouble(),
-                    light.y.toDouble(),
-                    light.z.toDouble()
+                    light.pos.x.toDouble(),
+                    light.pos.y.toDouble(),
+                    light.pos.y.toDouble()
                 )
             ).toDouble()
             if (dist > radius + maxDistance) {
@@ -41,12 +41,12 @@ class GatherLightsEvent(
 
         if (camera != null && !camera.isBoundingBoxInFrustum(
                 AxisAlignedBB(
-                    (light.x - radius).toDouble(),
-                    (light.y - radius).toDouble(),
-                    (light.z - radius).toDouble(),
-                    (light.x + radius).toDouble(),
-                    (light.y + radius).toDouble(),
-                    (light.z + radius).toDouble()
+                    (light.pos.x - radius).toDouble(),
+                    (light.pos.y - radius).toDouble(),
+                    (light.pos.z - radius).toDouble(),
+                    (light.pos.x + radius).toDouble(),
+                    (light.pos.y + radius).toDouble(),
+                    (light.pos.z + radius).toDouble()
                 )
             )
         ) {

@@ -7,5 +7,5 @@ import net.minecraftforge.api.distmarker.OnlyIn
 
 interface ILightProvider {
     @OnlyIn(Dist.CLIENT)
-    fun gatherLights(event: GatherLightsEvent?, context: Entity?)
+    fun gatherLights(event: GatherLightsEvent, context: Entity?)
 }

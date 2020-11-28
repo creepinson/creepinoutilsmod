@@ -1,6 +1,5 @@
 package com.theoparis.creepinoutils.util
 
-import dev.throwouterror.util.math.Tensor
 import net.minecraft.block.Blocks
 import net.minecraft.entity.Entity
 import net.minecraft.entity.LivingEntity
@@ -9,6 +8,7 @@ import net.minecraft.util.Direction
 import net.minecraft.util.math.AxisAlignedBB
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.MathHelper
+import net.minecraft.util.math.vector.Vector3f
 import net.minecraft.world.World
 import java.io.IOException
 import java.nio.charset.Charset
@@ -74,12 +74,12 @@ object CreepinoUtils {
         return null
     }
 
-    fun getCollisionBoxPart(pos: Tensor, direction: Direction): AxisAlignedBB? {
-        return getCollisionBoxPart(pos.intX(), pos.intY(), pos.intZ(), direction)
+    fun getCollisionBoxPart(pos: BlockPos, direction: Direction): AxisAlignedBB? {
+        return getCollisionBoxPart(pos.x, pos.y, pos.z, direction)
     }
 
-    fun getCollisionBoxPartFloor(pos: Tensor): AxisAlignedBB {
-        return getCollisionBoxPartFloor(pos.intX(), pos.intY(), pos.intZ())
+    fun getCollisionBoxPartFloor(pos: BlockPos): AxisAlignedBB {
+        return getCollisionBoxPartFloor(pos.x, pos.y, pos.z)
     }
 
     fun getCollisionBoxPartFloor(x: Int, y: Int, z: Int): AxisAlignedBB {
@@ -95,8 +95,8 @@ object CreepinoUtils {
         )
     }
 
-    fun getCoordinatesFromSide(pos: Tensor, s: Direction): BlockPos {
-        return getCoordinatesFromSide(pos.intX(), pos.intY(), pos.intZ(), s.ordinal)
+    fun getCoordinatesFromSide(pos: BlockPos, s: Direction): BlockPos {
+        return getCoordinatesFromSide(pos.x, pos.y, pos.z, s.ordinal)
     }
 
     fun getCoordinatesFromSide(x: Int, y: Int, z: Int, s: Int): BlockPos {
@@ -107,8 +107,8 @@ object CreepinoUtils {
         return BlockPos(x, y, z)
     }
 
-    fun getDirectionFromSide(pos: Tensor, s: Int): Direction {
-        return getDirectionFromSide(pos.intX(), pos.intY(), pos.intZ(), s)
+    fun getDirectionFromSide(pos: BlockPos, s: Int): Direction {
+        return getDirectionFromSide(pos.x, pos.y, pos.z, s)
     }
 
     fun getDirectionFromSide(x: Int, y: Int, z: Int, s: Int): Direction {

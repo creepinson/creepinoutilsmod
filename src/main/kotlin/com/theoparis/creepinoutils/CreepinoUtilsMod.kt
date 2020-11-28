@@ -1,7 +1,16 @@
 package com.theoparis.creepinoutils
 
+import com.theoparis.creepinoutils.util.client.gl.animation.AnimatedOBJLoader
 import com.theoparis.creepinoutils.util.lighting.Albedo
+import net.minecraft.util.ResourceLocation
+import net.minecraftforge.api.distmarker.Dist
+import net.minecraftforge.api.distmarker.OnlyIn
+import net.minecraftforge.client.event.ModelRegistryEvent
+import net.minecraftforge.client.model.ModelLoaderRegistry
+import net.minecraftforge.eventbus.api.SubscribeEvent
+import net.minecraftforge.fml.ModLoadingContext
 import net.minecraftforge.fml.common.Mod
+import net.minecraftforge.fml.config.ModConfig
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent
 import org.apache.logging.log4j.Level
@@ -28,6 +37,8 @@ object CreepinoUtilsMod {
     init {
         LOGGER.log(Level.INFO, "Hello world!")
 
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ConfigManager.spec)
+
         Albedo()
 
         // usage of the KotlinEventBus
@@ -42,6 +53,13 @@ object CreepinoUtilsMod {
      */
     private fun onClientSetup(event: FMLClientSetupEvent) {
         LOGGER.log(Level.INFO, "Initializing client...")
+        MOD_BUS.register(this)
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    fun modelRegistry(event: ModelRegistryEvent) {
+        ModelLoaderRegistry.registerLoader(ResourceLocation(ID, "obj"), AnimatedOBJLoader.INSTANCE)
     }
 
     /**
