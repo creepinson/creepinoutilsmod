@@ -1,13 +1,6 @@
 package com.theoparis.creepinoutils
 
-import com.theoparis.creepinoutils.util.client.gl.animation.AnimatedOBJLoader
 import com.theoparis.creepinoutils.util.lighting.Albedo
-import net.minecraft.util.ResourceLocation
-import net.minecraftforge.api.distmarker.Dist
-import net.minecraftforge.api.distmarker.OnlyIn
-import net.minecraftforge.client.event.ModelRegistryEvent
-import net.minecraftforge.client.model.ModelLoaderRegistry
-import net.minecraftforge.eventbus.api.SubscribeEvent
 import net.minecraftforge.fml.ModLoadingContext
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.config.ModConfig
@@ -32,10 +25,10 @@ object CreepinoUtilsMod {
     const val ID: String = "creepinoutils"
 
     // the logger for our mod
-    val LOGGER: Logger = LogManager.getLogger()
+    val logger: Logger = LogManager.getLogger()
 
     init {
-        LOGGER.log(Level.INFO, "Hello world!")
+        logger.log(Level.INFO, "Hello world!")
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ConfigManager.spec)
 
@@ -52,20 +45,15 @@ object CreepinoUtilsMod {
      * Fired on the mod specific event bus.
      */
     private fun onClientSetup(event: FMLClientSetupEvent) {
-        LOGGER.log(Level.INFO, "Initializing client...")
+        logger.log(Level.INFO, "Initializing client...")
         MOD_BUS.register(this)
-    }
 
-    @OnlyIn(Dist.CLIENT)
-    @SubscribeEvent
-    fun modelRegistry(event: ModelRegistryEvent) {
-        ModelLoaderRegistry.registerLoader(ResourceLocation(ID, "obj"), AnimatedOBJLoader.INSTANCE)
     }
 
     /**
      * Fired on the global Forge bus.
      */
     private fun onServerAboutToStart(event: FMLServerAboutToStartEvent) {
-        LOGGER.log(Level.INFO, "Server starting...")
+        logger.log(Level.INFO, "Server starting...")
     }
 }
