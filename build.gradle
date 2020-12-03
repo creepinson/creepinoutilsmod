@@ -129,11 +129,13 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 artifacts {
     archives sourcesJar
     archives javadocJar
+    archives jar
 }
 
 publishing {
     publications {
         maven(MavenPublication) {
+            from components.java
             groupId = group
             artifactId = archivesBaseName
             version = version
